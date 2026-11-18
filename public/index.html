@@ -2817,6 +2817,7 @@ function renderB1(r) {
     actions: [
       { icon: 'car', title: 'Find the car class for these trips', desc: 'Choosing the car turns this range into a class you can ask a dealer for.', to: 'B4', run: () => startBarrier('B4') },
       { icon: 'plug', title: 'See where you could charge', desc: 'At home, at work and the public chargers near you.', to: 'B2', run: () => startBarrier('B2') },
+      { icon: 'car', title: 'Check the battery of a used EV', run: () => startB6('used_car') },
       { icon: 'edit', title: 'Add or change a trip', desc: 'Your range need changes with every trip.', run: () => Questions.openEdit('B1', 'add') },
     ],
     facts: { r80_km: cov.r80_km, r90_km: cov.r90_km, r100_km: cov.r100_km, total_driving_days: cov.total_driving_days, trips: trips.map((t) => ({ label: t.label, one_way_km: t.one_way_km, frequency: t.frequency, range_need_km: t.range_need_km, charge_at_dest: t.charge_at_dest })) },
@@ -3454,6 +3455,11 @@ const Results = {
     let top, deep;
     if (code === 'B1') { top = [b6Card('soh')]; deep = [...all, b6Chart('soh')]; }
     else if (code === 'B3') { top = [b6Card('resale')]; deep = [...all, b6Chart('resale')]; }
+    else if (code === 'B6' && rec.response.result?.mode !== 'assessment') {   // same cards as under Range and Costs, charts in the full analysis
+      const ys = rec.response.result?.years || []; const y8 = ys[ys.length - 1];
+      if (y8) { b.statement = `After ${y8.year} years the battery keeps about ${fmt.n(y8.soh_pct)} % of its capacity.`; b.detail = null; }
+      top = [b6Card('soh'), b6Card('resale')]; deep = [b6Chart('soh'), b6Chart('resale'), ...all.filter((x) => x.tagName === 'DETAILS')];
+    }
     else { top = all.slice(0, 1); deep = all.slice(1); }
     top = top.filter(Boolean); deep = deep.filter(Boolean);
     const src = assumptionsSection(assumptions);

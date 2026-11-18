@@ -1270,11 +1270,14 @@ input, select, textarea, .input { font-size: 16px !important; }
 .keystat.sm { font-size: 16.5px !important; line-height: 1.45 !important; font-weight: 500 !important; color: var(--ink-2) !important; }
 .keystat.sm mark { font-weight: 650; }
 /* ===== Accent themes (V8.4): ?theme=pine | ink | petrol | blue, remembered in this browser ===== */
+html[data-accent="zurich"] { --accent: #2167ae; --accent-2: #2f78c0; --accent-hover: #1c5a99; --press: #23366f; --accent-soft: #eaf1f9; --accent-line: #b6c6e8; --s1: #2167ae; --ink: #23366f; --ink-2: #3f5285; --muted: #5d6b8c; --glow: #91a9dd; --mark: #f69c00; --good: #008f86; }
+html[data-accent="mbp"] { --accent: #2b69b4; --accent-2: #3f81cf; --accent-hover: #245c9f; --press: #026298; --accent-soft: #ebf2fb; --accent-line: #b9d2ef; --s1: #2b69b4; --ink: #2a2f36; --ink-2: #4a4f57; --muted: #6a6f77; --glow: #8fb8e6; --mark: #9bc0ea; --good: #627d47; --good-soft: #eef3e8; }
+html[data-accent="duo"] { --accent: #23366f; --accent-2: #2f4686; --accent-hover: #1b2a58; --press: #141f43; --accent-soft: #edf0f8; --accent-line: #c3cbe3; --s1: #2167ae; --ink: #1d2a4f; --ink-2: #44507a; --muted: #636e8f; --glow: #9cc3ea; --mark: #3f81cf; --good: #3f7d55; }
 html[data-accent="pine"] { --glow: #7fcfa9; --wash: #eef7f2; --surface-2: #f5f9f7; --accent: #0d6e52; --accent-2: #15886a; --accent-hover: #0a5c44; --press: #084a37; --accent-soft: #e7f3ee; --accent-line: #b4dac9; --s1: #0d6e52; --ink: #13261f; --ink-2: #3b5148; --good: #1f8a4c; --mark: #b4dac9; }
 html[data-accent="ink"] { --glow: #e8d8a8; --wash: #f6f4ef; --surface-2: #f7f6f2; --accent: #1d1d1f; --accent-2: #3a3a3d; --accent-hover: #000; --press: #000; --accent-soft: #f0eee8; --accent-line: #d6d2c8; --s1: #1d1d1f; --ink: #1d1d1f; --ink-2: #45464b; --mark: #ffd23f; }
 html[data-accent="petrol"] { --glow: #86c6cf; --wash: #eef6f7; --surface-2: #f5f9fa; --accent: #0f6b7a; --accent-2: #178597; --accent-hover: #0c5966; --press: #09474f; --accent-soft: #e6f2f4; --accent-line: #b0d6dc; --s1: #0f6b7a; --ink: #102a33; --ink-2: #3a5560; --mark: #b0d6dc; }
 </style>
-<script>/* accent theme before first paint: ?theme=pine|ink|petrol|blue */
+<script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme', q); var t = localStorage.getItem('bevnav.theme'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
 </head>
 <body>

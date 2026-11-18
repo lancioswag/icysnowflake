@@ -278,7 +278,7 @@ ol.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column;
 .keycard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
 .keystat { font-size: clamp(20px, 3.2vw, 27px); font-weight: 650; letter-spacing: -0.015em; line-height: 1.28; text-wrap: balance; }
 .keystat mark, .takeaway .tk mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; }
-.takeaway .tk mark { text-decoration: underline; text-decoration-color: var(--mark); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.takeaway .tk mark { text-decoration: none; text-decoration-color: var(--mark); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 .keydetail { color: var(--ink-2); font-size: 15px; }
 .aislot { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .aislot .ailabel { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -1269,6 +1269,72 @@ input, select, textarea, .input { font-size: 16px !important; }
 .bigfig small { font-size: 13.5px; color: var(--muted); }
 .keystat.sm { font-size: 16.5px !important; line-height: 1.45 !important; font-weight: 500 !important; color: var(--ink-2) !important; }
 .keystat.sm mark { font-weight: 650; }
+.qtitle.sm { font-size: 20px !important; }
+
+/* ===== V8.5 – Simone 18.11 22:07 ===== */
+.editrow { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 12px 2px; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: none; color: var(--ink); font: inherit; font-size: 15.5px; font-weight: 600; text-align: left; cursor: pointer; }
+.editrow svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
+.editrow .go { margin-left: auto; color: var(--muted); font-size: 20px; }
+.endnav { display: flex; flex-direction: column; gap: 8px; }
+.endnav .center { text-align: center; margin: 0; }
+.infolink { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 40px; padding: 0 2px; border: 0; background: none; color: var(--accent); font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+.infolink svg { width: 16px; height: 16px; }
+dialog.infopop { border: 0; border-radius: 20px; padding: 20px; width: min(360px, calc(100vw - 32px)); box-shadow: 0 20px 60px rgba(10, 20, 40, .25); color: var(--ink); }
+dialog.infopop::backdrop { background: rgba(10, 20, 40, .35); }
+dialog.infopop h3 { margin: 0 0 8px; font-size: 18px; }
+dialog.infopop p { margin: 0 0 16px; font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+/* charging options: one aligned grid */
+button.rank-row { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; }
+.rank-row .lab { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.rank-row .lab b { white-space: nowrap; }
+.rank-row .pill { white-space: nowrap; }
+.rank-row .cost { display: flex; flex-direction: column; align-items: flex-end; text-align: right; min-width: 92px; }
+.rank-row .cost span { font-size: 12.5px; color: var(--muted); }
+/* climate comparison */
+.cmpbars { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.cmpbars .cb { display: grid; grid-template-columns: 92px minmax(0, 1fr) 36px; align-items: center; gap: 10px; font-size: 14.5px; }
+.cmpbars .cb i { display: block; height: 14px; border-radius: 4px; background: var(--neutral-mark); }
+.cmpbars .cb.ev i { background: var(--good); }
+.cmpbars .cb b { text-align: right; font-variant-numeric: tabular-nums; }
+/* which car: one table */
+.b4wrap { overflow-x: auto; margin: 0 -2px; -webkit-overflow-scrolling: touch; }
+table.b4t { border-collapse: collapse; width: 100%; min-width: 340px; font-size: 14px; }
+.b4t th, .b4t td { padding: 9px 6px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: middle; }
+.b4t tbody th { text-align: left; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.b4t thead th { border-bottom: 0; vertical-align: bottom; }
+.b4t thead th > * { display: block; margin: 0 auto 4px; }
+.b4t thead th b { font-size: 14px; }
+.b4t thead th.sel, .b4t td:nth-child(1) { }
+.b4t td.warn { color: var(--warn); font-weight: 650; }
+.b4t .carpic { width: 64px; height: 34px; }
+.b4t .carpic svg { width: 100%; height: 100%; }
+.b4t .pill { font-size: 12px; }
+.b4t th, .b4t td { background: none !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 14px; }
+.b4t thead th b { text-transform: none; font-size: 14.5px; color: var(--ink); }
+.b4t tbody th { font-weight: 600; color: var(--muted); }
+.keydetail { margin: 4px 0 0; }
+
+/* questions */
+.chips.trippick { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chips.trippick .chip { width: 100%; justify-content: center; min-height: 46px; border-radius: 14px; }
+.chips.days { display: grid !important; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.chips.days .chip { width: 100%; padding: 0; justify-content: center; min-height: 44px; border-radius: 12px; }
+.ppl { display: flex; flex-direction: column; gap: 0; }
+.pplrow { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.pplrow:last-child { border-bottom: 0; }
+.pplrow b { font-size: 15.5px; }
+.pplkeys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.pplkeys button { min-height: 44px; border-radius: 12px; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); font: inherit; font-size: 15.5px; font-weight: 650; cursor: pointer; transition: background var(--t) var(--ease), border-color var(--t) var(--ease), color var(--t) var(--ease); }
+.pplkeys button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 1px 0 var(--press), inset 0 1px 2px rgba(0, 0, 0, .12); transform: translateY(1px); }
+
+/* feedback */
+.fbbox { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 18px; background: var(--surface-2); }
+.fbbox h2 { margin: 0; font-size: 17px; }
+.fbkeys { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.fbkeys button { min-height: 48px; border-radius: 14px; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); font: inherit; font-size: 15.5px; font-weight: 650; cursor: pointer; transition: background var(--t) var(--ease), border-color var(--t) var(--ease); }
+.fbkeys button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.fbthanks { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 600; color: var(--good); }
+.fbthanks svg { width: 18px; height: 18px; }
 /* ===== Accent themes (V8.4): ?theme=pine | ink | petrol | blue, remembered in this browser ===== */
 html[data-accent="zurich"] { --accent: #2167ae; --accent-2: #2f78c0; --accent-hover: #1c5a99; --press: #23366f; --accent-soft: #eaf1f9; --accent-line: #b6c6e8; --s1: #2167ae; --ink: #23366f; --ink-2: #3f5285; --muted: #5d6b8c; --glow: #91a9dd; --mark: #f69c00; --good: #008f86; }
 html[data-accent="mbp"] { --accent: #2b69b4; --accent-2: #3f81cf; --accent-hover: #245c9f; --press: #026298; --accent-soft: #ebf2fb; --accent-line: #b9d2ef; --s1: #2b69b4; --ink: #2a2f36; --ink-2: #4a4f57; --muted: #6a6f77; --glow: #8fb8e6; --mark: #9bc0ea; --good: #627d47; --good-soft: #eef3e8; }
@@ -1297,8 +1363,8 @@ const CONFIG = {
   apiBase: 'https://hsg-consultancy-project.app.n8n.cloud/webhook',   // n8n production webhooks
   // navigator: original "API Navigator" (POST /webhook/navigator → … → Respond to Webhook returns contract v2 on the same call).
   // Add ?api=test to the page URL to call "API Navigator copy" in folder Test Claude instead.
-  paths: { navigator: '/navigator', assist: '/assist', action: '/action', summary: '/summary' },
-  timeoutMs: { navigator: 90000, assist: 25000, action: 20000, summary: 60000 },
+  paths: { navigator: '/navigator', assist: '/assist', action: '/action', summary: '/summary', feedback: '/feedback' },
+  timeoutMs: { navigator: 90000, assist: 25000, action: 20000, summary: 60000, feedback: 15000 },
   contract: '2.',            // accepted contract_version prefix
   assistLive: true,          // chat: n8n workflow "Assist – Navigator chat" (POST /webhook/assist)
   aiSummary: false,          // AI summary per result: not wired (team draft "AI summary v3" is not connected)
@@ -1377,7 +1443,7 @@ function icon(name) {
 }
 const clone = (x) => (x == null ? x : JSON.parse(JSON.stringify(x)));
 /* Numbers: dot as thousands separator, ranges "30.000 – 45.000" (Simone 18.11). */
-const grp = (x, d = 0) => { const [i, f] = Math.abs(Number(x)).toFixed(d).split('.'); return (Number(x) < 0 && Number(x).toFixed(d) != 0 ? '-' : '') + i.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (f ? '.' + f : ''); };
+const grp = (x, d = 0) => { const [i, f] = Math.abs(Number(x)).toFixed(d).split('.'); return (Number(x) < 0 && Number(x).toFixed(d) != 0 ? '-' : '') + i.replace(/\B(?=(\d{3})+(?!\d))/g, '’') + (f ? '.' + f : ''); };
 const fmt = {
   n: (x, d = 0) => (x == null || isNaN(x) ? '–' : grp(x, d)),
   chf: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x))),
@@ -1425,7 +1491,7 @@ const BARRIERS = {
   B2: { short: 'Home, work and nearby', name: 'B2 Charging', title: 'Charging access', tile: 'Charging access', hint: 'Where could I charge – at home, at work, nearby?', question: 'Where can you charge?', blurb: 'Your options at home, at work and nearby – with the next step and the cost.', next: ['B3', 'B1'] },
   B4: { short: 'The class that fits you', name: 'B4 Choosing the car', title: 'Which car fits me', tile: 'Which electric car fits me', hint: 'The car size for your trips and budget – best done last.', question: 'Which electric car fits you?', blurb: 'The smallest car class that does your trips, plus a plan for the rest.', next: ['B3', 'B2'] },
   B3: { short: 'Compared with your car', name: 'B3 Costs', title: 'Costs & resale value', tile: 'Costs & resale value', hint: 'Buying and running it compared with my car – and what it is worth later.', question: 'What does it cost you?', blurb: 'Cost per year and over the years you keep the car, compared with your car, and the resale value.', next: ['B2', 'B4', 'B7'] },
-  B6: { short: 'Health and value over time', name: 'B6 Battery & resale', title: 'Battery details', tile: 'Battery life & resale value', hint: 'How long the battery lasts and what the car is worth later.', question: 'How long does the battery last?', blurb: 'Battery health and resale value over 8 years – or a check of a used EV.', next: ['B3', 'B4', 'B2'] },
+  B6: { short: 'Health and value over time', name: 'B6 Battery & resale', title: 'Battery details', tile: 'Battery life & resale value', hint: 'How long the battery lasts and what the car is worth later.', question: 'Battery life', blurb: 'Battery health and resale value over 8 years – or a check of a used EV.', next: ['B3', 'B4', 'B2'] },
   B7: { short: 'Life cycle and switching now', name: 'B7 Ecology', title: 'Climate impact', tile: 'Climate impact', hint: 'Is it really better for the climate?', question: 'Is it better for the climate?', blurb: 'Life-cycle emissions, and whether switching now pays off for the climate.', next: ['B3', 'B4'] },
 };
 const ORDER = ['B1', 'B2', 'B3', 'B7', 'B4'];   // B6 is shown inside B1 (battery) and B3 (resale)
@@ -1698,12 +1764,13 @@ function b6Card(part) {
   const pick = [5, last].filter((y, i, a) => a.indexOf(y) === i && years.some((q) => q.year === y));
   const row = (l, v) => h('div', { class: 'frow' }, h('span', null, l), h('b', null, v));
   const w = r.checks?.warranty || { min_pct: 70, years: 8, km: 160000 };
-  if (part === 'soh') return h('section', { class: 'factcard' }, h('h2', null, icon('battery'), 'Battery'),
-    ...pick.map((Y) => row(`After ${Y} years`, `${fmt.n(at(Y).soh_pct)} % capacity`)),
-    h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Warranty: usually ${w.min_pct} % within ${w.years || 8} years or ${fmt.n(w.km || 160000)} km.`)));
+  if (part === 'soh') return h('section', { class: 'factcard' }, h('h2', null, icon('battery'), 'Battery health'),
+    ...pick.map((Y) => row(`After ${Y} years`, `${fmt.n(at(Y).soh_pct)} %`)),
+    h('button', { class: 'infolink', type: 'button', onclick: () => infoPop('Warranty', `Most makers guarantee at least ${w.min_pct} % battery health for ${w.years || 8} years or ${fmt.n(w.km || 160000)} km, whichever comes first. If the battery drops below that, it is repaired or replaced for free. Check the exact terms of the car you buy.`) }, icon('info'), 'Warranty'));
   const val = (p) => (p < 5 ? 'under 5 %' : `${fmt.n(p)} %`);
-  return h('section', { class: 'factcard' }, h('h2', null, icon('wallet'), 'Value later'),
-    ...[3, 5].filter((Y) => years.some((q) => q.year === Y)).map((Y) => row(`After ${Y} years (${fmt.n(at(Y).km)} km)`, `${val(at(Y).resale_pct)} of the new price`)));
+  return h('section', { class: 'factcard' }, h('h2', null, icon('wallet'), 'Value'),
+    ...[3, 5].filter((Y) => years.some((q) => q.year === Y)).map((Y) => row(`After ${Y} years`, val(at(Y).resale_pct))),
+    h('button', { class: 'infolink', type: 'button', onclick: () => infoPop('Value', `Share of the new price the car is still worth. Based on resale prices of electric cars in Switzerland and your ${fmt.n(at(5).km / 5)} km a year.`) }, icon('info'), 'What this means'));
 }
 function b6Chart(part) {
   const r = b6Forecast(); const years = r?.years || [];
@@ -1732,13 +1799,14 @@ const Nav = {
     if (ui.assistantOpen || ['loading', 'batch', 'error'].includes(ui.view)) return null;
     if (ui.view === 'question') return 'q:' + ui.barrier + ':' + ui.flow?.current;
     if (ui.view === 'result') return 'r:' + ui.barrier;
+    if (ui.view === 'edit') return 'e:' + ui.barrier;
     return ui.view === 'topics' ? 'home' : ui.view;
   },
-  snap(k) { return { key: k, view: ui.view === 'topics' ? 'home' : ui.view, barrier: ui.barrier, flow: ui.flow ? clone(ui.flow) : null, session: clone(store.session || {}) }; },
+  snap(k) { return { key: k, view: ui.view === 'topics' ? 'home' : ui.view, barrier: ui.barrier, flow: ui.flow ? clone(ui.flow) : null, session: clone(store.session || {}), mail: ui.view === 'mail' ? ui.mail : null }; },
   afterRender() {
     const k = Nav.key(); if (!k) return;
     if (Nav.restoring) Nav.restoring = false;
-    else if (Nav.last && Nav.last.key !== k) { Nav.stack.push(Nav.last); if (Nav.stack.length > 60) Nav.stack.shift(); try { history.pushState({ bev: Nav.stack.length }, ''); } catch { } }
+    else if (Nav.last && Nav.last.key !== k && !(Nav.last.key === 'e:' + ui.barrier && k === 'r:' + ui.barrier)) { Nav.stack.push(Nav.last); if (Nav.stack.length > 60) Nav.stack.shift(); try { history.pushState({ bev: Nav.stack.length }, ''); } catch { } }
     Nav.last = Nav.snap(k);
   },
   restore(s) {
@@ -1746,6 +1814,8 @@ const Nav = {
     store.session = s.session || {};
     if (s.view === 'question' && s.flow) { ui.barrier = s.barrier; ui.flow = s.flow; ui.draft = clone(store.profile); ui.editOpen = null; ui.view = 'question'; ui.anim = 'question'; render(); window.scrollTo({ top: 0 }); return; }
     if (s.view === 'result') { if (store.results[s.barrier]) { ui.flow = null; showResult(s.barrier); return; } Nav.restoring = false; return Nav.back(); }
+    if (s.view === 'edit') { Questions.openEdit(s.barrier); return; }
+    if (s.view === 'mail' && s.mail) { ui.mail = s.mail; ui.view = 'mail'; render(); return; }
     go(s.view);
   },
   back() {
@@ -1803,20 +1873,19 @@ function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
     h('p', null, h('b', null, 'Independent tool, developed at the University of St. Gallen (HSG).')),
-    h('p', null, 'Swiss data from BFE, ASTRA, BFS and swisstopo.'));
+    null);
 }
 function renderView() {
   switch (ui.view) {
     case 'home': return viewTopics();
     case 'topics': return viewTopics();
-    case 'orient': return viewOrient();
     case 'question': return Questions.view();
     case 'edit': return Questions.editView();
+    case 'mail': return viewMail();
     case 'loading': return viewLoading();
     case 'result': return Results.view(ui.barrier);
     case 'error': return viewError();
     case 'summary': return viewSummary();
-    case 'settings': return viewSettings();
     case 'reset': return viewReset();
     case 'batch': return viewBatch();
     case 'answers': return viewAnswers();
@@ -1983,6 +2052,8 @@ async function runAll(codes) {
     if (ui.view === 'batch') render();
   }
   saveStore(); saveResults();
+  // results can change the wording: the summary opens only when its text is ready too
+  if (!store.settings.demo && codes.length > 1) { ui.batch.writing = true; if (ui.view === 'batch') render(); await Promise.race([Summary.load('simple'), new Promise((r) => setTimeout(r, 25000))]); if (myRev !== store.rev) return; }
   go('summary');
 }
 function viewBatch() {
@@ -1993,7 +2064,7 @@ function viewBatch() {
     h('div', { class: 'spinner' }), h('h2', null, 'Calculating your results'),
     h('p', { class: 'lcount' }, `${Math.min(b.done.length + 1, b.codes.length)} of ${b.codes.length}`),
     h('div', { class: 'lbar', role: 'progressbar', 'aria-valuemin': 0, 'aria-valuemax': b.codes.length, 'aria-valuenow': b.done.length }, h('i', { style: { width: `${Math.round((b.done.length + 0.5) / Math.max(1, b.codes.length) * 100)}%` } })),
-    cur ? h('p', { class: 'lphrase' }, LOAD_PHRASE[cur] || 'One moment…') : null),
+    b.writing ? h('p', { class: 'lphrase' }, 'Writing your summary…') : cur ? h('p', { class: 'lphrase' }, LOAD_PHRASE[cur] || 'One moment…') : null),
     h('ul', { class: 'batchlist' }, b.codes.map((c) => h('li', { class: b.done.includes(c) ? (b.need.includes(c) ? 'need' : 'on') : c === cur ? 'now' : '' },
       h('span', null, b.done.includes(c) ? (b.need.includes(c) ? '!' : '✓') : '·'), topicTitle(c)))),
     h('p', { class: 'small muted center' }, 'Each topic is calculated with Swiss data, a few seconds each.'));
@@ -2018,8 +2089,7 @@ function viewError() {
   const e = ui.error || {};
   const net = e.code === 'network' || e.code === 'timeout';
   return h('div', { class: 'col' }, h('div', { class: 'qcard' },
-    h('div', { class: 'qtitle' }, 'Something went wrong – please try again'),
-    h('p', { class: 'muted' }, e.message || 'Please try again.', ' Your answers are kept.'),
+    h('div', { class: 'qtitle sm' }, 'Something went wrong'),
     h('div', { class: 'btn-row' },
       e.retryable !== false ? h('button', { class: 'btn primary', onclick: () => calculate(e.barrier) }, 'Try again') : null,
       h('button', { class: 'btn ghost', onclick: () => appBack() }, 'Back'))));
@@ -2054,7 +2124,8 @@ function topicMetric(c) {
   const r = store.results[c]?.response?.result; if (!r) return null;
   try {
     if (c === 'B1' || c === 'B6') return topicLines(c)[0] || null;
-    if (c === 'B7') { const v = (r.variants || [])[0]?.block1; return v?.ev_share_pct != null ? `Electric car: ${fmt.n(v.ev_share_pct)} % of a petrol car's emissions` : null; }
+    if (c === 'B7') { const v = (r.variants || [])[0]?.block1; return v?.ev_share_pct != null ? `−${fmt.n(100 - v.ev_share_pct)} % greenhouse gases vs. petrol` : null; }
+    if (c === 'B3' || c === 'B4') { const bg = Results.build(c)?.big; return bg ? `${bg.value} ${c === 'B4' ? '· ' : ''}${String(bg.label).split(' than ')[0].split(' vs.')[0]}` : null; }
     if (c === 'B2') { const k = (r.ranking || []).filter((x) => x.cost_per_100km_chf != null).sort((a, b) => a.cost_per_100km_chf - b.cost_per_100km_chf)[0]; return k ? `Charging from CHF ${fmt.n(k.cost_per_100km_chf, 2)} per 100 km` : null; }
   } catch { }
   return null;
@@ -2090,6 +2161,24 @@ function takeaway(sm) {
   const covers = b1?.coverage?.r100_km != null && !b4?.no_option;
   return `An electric car ${covers ? 'covers your trips, but ' : ''}costs about ${fmt.chf100(-v)} more over ${N} year${N > 1 ? 's' : ''} in this comparison.`;
 }
+/** "Was this helpful?" at the end of the summary; stored in n8n (data table ui_feedback). */
+const Feedback = { st: null };
+function feedbackBox() {
+  let sent = false; try { sent = localStorage.getItem('bevnav.feedback') === '1'; } catch { }
+  const f = Feedback.st = Feedback.st || { helpful: null, text: '', busy: false, done: sent };
+  if (f.done) return h('section', { class: 'fbbox' }, h('p', { class: 'fbthanks' }, icon('check'), 'Thank you for your feedback.'));
+  const ta = h('textarea', { class: 'input', rows: 3, placeholder: 'What should we change? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { f.text = e.target.value; } }, f.text);
+  const send = async () => {
+    f.busy = true; render();
+    try { await postJSON('feedback', { kind: 'app', helpful: f.helpful, comment: f.text.slice(0, 2000), version: 'V8.5', topics: Summary.codes().join(','), theme: (() => { try { return localStorage.getItem('bevnav.theme') || 'blue'; } catch { return ''; } })() }); f.done = true; try { localStorage.setItem('bevnav.feedback', '1'); } catch { } }
+    catch { toast('Could not send, please try again'); }
+    f.busy = false; render();
+  };
+  return h('section', { class: 'fbbox' }, h('h2', null, 'Was this helpful?'),
+    h('div', { class: 'fbkeys', role: 'group' }, [['yes', 'Yes'], ['not_really', 'Not really']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(f.helpful === v), onclick: () => { f.helpful = v; render(); } }, l))),
+    f.helpful ? ta : null,
+    f.helpful ? h('button', { class: 'btn primary block', type: 'button', disabled: f.busy, onclick: send }, f.busy ? 'Sending…' : 'Send') : null);
+}
 function viewSummary() {
   const st = Summary.style, sm = Summary.get(st);
   const codes = Summary.codes();
@@ -2103,16 +2192,16 @@ function viewSummary() {
     h('div', { class: 'shead' }, h('h1', null, 'Summary'), h('span', { class: 'frac' }, `Topics ${done}/${QUICK_CODES.length}`)),
     loading ? h('div', { class: 'takeaway', role: 'status', 'aria-label': 'Writing your summary' }, h('span', { class: 'flabel' }, 'Takeaway'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
     ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(takeaway(sm)))) : null,
-    ok ? h('div', { class: 'pillswitch', role: 'group', 'aria-label': 'How to show the summary' }, [['simple', 'Simple'], ['numbers', 'With the numbers']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st === v), onclick: () => { if (Summary.style !== v) { Summary.style = v; render(); } } }, l))) : null,
     h('section', { class: 'sumtopics' }, h('h2', null, 'Your topics'),
       rows.map((t) => { const lines = topicLines(t.code); const status = t.status;
         return h('button', { class: 'sumrow2' + (status ? ' st-' + status : ''), type: 'button', onclick: () => openTopic(t.code) },
           h('span', { class: 'sh' }, h('span', { class: 'sic' }, icon(status ? { works: 'check', limitation: 'info', open: 'compass' }[status] || 'arrow' : TOPIC_ICON[t.code] || 'arrow')), h('b', null, topicTitle(t.code)), h('span', { class: 'go' }, '›')),
-          h('span', { class: 'sl' }, oneLine(t, st))); })),
+          h('span', { class: 'sl' }, oneLine(t, 'numbers'))); })),
     ok && sm.next_steps?.length ? h('section', { class: 'nsteps2' }, h('h2', null, 'Your next steps'),
       sm.next_steps.map((x, i) => { const go2 = x.topic_code && store.results[x.topic_code];
         return h(go2 ? 'button' : 'div', { class: 'nrow', type: go2 ? 'button' : null, onclick: go2 ? () => openTopic(x.topic_code) : null }, h('span', { class: 'nn' }, String(i + 1)), h('span', { class: 'nt' }, normNum(x.button_label || x.text || x.full_step || x.topic)), go2 ? h('span', { class: 'go' }, '›') : null); })) : null,
     todo.length ? h('section', { class: 'sumtodo' }, h('h2', null, 'Not checked yet'), h('div', { class: 'chipline' }, todo.map((c) => h('button', { class: 'chip', type: 'button', onclick: () => startBarrier(c) }, BARRIERS[c].title)))) : null,
+    codes.length ? feedbackBox() : null,
     codes.length ? h('section', { class: 'sumshare' }, h('h2', null, 'Save or share'),
       h('div', { class: 'sharegrid' },
         h('button', { class: 'sharebtn', type: 'button', onclick: (e) => (ok ? Actions.saveOnePager(sm, e.currentTarget) : Actions.savePdf(pdfCodes(ORDER.filter((c) => store.results[c])), e.currentTarget)) }, icon('down'), h('span', null, ok ? 'One-page PDF' : 'Save as PDF')),
@@ -2125,7 +2214,7 @@ function viewSummary() {
 
 const pdfCodes = (done) => (store.results.B6 && (done.includes('B1') || done.includes('B3')) ? [...done, 'B6'] : done);
 /* ---------- what you told us ---------- */
-const BUDGETS = [['lt30', 'Up to CHF 30.000', 30000], ['30_45', 'CHF 30.000 – 45.000', 45000], ['45_60', 'CHF 45.000 – 60.000', 60000], ['gt60', 'More than CHF 60.000', Infinity], ['unsure', 'Not sure yet', null]];
+const BUDGETS = [['lt30', 'Up to CHF 30’000', 30000], ['30_45', 'CHF 30’000 – 45’000', 45000], ['45_60', 'CHF 45’000 – 60’000', 60000], ['gt60', 'More than CHF 60’000', Infinity], ['unsure', 'Not sure yet', null]];
 const budgetMax = () => BUDGETS.find((b) => b[0] === store.profile.budget)?.[2] ?? null;
 function profileLines(p) {
   const c = commuteOf(p); const L = [];
@@ -2152,7 +2241,7 @@ function viewAnswers() {
       h('div', { class: 'sumlist' }, ORDER.map((c) => { const on = !!store.results[c];
         return h('button', { class: 'trow2 ' + (on ? 'done' : 'todo'), type: 'button', onclick: () => (on ? showResult(c) : startBarrier(c)) },
           h('span', { class: 'dot' }, on ? icon('check') : null), h('b', null, BARRIERS[c].title), h('span', { class: 'stt' }, on ? 'Done' : 'Not checked yet'), h('span', { class: 'go' }, '›')); }))),
-    h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, 'Start fresh'));
+    h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, 'Delete your answers'));
 }
 
 /* ---------- account (Supabase Auth, dev project; Zurich next: small login at the start, account at the end) ---------- */
@@ -2196,10 +2285,9 @@ const Account = {
   view() {
     if (Account.user) return h('div', { class: 'col' }, h('div', { class: 'qcard' },
       h('h1', { class: 'qtitle' }, 'Your account'),
-      h('p', { class: 'muted' }, h('b', null, Account.user.email || ''), ' · your answers are saved.'),
+      h('p', { class: 'muted' }, Account.user.email || ''),
       h('div', { class: 'qnav' },
         h('button', { class: 'btn primary block with-icon', type: 'button', onclick: () => go(ORDER.some((c) => store.results[c]) ? 'summary' : 'home') }, icon('arrow'), h('span', null, 'Continue')),
-        h('button', { class: 'btn ghost block', type: 'button', onclick: () => Account.wipe() }, icon('refresh'), 'Delete my saved answers'),
         h('button', { class: 'btn ghost block', type: 'button', onclick: () => Account.logout() }, 'Log out'))));
     const st = Account.form = Account.form || { email: '', pw: '', create: true };
     const email = h('input', { class: 'input', id: 'acc-email', type: 'email', autocomplete: 'email', value: st.email, oninput: (e) => { st.email = e.target.value.trim(); } });
@@ -2235,22 +2323,21 @@ function viewSettings() {
 function viewReset() {
   const signedIn = !!Account.user;
   return h('div', { class: 'col' }, h('div', { class: 'qcard' },
-    h('div', { class: 'qtitle' }, 'Start fresh?'),
-    h('p', { class: 'muted' }, signedIn
-      ? 'This signs you out and clears the answers, topics and results in this browser. Answers saved in your account remain.'
-      : 'This clears the answers, topics and results saved in this browser. It cannot be undone.'),
-    h('div', { class: 'qnav' }, h('button', { class: 'btn ghost', onclick: () => go('home') }, 'Keep my data'),
+    h('div', { class: 'qtitle' }, 'Delete your answers?'),
+    h('p', { class: 'muted' }, signedIn ? 'Deletes them in this browser and in your account.' : 'Deletes them in this browser. This cannot be undone.'),
+    h('div', { class: 'qnav' }, h('button', { class: 'btn ghost', onclick: () => appBack() }, 'Keep them'),
       h('button', { class: 'btn primary', onclick: async () => {
         if (Account.user) {
           clearTimeout(Account.t);
           try {
+            await Account.sb.auth.updateUser({ data: { navigator: null } });
             const { error } = await Account.sb.auth.signOut();
             if (error) throw error;
           } catch { toast('Could not sign out. Your data was not cleared.'); return; }
           Account.user = null;
         }
-        resetAll(); toast('Started fresh'); go('home');
-      } }, 'Start fresh'))));
+        resetAll(); toast('Your answers were deleted'); go('home');
+      } }, 'Delete'))));
 }
 
 
@@ -2302,14 +2389,13 @@ function tripPicker(d, mode, withCommute) {
   // a picked preset leaves the chips and shows once, in the trip list (Edit / Delete); deleting it brings the chip back
   const free = TRIP_PRESETS.filter((p) => (withCommute || p[6] !== 'commute') && !d.trips.some(isP(p)));
   return [
-    h('p', { class: 'qsub' }, 'Tap every trip you make. Change distance or frequency with "Edit".'),
     free.length ? h('div', { class: 'chips trippick' }, free.map((p) => chip(p[1], false, () => toggle(p)))) : null,
     ...tripEditor(mode, withCommute)];
 }
 const FREQ = { week: 'per week', month: 'per month', year: 'per year' };
 /* People on a trip: the user picks 1–5 or 6–7; n8n takes seats_needed 4 / 5 / 7 (no car class has fewer than 4 seats).
    The exact number is kept on the trip as people (display only). */
-const PEOPLE = [[1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [7, '6–7']];
+const PEOPLE = [[1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [7, '6+']];
 const seatsFor = (n) => (n >= 6 ? 7 : n === 5 ? 5 : 4);
 function peopleOf(t) { if (!t.seats_needed) return null; return t.people && seatsFor(t.people) === t.seats_needed ? t.people : t.seats_needed; }
 function setPeople(t, n) { t.people = n; t.seats_needed = seatsFor(n); }
@@ -2335,7 +2421,7 @@ const dedupe = (a) => a.filter((x, i) => a.indexOf(x) === i);
 function routeFor(code) {
   const f = ui.flow || {}; const own = f.ownTrips ? [1, 2, 4] : []; const ss = store.session || {};
   switch (code) {
-    case 'B1': return [1, 2, 4];
+    case 'B1': return dedupe([1, 2, 3, ...own]);
     case 'B2': return ss.charging_interest ? (ss.charging_interest.includes('everyday') ? [6, 1, 5, 2] : [6]) : [6];
     case 'B3': return dedupe([3, ...own, 1, 7, 8, 9, 10]);
     case 'B4': return dedupe([3, ...own, 1, 7, 9, 10, 13]);
@@ -2384,6 +2470,12 @@ function parsePlace(text) {
 
 /* ---------- small UI builders ---------- */
 /** One tap is enough when the question has only one list of single answers and nothing else to fill in. */
+/** Small explanation in a sheet (Warranty, Value…). */
+function infoPop(title, text) {
+  const d = h('dialog', { class: 'infopop' }, h('h3', null, title), h('p', null, text), h('button', { class: 'btn primary block', type: 'button', onclick: () => d.close() }, 'OK'));
+  d.addEventListener('close', () => d.remove()); d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  document.body.append(d); d.showModal();
+}
 function autoAdvance() {
   setTimeout(() => {
     const m = document.getElementById('main'), nx = document.getElementById('qnext');
@@ -2601,7 +2693,7 @@ const BLOCKS = {
           textField('work-addr', 'Street and number', d.work_address, (v) => { d.work_address = v.trim() || null; }, { placeholder: 'e.g. Bahnhofstrasse 1, Zürich' }),
           kmField('wkm', 'Distance one way', c.dest_km, (v) => { c.dest_km = v; }, 300)),
           h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'How many days a week do you drive to work?'),
-            h('div', { class: 'chips days' }, [1, 2, 3, 4, 5].map((n) => chip(String(n), c.freq_n === n, () => { c.freq_n = n; render(); })))));
+            h('div', { class: 'chips days' }, [1, 2, 3, 4, 5, 6, 7].map((n) => chip(String(n), c.freq_n === n, () => { c.freq_n = n; render(); })))));
       }
       return parts;
     },
@@ -2609,7 +2701,7 @@ const BLOCKS = {
   3: { title: 'Which trips do you make?', why: 'Tap the trips you make; we use typical distances you can change.',
     render: (d, mode) => tripPicker(d, mode, true),
     valid: (d) => d.trips.length > 0 && !ui.flow.tf },
-  4: { title: 'Your other regular trips', why: 'Rare long trips decide how much range you need. Every trip is there and back from home.',
+  4: { title: 'Your trips', why: 'Rare long trips decide how much range you need. Every trip is there and back from home.',
     render: (d, mode) => tripPicker(d, mode, false), valid: (d) => d.trips.length > 0 && !ui.flow.tf },
   5: { title: 'Can you charge at home today?', why: 'Charging at home is usually the cheapest and easiest way.',
     render: (d) => {
@@ -2639,8 +2731,8 @@ const BLOCKS = {
     render: () => vehicleInput('current_car', true),
     valid: (d) => d.current_car.targa_id === 'skipped' || numOk(d.current_car.targa_id) },
   8: { title: null, why: 'Age and mileage decide what your car is worth today.',
-    heading: (d) => store.carLabels[d.current_car.targa_id] && store.carLabels[d.current_car.targa_id] !== 'your car' ? 'Your ' + store.carLabels[d.current_car.targa_id] : `Your car (type approval ${d.current_car.targa_id})`,
-    render: (d) => regFields('cc', d.current_car, 1995, 600000),
+    heading: (d) => store.carLabels[d.current_car.targa_id] && store.carLabels[d.current_car.targa_id] !== 'your car' ? 'Your ' + store.carLabels[d.current_car.targa_id] : 'Your car',
+    render: (d) => [h('p', { class: 'qsub' }, `Type approval ${d.current_car.targa_id}`), ...[].concat(regFields('cc', d.current_car, 1995, 600000))],
     valid: (d) => V.monthYear(d.current_car.first_registration, 1995) && V.int(d.current_car.odometer_km, 0, 600000) },
   9: { title: 'Will you keep a second car?', why: 'A second car can do the rare trips, so the electric car can be smaller.',
     render: (d) => {
@@ -2650,14 +2742,13 @@ const BLOCKS = {
       return parts;
     },
     valid: (d) => d.second_car.targa_id === 'none' || numOk(d.second_car.targa_id) },
-  10: { title: 'Who travels with you?', why: 'Seats and trailers decide the car size.',
+  10: { title: 'How many people are in the car?', why: 'Seats and trailers decide the car size.',
     render: (d) => {
       ui.flow.gate = ui.flow.gate ?? (d.trips.some((t) => t.trailer && t.trailer !== 'none') ? 'yes' : d.trips.every((t) => t.trailer === 'none') && d.trips.length ? 'no' : null);
-      const parts = [h('div', { class: 'qq' }, 'People on each trip'), h('div', { class: 'perTrip' }, d.trips.map((t) => h('div', { class: 'pr' },
-        h('div', { class: 'tl' }, h('b', null, t.label || 'Trip'), h('span', null, `${tripDest(t)} · ${freqText(t)}`)),
-        h('div', { class: 'chips people' }, PEOPLE.map(([n, l]) => chip(l, peopleOf(t) === n, () => { setPeople(t, n); if (d.trips_source && d.trips_source !== 'user') d.trips_source = 'user'; render(); }, true)))))),
-        h('p', { class: 'hint' }, icon('info'), 'Every electric car has at least 4 seats – from 1 to 4 people the result is the same.')];
-      parts.push(h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Trailer or bike carrier on any trip?'),
+      const parts = [h('p', { class: 'qsub' }, 'You included.'), h('div', { class: 'ppl' }, d.trips.map((t) => h('div', { class: 'pplrow' },
+        h('b', null, t.label || 'Trip'),
+        h('div', { class: 'pplkeys', role: 'group', 'aria-label': 'People on ' + (t.label || 'this trip') }, PEOPLE.map(([n, l]) => h('button', { type: 'button', 'aria-pressed': String(peopleOf(t) === n), onclick: () => { setPeople(t, n); if (d.trips_source && d.trips_source !== 'user') d.trips_source = 'user'; render(); } }, l))))))];
+      parts.push(h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Trailer or bike carrier?'),
         h('div', { class: 'chips' }, chip('No', ui.flow.gate === 'no', () => { ui.flow.gate = 'no'; d.trips.forEach((t) => (t.trailer = 'none')); render(); }), chip('Yes', ui.flow.gate === 'yes', () => { ui.flow.gate = 'yes'; d.trips.forEach((t) => { if (!t.trailer) t.trailer = 'none'; }); render(); }))));
       if (ui.flow.gate === 'yes') {
         parts.push(h('div', { class: 'perTrip' }, d.trips.map((t) => h('div', { class: 'pr' }, h('div', { class: 'tl' }, h('b', null, t.label || 'Trip')),
@@ -2669,15 +2760,14 @@ const BLOCKS = {
     },
     valid: (d) => d.trips.length > 0 && d.trips.every((t) => t.seats_needed) && ui.flow.gate != null && (!needsTowbar(d) || d.second_car.towbar != null),
     before: (d) => { if (ui.flow.gate === 'no') d.trips.forEach((t) => (t.trailer = 'none')); } },
-  11: { title: 'What would you like to know?', why: null,
+  11: { title: 'Which battery do you want to check?', why: null,
     render: () => [h('div', { class: 'choice-list' },
-      choice('Battery life and resale value of a new EV', null, ui.flow.entry === 'forecast', () => { ui.flow.entry = 'forecast'; render(); }, false, 'battery'),
-      choice('Check the battery of a used EV', null, ui.flow.entry === 'used_car', () => { ui.flow.entry = 'used_car'; render(); }, false, 'car'))],
+      choice('A new electric car', 'Battery health and value over 8 years', ui.flow.entry === 'forecast', () => { ui.flow.entry = 'forecast'; render(); }, false, 'battery'),
+      choice('A used electric car', 'Its battery health today', ui.flow.entry === 'used_car', () => { ui.flow.entry = 'used_car'; render(); }, false, 'car'))],
     valid: () => !!ui.flow.entry,
     after: () => { store.session.battery_entry = ui.flow.entry; } },
   13: { title: 'What could you spend on the car?', why: 'Your budget shows which options are realistic. It stays in your browser.',
-    render: (d) => [h('p', { class: 'qsub' }, 'For buying the electric car. It stays in this browser and only marks which options fit.'),
-      h('div', { class: 'choice-list' }, BUDGETS.map(([k, l]) => choice(l, null, d.budget === k, () => { d.budget = k; render(); })))],
+    render: (d) => [h('div', { class: 'choice-list' }, BUDGETS.map(([k, l]) => choice(l, null, d.budget === k, () => { d.budget = k; render(); })))],
     valid: (d) => !!d.budget },
   12: { title: 'About the used car', why: 'Age and mileage give a first estimate of the battery health.',
     render: (d) => regFields('ul', d.used_listing, 2010, 400000),
@@ -2756,7 +2846,7 @@ const Questions = {
   editBlocks(code) {
     const ss = store.session;
     switch (code) {
-      case 'B1': return [1, 2, 4];
+      case 'B1': return [1, 2, 3];
       case 'B2': return [...(ss.charging_interest?.includes('abroad') ? [4] : []), ...(ss.charging_interest?.includes('everyday') ? [6, 1, 5, 2] : [6])];
       case 'B3': return [3, 1, 7, 8, 9, 10].filter((b) => b !== 8 || (store.profile.current_car.targa_id && store.profile.current_car.targa_id !== 'skipped'));
       case 'B4': return [3, 1, 7, 9, 10, 13];
@@ -2773,12 +2863,14 @@ const Questions = {
     if (focus === 'add') ui.flow.tf = { idx: null, label: '', place: '', km: '', n: 1, unit: 'week' };
   },
   openEdit(code, focus) {
-    Questions.startEdit(code, focus);
-    if (ui.view === 'result' && ui.barrier === code) render(); else showResult(code);
-    setTimeout(() => { const el = document.getElementById(typeof focus === 'number' || focus === 'add' ? 'tf-place' : 'editinputs'); el?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
+    Questions.startEdit(code, focus); ui.barrier = code; ui.view = 'edit'; ui.anim = 'question'; render(); window.scrollTo({ top: 0 });
+    if (typeof focus === 'number' || focus === 'add') setTimeout(() => document.getElementById('tf-place')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
   },
   closeEdit() { ui.editOpen = null; ui.flow = null; },
   editPanel(code) {
+    return h('button', { class: 'editrow', type: 'button', id: 'editinputs', onclick: () => Questions.openEdit(code) }, icon('edit'), h('span', null, 'Edit your inputs'), h('span', { class: 'go' }, '›'));
+  },
+  editPanelOld(code) {
     const open = ui.editOpen === code && !!ui.draft;
     const det = h('details', { class: 'rsec more editp', id: 'editinputs', open }, h('summary', null, icon('edit'), h('span', null, 'Edit your inputs')));
     det.addEventListener('toggle', () => {
@@ -2809,8 +2901,7 @@ const Questions = {
     const code = ui.barrier, d = ui.draft;
     const blocks = Questions.editBlocks(code);
     return h('div', { class: 'col' },
-      h('div', { class: 'qhead' }, h('div', { class: 'eyebrow' }, BARRIERS[code].title + ' · edit your inputs'), h('h1', null, 'Change your answers'),
-        h('p', { class: 'lead' }, 'Change as much as you like. Nothing is recalculated until you press "Recalculate".')),
+      h('div', { class: 'qhead' }, h('h1', null, 'Your inputs')),
       blocks.map((b) => h('section', { class: 'qcard' }, h('div', { class: 'qtitle', style: { fontSize: '19px' } }, BLOCKS[b].heading ? BLOCKS[b].heading(d) : BLOCKS[b].title), ...BLOCKS[b].render(d, 'edit'))),
       h('div', { class: 'btn-row split' },
         h('button', { class: 'btn ghost', onclick: () => { ui.flow = null; showResult(code); } }, 'Cancel'),
@@ -2856,7 +2947,7 @@ function gloss(str) {
   return [str];
 }
 /** Numbers written by n8n or the AI ("37,306") in the app's style ("37.306"). */
-const normNum = (t) => String(t ?? '').replace(/(\d)[,’'](?=\d{3}(?!\d))/g, '$1.').replace(/(\d)–(\d)/g, '$1 – $2');
+const normNum = (t) => String(t ?? '').replace(/(\d)[,.'](?=\d{3}(?!\d))/g, '$1’').replace(/(\d)–(\d)/g, '$1 – $2');
 function highlight(text) {
   const out = [];
   const re = /(CHF\s?[\d,'’.]+(?:\s?–\s?[\d,'’.]+)?|[\d][\d,'’.]*\+?\s?(?:km\+?|%|t CO2eq|t)(?![\w]))/g;
@@ -2973,7 +3064,7 @@ function renderB1(r) {
   ];
   if (r.country_hints?.length) sections.push(rsec('Charging abroad', null, h('ul', { class: 'clean' }, r.country_hints.map((c) => h('li', null, h('b', null, `${c.country} (${c.label}): `), c.text)))));
   return {
-    big: r100 != null ? { value: `${fmt.n(rare ? r90 : r100)} km`, label: rare ? 'real range for 9 of 10 driving days' : 'real range for all your trips' } : null,
+    big: r100 != null ? { value: `${fmt.n(rare ? r90 : r100)} km`, label: rare ? 'real range covers 9 of 10 driving days' : 'real range covers all your trips', sub: rare ? `${fmt.n(r100)} km for every trip` : null } : null,
     statement: r100 == null ? r.key_statement : rare ? `A real range of ${fmt.n(r90)} km covers 9 out of 10 of your driving days, ${fmt.n(r100)} km covers all of them.` : `A real range of ${fmt.n(r100)} km covers all your trips.`,
     info: 'Real range: what a car does in everyday driving.', sections,
     actions: [
@@ -2987,12 +3078,12 @@ function renderB1(r) {
 }
 
 /* ---------- B2 ---------- */
-const RANK_LABEL = { home: 'At home', work: 'At work', public_ac: 'Public normal charging (AC)', public_dc: 'Public fast charging (DC)' };
+const RANK_LABEL = { home: 'At home', work: 'At work', public_ac: 'Public, normal', public_dc: 'Public, fast' };
 function rankStatus(r) {
-  if (r.option === 'home') return r.node === 'H0' ? ['good', 'Available'] : { H1: ['warn', 'Not yet · install a wallbox'], H2: ['warn', "Not yet · needs the owners' decision"], H3: ['warn', "Not yet · needs landlord's approval"], HX: ['warn', 'No fixed parking at home'] }[r.node] || ['plain', 'Unknown'];
-  if (r.option === 'work') return r.node === 'W0' ? ['good', 'Available'] : ['warn', 'Not yet · ask your employer'];
+  if (r.option === 'home') return r.node === 'H0' ? ['good', 'Available'] : { H1: ['warn', 'Needs a wallbox'], H2: ['warn', 'Needs approval'], H3: ['warn', 'Ask your landlord'], HX: ['warn', 'No fixed parking at home'] }[r.node] || ['plain', 'Unknown'];
+  if (r.option === 'work') return r.node === 'W0' ? ['good', 'Available'] : ['warn', 'Ask your employer'];
   const far = r.option === 'public_ac' ? '500 m' : '5 km';
-  return r.available_now === true ? ['good', `Available · within ${far}`] : r.available_now === false ? ['warn', `None within ${far}`] : ['plain', 'No data'];
+  return r.available_now === true ? ['good', `Within ${far}`] : r.available_now === false ? ['warn', `None within ${far}`] : ['plain', 'No data'];
 }
 function cheapest(site, dc) {
   const key = !dc ? 'ac_min_chf_kwh' : (site.max_power_kw >= 100 ? 'dc_100plus_min_chf_kwh' : 'dc_23_99_min_chf_kwh');
@@ -3078,8 +3169,7 @@ function chargeBlock(kind, b) {
   const subs = [...(b.subsidies || []).map((sb) => [sb.name_en || sb.name, sb.contributor, sb.url]), ...(b.city_programme ? [[b.city_programme.programme_type || 'Programme', b.city_programme.city, b.city_programme.url]] : [])];
   return rsec(kind === 'home' ? 'At home' : 'At work', null,
     h('div', { class: 'cstate ' + tone }, h('span', { class: 'ci' }, icon(ic)), h('div', null, h('b', null, head), b.what && b.what !== head ? h('span', null, b.what) : null)),
-    b.email?.body ? h('button', { class: 'mailrow', type: 'button', onclick: toggle }, h('span', { class: 'mi' }, icon('mail')), h('span', null, h('b', null, 'Write email'), h('small', null, MAIL_HINT[b.node] || 'Email template'))) : null,
-    b.email?.body ? box : null,
+    b.email?.body ? h('button', { class: 'mailrow', type: 'button', onclick: () => openMail(b.email, { title: 'Write email' }) }, h('span', { class: 'mi' }, icon('mail')), h('span', null, h('b', null, 'Write email'), h('small', null, MAIL_HINT[b.node] || 'Email template'))) : null,
     costTiles(b.costs, b.node),
     subs.length ? h('div', { class: 'subsbox' }, h('span', { class: 'flabel' }, 'Subsidy for your postal code'), subs.map(([n, c, u]) => safeUrl(u) ? h('a', { href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('b', null, n), c ? h('span', null, c) : null, icon('arrow')) : h('div', null, h('b', null, n), c ? h('span', null, c) : null))) : null);
 }
@@ -3100,8 +3190,8 @@ function renderB2(r) {
     const target = { home: 'b2-home', work: 'b2-work', public_ac: 'b2-public', public_dc: 'b2-public' };
     sections.push(rsec('Your charging options', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => { const fa = document.getElementById('fullan'); if (fa && !fa.open) fa.open = true; document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
       h('div', { class: 'lab' }, h('b', null, RANK_LABEL[x.option] || x.option), h('span', { class: 'pill ' + tone }, txt)),
-      h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, x.option === 'home' && x.node !== 'H0' ? 'per 100 km if installed' : 'per 100 km')]
-        : [h('span', null, x.option === 'work' ? 'Price set by your employer' : 'No price data')]),
+      h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, '/ 100 km')]
+        : [h('span', null, x.option === 'work' ? 'Employer price' : 'No price')]),
       x.cost_per_100km_chf != null ? h('div', { class: 'cbar', 'aria-hidden': 'true' }, h('span', { style: { width: Math.max(4, (x.cost_per_100km_chf / maxC) * 100) + '%' } })) : null); })),
       h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Per 100 km, average electric car (${r.cost_basis?.kwh_per_100km ?? 17} kWh), no subscription.`))));
   }
@@ -3157,13 +3247,11 @@ function renderB2(r) {
       interests: store.session.charging_interest || null },
   };
 }
-function openMail(email, opts) {
-  const panel = document.getElementById('action-panel');
-  if (!panel) return;
-  panel.hidden = false;
-  panel.replaceChildren(h('div', { class: 'section-head' }, h('b', null, opts?.title || 'Your email'), h('button', { class: 'btn ghost small', type: 'button', onclick: () => { panel.hidden = true; } }, 'Close')),
-    emailComposer(email, opts));
-  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+/** The email template opens on its own screen; Back returns to the result. */
+function openMail(email, opts) { if (!email?.body) return; ui.mail = { email, opts: opts || {} }; ui.view = 'mail'; ui.anim = 'question'; render(); window.scrollTo({ top: 0 }); }
+function viewMail() {
+  const m = ui.mail; if (!m) return h('div', { class: 'col' });
+  return h('div', { class: 'col' }, h('div', { class: 'qhead' }, h('h1', null, m.opts.title || 'Your email')), emailComposer(m.email, { ...m.opts, hint: false }));
 }
 
 /* ---------- B3 ---------- */
@@ -3241,7 +3329,7 @@ function renderB3(r) {
     detail = `That is about ${fmt.band(yr(best).total_per_year)} a year.`;
   }
   let big = null;
-  if (best && !noRef) { const v = sv(best); if (v != null && !isNaN(v)) big = { value: fmt.chf100(Math.abs(v)), label: v >= 0 ? `saved over ${yrs}` : `more over ${yrs}`, sub: `about ${fmt.chf(Math.abs(v) / (N * 12))} a month`, tone: v >= 0 ? 'good' : 'warn' }; }
+  if (best && !noRef) { const v = sv(best); if (v != null && !isNaN(v)) big = { value: fmt.chf100(Math.abs(v)), label: v >= 0 ? `saved in ${yrs} vs. keeping your ${refName}` : `more in ${yrs} than keeping your ${refName}`, sub: `about ${fmt.chf(Math.abs(v) / (N * 12))} a month`, tone: v >= 0 ? 'good' : 'warn' }; }
   else if (best) big = { value: fmt.band(yr(best).total_per_year), label: 'a year, all costs' };
   if (gaps.length) detail = (detail ? detail + ' ' : '') + `Missing for your area: ${gaps.join(' and ')} – counted as 0, so the electric car looks cheaper than it is.`;
 
@@ -3381,24 +3469,30 @@ function renderB4(r) {
   };
   // the one visible block: the chosen class in simple rows; the side-by-side board goes into Full analysis
   const frow = (l, v, cls) => h('div', { class: 'frow' }, h('span', null, l), h('b', { class: cls || null }, v));
-  const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), 'Your car option'),
-    frow('Class', clsShort(sel.class_id)),
-    frow('Driving days', `${fmt.n(sel.ev_days)} of ${fmt.n(sel.total_days)}`),
+  const clsName = (o) => `${(o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')} (${fmt.n(o.min_wltp_km)}+ km)`;
+  const days = (o) => (o.ev_days === o.total_days ? 'All' : `${fmt.n(o.ev_days)} of ${fmt.n(o.total_days)}`);
+  const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), 'Your car'),
+    frow('Class', clsName(sel)),
     frow('Seats', String(sel.seats ?? '–')),
     frow('New price', fmt.band(sel.price_band_chf) + (overBudget(sel) ? ' ⚠' : ''), overBudget(sel) ? 'warn' : null)) : null;
+  const table = h('div', { class: 'b4wrap', role: 'region', 'aria-label': 'Car classes side by side', tabindex: '0' }, h('table', { class: 'b4t' },
+    h('thead', null, h('tr', null, h('th', null, ''), ...cols.map(({ o }) => h('th', { class: o.selected ? 'sel' : null }, h('span', { class: 'carpic sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, (o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')), o.selected ? h('span', { class: 'pill good' }, 'Yours') : h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose'))))),
+    h('tbody', null,
+      h('tr', null, h('th', null, 'Range'), ...cols.map(({ o }) => h('td', null, `${fmt.n(o.min_wltp_km)}+ km`))),
+      h('tr', null, h('th', null, 'New price'), ...cols.map(({ o }) => h('td', { class: overBudget(o) ? 'warn' : null }, fmt.band(o.price_band_chf)))),
+      h('tr', null, h('th', null, 'Seats'), ...cols.map(({ o }) => h('td', null, String(o.seats ?? '–')))),
+      h('tr', null, h('th', null, 'Driving days'), ...cols.map(({ o }) => h('td', null, days(o)))),
+      ...trips.map((rt) => h('tr', null, h('th', null, rt.label), ...cols.map(({ o }) => { const t = (o.trips || []).find((x) => x.trip_id === rt.trip_id); return h('td', null, !t || t.covered ? h('span', { class: 'pill good' }, 'Electric') : h('span', { class: 'pill warn' }, MODE_TXT[t.plan?.key] || 'Other')); }))))));
   const sections = [
     pick,
-    h('section', { class: 'rsec' }, h('h2', null, 'Your options'),
-      h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Calculated for winter and motorway.')),
-      r.no_option ? h('p', { class: 'callout' }, 'No electric car does your "Must" trips. Set some trips to "Any".') : null,
-      opts.some(overBudget) ? h('p', { class: 'callout' }, `Prices marked ⚠ start above your budget (${BUDGETS.find((b) => b[0] === store.profile.budget)?.[1]}). A used electric car or a smaller class can close the gap – "Battery life & resale" checks a used car.`) : null,
-      h('div', { class: 'b4board', role: 'region', 'aria-label': 'Options side by side', tabindex: '0', style: { gridTemplateRows: `repeat(${nRows}, auto)` } }, reqCard, cols.map(optCol)),
-      cols.length === 1 && trips.some((t) => t.coverage === 'must_ev') ? h('p', { class: 'note keep' }, 'Only one size does all your "Must" trips. Set the long ones to "Any" to see a smaller car.') : null,
-      h('p', { class: 'note keep' }, cols.length > 1 ? h('span', { class: 'swipehint' }, 'Swipe to compare. ') : null, '"Must": the electric car does it. "Any": another car or the train can.')),
+    h('section', { class: 'rsec' }, h('h2', null, 'All classes'),
+      opts.some(overBudget) ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Orange price: starts above your budget.')) : null,
+      table,
+      h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Range for winter and motorway.'))),
   ];
   const dealer = sel ? `Electric car, ${sel.size_label.toLowerCase()}\n- Range: at least ${fmt.n(sel.min_wltp_km)} km (WLTP)\n- Seats: ${sel.seats}\n- Towbar: ${TOW[sel.towbar] || 'not needed'}\n- Typical new price: ${fmt.band(sel.price_band_chf)}\n(From the BEV Navigator – a class, not a specific model.)` : '';
   return {
-    big: sel ? { value: `${fmt.n(sel.ev_days)} / ${fmt.n(sel.total_days)}`, label: 'driving days covered' } : null,
+    big: sel ? { value: (sel.size_label || clsShort(sel.class_id)).replace(/\s*\(.*$/, ''), label: `${fmt.n(sel.min_wltp_km)}+ km range`, sub: sel.ev_days === sel.total_days ? 'covers all your driving days' : `covers ${fmt.n(sel.ev_days)} of ${fmt.n(sel.total_days)} driving days` } : null,
     statement: r.no_option ? 'No electric car class covers all your must trips yet.' : sel ? `A ${clsLong(sel.class_id)} does ${fmt.n(sel.ev_days)} of your ${fmt.n(sel.total_days)} driving days.` : 'Your EV options',
     detail: sel ? (sel.ev_days === sel.total_days ? 'No other car is needed for your trips.' : `For the rest: ${Object.entries(sel.bridging_days || {}).filter(([, v]) => v).map(([k, v]) => `${fmt.n(v)} day${v === 1 ? '' : 's'} ${MODE_TXT[k]?.toLowerCase()}`).join(', ')}.`) : null,
     sections,
@@ -3461,7 +3555,7 @@ function renderB6(r) {
             h('div', { class: 'tile' }, h('span', null, 'Age'), h('b', null, `${fmt.n(l.age_years, 1)} years`)),
             h('div', { class: 'tile' }, h('span', null, 'Mileage'), h('b', null, `${fmt.n(l.odometer_km)} km`)),
             h('div', { class: 'tile' }, h('span', null, 'Per year'), h('b', null, l.age_years > 0.4 ? `${fmt.n(Math.round(l.odometer_km / l.age_years / 1000) * 1000)} km` : '–'))),
-          h('p', { class: 'small' }, 'This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160.000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.')),
+          h('p', { class: 'small' }, 'This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160’000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.')),
         rsec('Check the battery', null,
           h('div', { class: 'checklist' }, [
               ['Battery read-out at the dealer', 'Diagnostic device reads the battery health value the car calculates itself', 'minutes · often free', 'brand dealers, garages'],
@@ -3515,8 +3609,8 @@ function renderB6(r) {
       h('p', { class: 'callout plain' }, 'These are approximations. Most manufacturers also give a battery warranty – check the exact terms for the model you buy. If you prefer not to carry the risk of battery ageing and resale value yourself, leasing or a car subscription shifts it to the provider.'),
       more('How we calculate',
         h('p', { class: 'small' }, h('b', null, 'Battery health (SoH)'), ' is the lower of two estimates. ', h('i', null, 'By age:'), ' the battery loses about 1.5 / 2.2 / 3.0 % per year, depending on how much of your charging is fast charging (up to 12 % / 12–40 % / over 40 % of energy) – based on a fleet analysis by Geotab (2025). Your category comes from your trips and where you charge. ', h('i', null, 'By use:'), ' median of more than 500.000 AVILOO battery tests on 20 popular models (AVILOO 2026), scaled to the battery size of your class: a car with a smaller range goes through more charging cycles per km.'),
-        h('p', { class: 'small' }, h('b', null, 'Value of the car'), ' is the typical resale price as a share of the new price for small or mid-size EVs in Switzerland (Eurotax retail values, BFE/EBP study 2023); years 7–8 follow the study\'s own extrapolation; mileage above or below 15.000 km per year changes the value by 2 % per 10.000 km (TCS method).'),
-        h('p', { class: 'small' }, h('b', null, 'Checks:'), ' EU Euro 7 minimum battery durability for new models (80 % after 5 years, 72 % after 8 years) and the typical manufacturer warranty (70 % within 8 years / 160.000 km). All values are approximations for a typical car of this class.')),
+        h('p', { class: 'small' }, h('b', null, 'Value of the car'), ' is the typical resale price as a share of the new price for small or mid-size EVs in Switzerland (Eurotax retail values, BFE/EBP study 2023); years 7–8 follow the study\'s own extrapolation; mileage above or below 15’000 km per year changes the value by 2 % per 10’000 km (TCS method).'),
+        h('p', { class: 'small' }, h('b', null, 'Checks:'), ' EU Euro 7 minimum battery durability for new models (80 % after 5 years, 72 % after 8 years) and the typical manufacturer warranty (70 % within 8 years / 160’000 km). All values are approximations for a typical car of this class.')),
     ],
     actions: [
       { icon: 'calc', title: 'See what this means for your costs', desc: 'Costs uses this resale value over the years you keep the car.', to: 'B3', run: () => startBarrier('B3') },
@@ -3554,21 +3648,23 @@ function renderB7(r) {
   const car = r.calculated_for?.current_car;
   const bar = (label, val, stages, total) => h('div', { class: 'b7row' }, h('div', { class: 'b7lab' }, h('span', null, label), h('b', null, `${fmt.n(val)} %`)), stageBar(stages, r.stage_labels, total));
   const sections = [
-    h('section', { class: 'rsec' }, h('h2', null, 'New EV or new combustion car?'),
+    h('section', { class: 'rsec' }, h('h2', null, 'Compare'),
       h('div', { class: 'ctrls' },
         h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Size'), seg((r.controls?.sizes || ['S', 'M', 'L']).map((z) => [z, SZ[z]]), st.size, setSize, true)),
         (() => { const rs = (byClass[st.size] || []).filter((c) => median(c) != null);   // never a "– km" button
           return h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Range'),
             rs.length > 1 ? seg(rs.map((c) => [c, `${fmt.n(median(c))} km`]), st.cls, (c) => { st.cls = c; render(); }, true)
               : h('span', { class: 'ctrlv' }, rs.length ? `${fmt.n(median(rs[0]))} km` : 'Range data unavailable')); })(),
-        h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Electricity'), seg([['consumer_mix', 'Swiss mix'], ['renewable_product', 'Renewable']], el, (x) => x !== el && setField('electricity_product', x), true))),
-      h('div', { class: 'frow' }, h('span', null, `New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`), h('b', null, '100 %')),
-      h('div', { class: 'frow' }, h('span', null, `${SZ[v.size]} electric car, ${fmt.n(v.wltp_range_median_km)} km range`), h('b', null, `${fmt.n(b1.ev_share_pct)} %`))),
+        h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Charged with'), seg([['consumer_mix', 'Swiss electricity mix'], ['renewable_product', '100 % renewable']], el, (x) => x !== el && setField('electricity_product', x), true))),
+      h('div', { class: 'cmpbars', role: 'img', 'aria-label': `Greenhouse gases: petrol car 100, electric car ${fmt.n(b1.ev_share_pct)}` },
+        h('span', { class: 'flabel' }, 'Greenhouse gases over the whole life'),
+        h('div', { class: 'cb' }, h('span', null, `${v.reference_fuel === 'diesel' ? 'Diesel' : 'Petrol'} car`), h('i', { style: { width: '100%' } }), h('b', null, '100')),
+        h('div', { class: 'cb ev' }, h('span', null, 'Electric car'), h('i', { style: { width: `${Math.max(4, b1.ev_share_pct)}%` } }), h('b', null, fmt.n(b1.ev_share_pct))))),
     rsec('Where the emissions come from', null,
       bar(`New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`, 100, b1.ref_stages_pct_of_ref, 100),
       bar(`${SZ[v.size]} electric car`, b1.ev_share_pct, b1.ev_stages_pct_of_ref, b1.ev_share_pct),
       h('div', { class: 'legend' }, STAGES.map(([k, c]) => h('span', null, h('i', { style: { background: c } }), r.stage_labels?.[k] || k))),
-      h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Over 16 years / 200.000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`))),
+      h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Over 16 years / 200’000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`))),
     b2 ? h('section', { class: 'rsec' }, h('h2', null, b2.title || 'Keep driving or switch now?'),
       h('p', { class: 'lead2', style: { color: good ? 'var(--ink)' : 'var(--ink-2)' } }, b2.statement),
       b2.type === '2a' ? (() => { const mx = Math.max(b2.keep_t_per_year || 0, b2.switch_t_per_year || 0, 0.01); const row = (l, val, c) => h('div', { class: 'b7row' }, h('div', { class: 'b7lab' }, h('span', null, l), h('b', null, `${fmt.n(val, 1)} t / year`)), h('div', { class: 'hbar', style: { width: Math.max(2, (val / mx) * 100) + '%', height: '18px' } }, h('span', { style: { width: '100%', background: c } })));
@@ -3583,7 +3679,7 @@ function renderB7(r) {
       h('p', { class: 'note keep' }, 'Assumes the EV drives all your trips. Trips you would do by rental, second car or train stay combustion km, so the saving is somewhat lower.')),
   ];
   return {
-    big: b1.ev_share_pct != null ? { value: `${fmt.n(b1.ev_share_pct)} %`, label: "of a petrol car's greenhouse gases", tone: 'good' } : null,
+    big: b1.ev_share_pct != null ? { value: `−${fmt.n(100 - b1.ev_share_pct)} %`, label: `greenhouse gases than a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`, sub: `${SZ[v.size]} electric car, over its whole life`, tone: 'good' } : null,
     statement: b1.headline, detail: b2?.verdict === 'switch_pays_off' ? b2.statement : (b2?.statement || null), sections,
     actions: [
       el !== 'renewable_product' ? { icon: 'plug', title: 'See the effect of renewable electricity', desc: 'Recalculates with a renewable electricity product for charging.', run: () => setField('electricity_product', 'renewable_product') } : null,
@@ -3656,23 +3752,26 @@ const Results = {
     const src = assumptionsSection(assumptions);
     const det = deep.length || src ? h('details', { class: 'fullan', id: 'fullan', open: !!(ui.deep && ui.deep[code]) }, h('summary', null, h('span', null, 'Full analysis'), icon('chev')), h('div', { class: 'fa-body' }, ...deep, src)) : null;
     if (det) det.addEventListener('toggle', () => { (ui.deep = ui.deep || {})[code] = det.open; });
-    const steps = [...b.actions.filter((a) => a && !a.to), ...Actions.common(code)];
+    const steps = b.actions.filter((a) => a && !a.to && (a.href || a.icon === 'mail'));
     return h('div', { class: 'col wide res' },
       h('div', { class: 'rhead' },
         h('h1', null, BARRIERS[code].question),
         h('button', { class: 'iconbtn chg', type: 'button', onclick: () => Questions.openEdit(code), 'aria-label': 'Change your answers', title: 'Change your answers' }, icon('edit'))),
       h('section', { class: 'keycard', 'aria-live': 'polite' },
         b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') }, h('b', null, b.big.value), h('span', null, b.big.label), b.big.sub ? h('small', null, b.big.sub) : null) : null,
-        h('p', { class: 'keystat' + (b.big ? ' sm' : ''), id: 'keystat' }, highlight(b.statement)),
-        b.detail ? h('p', { class: 'keydetail' }, ...gloss(String(b.detail))) : null,
+        b.big ? null : h('p', { class: 'keystat', id: 'keystat' }, highlight(b.statement)),
+        b.detail ? h('p', { class: 'keydetail' }, normNum(String(b.detail))) : null,
         b.info ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, b.info)) : null,
         CONFIG.aiSummary ? h('div', { class: 'aislot', id: 'aislot' }, aiSlot(ai)) : null),
       ...top,
       det,
       Questions.editPanel(code),
-      h('section', { class: 'nextband' }, h('h2', null, 'What can you do next?'),
-        h('div', { class: 'actions' }, steps.map(Actions.card)), h('div', { class: 'inline-panel', id: 'action-panel', hidden: true })),
-      nxt ? h('div', { class: 'endnav' }, h('button', { class: 'btn primary block with-icon', onclick: () => (store.results[nxt] ? showResult(nxt) : startBarrier(nxt)) }, icon('arrow'), h('span', null, 'Continue with ' + BARRIERS[nxt].title))) : null);
+      steps.length ? h('section', { class: 'nextband' }, h('h2', null, 'Next steps'),
+        h('div', { class: 'actions' }, steps.map(Actions.card)), h('div', { class: 'inline-panel', id: 'action-panel', hidden: true })) : null,
+      h('div', { class: 'endnav' },
+        nxt ? h('button', { class: 'btn primary block with-icon', onclick: () => (store.results[nxt] ? showResult(nxt) : startBarrier(nxt)) }, icon('arrow'), h('span', null, 'Continue with ' + BARRIERS[nxt].title)) : null,
+        h('button', { class: 'btn block with-icon', onclick: () => go('home') }, icon('home'), h('span', null, 'Check another topic')),
+        h('p', { class: 'small muted center' }, 'Your answers are kept.')));
   },
 };
 function aiSlot(ai) {
@@ -4005,7 +4104,7 @@ const Report = {
     if (r.mode === 'assessment') return [R.kv([['First registration', r.listing?.first_registration], ['Mileage', r.listing?.odometer_km != null ? `${fmt.n(r.listing.odometer_km)} km` : null], ['Age', r.listing?.age_years != null ? `${fmt.n(r.listing.age_years, 1)} years` : null], ['Estimated battery health today', r.soh_today_pct != null ? `${fmt.n(r.soh_today_pct)} %` : null]])];
     const W = { within: 'within', case_likely: 'claim likely', outside_km: 'outside (km)' };
     return [R.kv([['Electric car', r.class?.class_id ? clsShort(r.class.class_id) : null], ['Km per year', fmt.n(r.ev_annual_km)], ['Everyday charging', { private_ac: 'private AC', public_ac: 'public AC', public_dc: 'fast charging (DC)' }[r.everyday_charging?.value] || null]]),
-      R.table(['Year', 'Km', 'Battery health', 'Value of the new price', 'Warranty (70 %, 8 years / 160.000 km)'], (r.years || []).map((y) => [String(y.year), fmt.n(y.km), `${fmt.n(y.soh_pct)} %`, `${fmt.n(y.resale_pct)} %`, W[y.warranty] || y.warranty]), ['auto', 'auto', 'auto', 'auto', '*'])]; },
+      R.table(['Year', 'Km', 'Battery health', 'Value of the new price', 'Warranty (70 %, 8 years / 160’000 km)'], (r.years || []).map((y) => [String(y.year), fmt.n(y.km), `${fmt.n(y.soh_pct)} %`, `${fmt.n(y.resale_pct)} %`, W[y.warranty] || y.warranty]), ['auto', 'auto', 'auto', 'auto', '*'])]; },
 
   B7(r) { const R = Report, start = r.start || {}, st = ui.b7 || { cls: start.class_id };
     const el = store.profile.electricity_product || start.electricity_product || 'consumer_mix';

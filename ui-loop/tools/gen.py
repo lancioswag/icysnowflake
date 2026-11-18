@@ -14,20 +14,20 @@ lane(1070,1,[[('batch','Calculating your results','2+ topics')],[('loading','Cal
 lane(1350,1,[[('summary-loading','Summary, AI still writing')],[('summary','Summary · Simple')],[('summary-numbers','Summary · With the numbers')]])
 lane(1640,5,[[('r-B1','Range & battery life'),('r-B2','Charging access'),('r-B3','Costs & resale value'),('r-B7','Climate impact'),('r-B4','Which car fits me')],
              [('r-B1-full','Range · Full analysis open'),('r-B2-full','Charging · Full analysis open'),('r-B3-full','Costs · Full analysis open'),('r-B7-full','Climate · Full analysis open'),('r-B4-full','Which car · Full analysis open')],
-             [('r-B2-email-site','Charging · email + map point open'),('r-B2-edit','Charging · Edit your inputs open')],
+             [('r-B2-email-site','Charging · map point open'),('r-B2-edit','Edit your inputs (own screen)')],
              [('r-B6','Battery details','Only if Range and Costs are not done'),('r-B6-used','Used EV battery check')]])
-lane(2900,1,[[('answers','Your answers','List icon in the top bar')],[('answer-edit','Change one answer')],[('account-create','Save your answers · Create')],[('account-login','Save your answers · Log in')],[('account-in','Your account (logged in)')],[('reset','Start fresh?','From Start and Your answers')]])
-lane(3180,1,[[('orient',"I'm not sure (old)",'No link leads here any more')],[('settings','Connection & data','No link: developer page')]])
-LANES=[(40,1,'Start'),(330,3,'Questions · each asked once for all picked topics'),(1070,1,'Calculating'),(1350,1,'Summary'),(1640,5,'Five topic results · tap any after Summary'),(2900,1,'Your answers and account'),(3180,1,'Not linked anywhere')]
+lane(2900,1,[[('answers','Your answers','List icon in the top bar')],[('answer-edit','Change one answer')],[('account-create','Save your answers · Create')],[('account-login','Save your answers · Log in')],[('account-in','Your account (logged in)')],[('reset','Delete your answers?','From Start and Your answers')]])
+lane(3180,1,[[('mail','Write email','From Charging, Back returns')]])
+LANES=[(40,1,'Start'),(330,3,'Questions · each asked once for all picked topics'),(1070,1,'Calculating'),(1350,1,'Summary'),(1640,5,'Five topic results · tap any after Summary'),(2900,1,'Your answers and account'),(3180,1,'Email')]
 E=[('home-empty','home-picked','tap topics','m'),('home-picked','q6','Continue','m'),('home-empty','q1','Check all topics','a'),('home-empty','assistant','own words','a'),
  ('home-results','batch','Recalculate','m'),('home-results','summary','Your results','a'),
- ('home-picked','reset','Start fresh','a'),('home-results','reset','Start fresh','a'),('answers','reset','Start fresh','a'),
+ ('home-picked','reset','Start fresh','a'),('home-results','reset','Start fresh','a'),('answers','reset','Delete your answers','a'),
  ('q6','q1','','q'),('q1','q3','','q'),('q3','q2','','q'),('q2','q4','','q'),('q4','q5','','q'),('q5','q7','','q'),('q7','q8','','q'),('q8','q9','','q'),('q9','q10','','q'),('q10','q13','','q'),
  ('q13','batch','last question, 2+ topics','m'),('q5','loading','last question, 1 topic','a'),('q11','q12','used EV','q'),
  ('batch','summary','done','m'),('loading','r-B2','result','m'),('loading','error','','a'),('error','loading','Try again','a'),('loading','q-missing','answer missing','a'),
  ('summary-loading','summary','AI text arrives','a'),('summary','summary-numbers','toggle','a'),
  ('summary','r-B2','tap a topic','m'),('summary','r-B1','','m'),('summary','r-B3','','m'),('summary','r-B7','','m'),('summary','r-B4','','m'),('summary','r-B6','Battery row, only without Range/Costs','a'),('summary','account-create','Save your answers','a'),
- ('r-B2','r-B2-full','Full analysis','m'),('r-B2-full','r-B2-email-site','Write email · tap a point','a'),('r-B2','r-B2-edit','pencil','a'),('r-B2-edit','loading','Recalculate','a'),
+ ('r-B2','r-B2-full','Full analysis','m'),('r-B2-full','r-B2-email-site','tap a map point','a'),('r-B2-full','mail','Write email','a'),('r-B2','r-B2-edit','Edit your inputs','a'),('r-B2-edit','loading','Recalculate','a'),
  ('r-B1','r-B1-full','Full analysis','m'),('r-B3','r-B3-full','Full analysis','m'),('r-B7','r-B7-full','Full analysis','m'),('r-B4','r-B4-full','Full analysis','m'),
  ('r-B2','r-B1','Continue with next topic','a'),('r-B1','q12','Check a used EV','a'),('q12','r-B6-used','','a'),
  ('answers','answer-edit','pencil','m'),('answer-edit','batch','Save, results recalculated','a'),('answers','r-B4','Done / Not checked yet','a'),

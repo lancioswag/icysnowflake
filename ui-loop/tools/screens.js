@@ -38,10 +38,10 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   }
   // B2 details: write email, site tapped, near work, action panel email
   await ev(() => { ui.deep = { B2: true }; showResult('B2'); }); await page.waitForTimeout(900);
-  await page.click('.mailrow'); await page.waitForTimeout(300);
   const mk = page.locator('.leaflet-marker-icon.mk.dc'); if (await mk.count()) await mk.first().click({ force: true });
   await cap('r-B2-email-site', 400);
-  await ev(() => { ui.deep = {}; showResult('B2'); }); await page.waitForTimeout(600); await page.click('.rhead .chg'); await cap('r-B2-edit', 900);
+  await ev(() => Questions.openEdit('B2')); await cap('r-B2-edit', 900);
+  await ev(() => { const r = store.results.B2.response.result; openMail(r.home.email, { title: 'Write email' }); }); await cap('mail', 500);
   // B6 forecast page and used-car check
   await ev(() => { ui.deep = {}; showResult('B6'); }); await cap('r-B6', 900);
   await ev(() => startB6('used_car')); await page.waitForTimeout(500);
@@ -60,9 +60,7 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   await ev(() => { Account.form = null; go('account'); }); await cap('account-create');
   await page.click('.pillswitch button >> nth=1'); await cap('account-login', 200);
   await ev(() => { Account.user = { email: 'simone@example.ch' }; render(); }); await cap('account-in', 200); await ev(() => { Account.user = null; });
-  await ev(() => go('settings')); await cap('settings', 200);
   await ev(() => go('reset')); await cap('reset', 200);
-  await ev(() => go('orient')); await cap('orient', 200);
   fs.writeFileSync(OUT + 'list.json', JSON.stringify(log));
   console.log('overflow', overflow);
   console.log(log.length, 'screens; errors', page.errors);

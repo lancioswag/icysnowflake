@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BEV Navigator · pick the look</title>
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* A/B gallery for the team: one question per topic, live mini screens, one tap to vote, votes go to n8n (data table ui_feedback). */
+:root { --bg: #f4f6f9; --card: #fff; --ink: #172235; --muted: #5d6b80; --line: #dfe5ee; --pick: #172235; }
+* { box-sizing: border-box; min-width: 0; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 Inter, system-ui, sans-serif; overflow-x: clip; }
+header { padding: 28px 18px 8px; max-width: 1100px; margin: 0 auto; }
+header h1 { font-size: clamp(28px, 7vw, 40px); line-height: 1.08; margin: 0 0 8px; letter-spacing: -0.02em; }
+header p { margin: 0; color: var(--muted); max-width: 60ch; }
+.prog { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); padding: 10px 18px; border-bottom: 1px solid var(--line); }
+.prog-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
+.prog-in .bar { flex: 1; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.prog-in .bar i { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 99px; transition: width 300ms ease; }
+section.q { max-width: 1100px; margin: 0 auto; padding: 26px 18px 6px; }
+section.q h2 { font-size: 22px; margin: 0 0 2px; }
+section.q > p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.opts { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(232px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 14px; }
+.opt { scroll-snap-align: start; background: var(--card); border: 2px solid transparent; border-radius: 22px; padding: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 3px rgba(20, 30, 50, .08); transition: border-color 200ms ease, transform 200ms ease; }
+.opt.on { border-color: var(--pick); }
+.opt .lab { display: flex; align-items: baseline; gap: 8px; }
+.opt .lab b { font-size: 15px; }
+.opt .lab span { font-size: 13px; color: var(--muted); }
+.opt .row { display: flex; gap: 8px; }
+.vote { flex: 1; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--line); background: #fff; font: inherit; font-weight: 650; color: var(--ink); cursor: pointer; }
+.opt.on .vote { background: var(--pick); border-color: var(--pick); color: #fff; }
+.replay { min-height: 44px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--line); background: #fff; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
+.vote:focus-visible, .replay:focus-visible, .send:focus-visible { outline: 3px solid #6aa0ff; outline-offset: 2px; }
+/* mini phone */
+.ph { --accent: #2564df; --accent-2: #3876ee; --press: #1d4fc0; --soft: #edf4ff; --lineb: #b7d1f8; --ink2: #10294b; --glow: #78a8ff; --d: 220ms; --mark: #b7d1f8;
+  position: relative; height: 420px; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); background:
+  radial-gradient(70% 38% at 88% -4%, color-mix(in srgb, var(--glow) 30%, transparent), transparent 70%), radial-gradient(60% 30% at -10% 22%, color-mix(in srgb, var(--glow) 20%, transparent), transparent 70%), #fff;
+  color: var(--ink2); font-size: 12px; padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.ph .top { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 12.5px; min-height: 24px; }
+.ph .top svg { width: 18px; height: 18px; }
+.ph h3 { font-size: 21px; line-height: 1.1; margin: 4px 0 0; letter-spacing: -0.01em; color: var(--ink2); }
+.ph .sub { margin: 0; color: #4a5a70; font-size: 11.5px; line-height: 1.4; }
+.ph .key { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px; border-radius: 11px; border: 1px solid #dbe3ee; background: #fff; font-weight: 600; font-size: 12px; }
+.ph .key.on { background: linear-gradient(180deg, #fff, var(--soft)); border-color: var(--lineb); color: var(--press); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .08); }
+.ph .key i { width: 12px; height: 12px; border-radius: 3px; background: currentColor; opacity: .35; }
+.ph .cta { margin-top: auto; display: flex; flex-direction: column; gap: 7px; }
+.ph .btn { min-height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 650; font-size: 13px; border-radius: 12px; border: 1.5px solid var(--lineb); color: var(--accent); background: #fff; transition: transform var(--d) ease, box-shadow var(--d) ease, background var(--d) ease; }
+.ph .btn.p { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 0 var(--press); }
+.ph .btn.p.down { transform: translateY(2px); box-shadow: 0 0 0 var(--press); }
+.ph .big { font-size: 27px; font-weight: 800; line-height: 1; color: var(--accent); letter-spacing: -0.02em; }
+.ph .card { border-radius: 14px; background: color-mix(in srgb, var(--soft) 70%, #fff); padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.ph .rowl { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #e6ebf2; font-size: 12px; }
+.ph .rowl b { font-weight: 650; }
+.ph mark { background: none; color: inherit; font-weight: 750; text-decoration: underline; text-decoration-color: var(--mark); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+/* button styles */
+.bs-raised .btn.p { border-radius: 12px; box-shadow: 0 2px 0 var(--press); }
+.bs-pill .btn { border-radius: 999px; } .bs-pill .btn.p { box-shadow: none; }
+.bs-soft .btn.p { border-radius: 14px; background: linear-gradient(180deg, var(--accent-2), var(--accent)); box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 30%, transparent); }
+.bs-flat .btn { border-radius: 6px; } .bs-flat .btn.p { box-shadow: none; }
+.bs-outline .btn.p { background: #fff; color: var(--accent); border-width: 2px; box-shadow: none; } .bs-outline .btn.p.down { background: var(--soft); }
+.bs-dark .btn.p { background: #15181d; border-color: #15181d; box-shadow: 0 2px 0 #000; border-radius: 12px; }
+/* animations (entry of the screen content) */
+.ph .el { opacity: 1; }
+.play .el { animation-duration: var(--d); animation-fill-mode: both; animation-timing-function: cubic-bezier(.25, .8, .25, 1); animation-delay: calc(var(--i) * var(--stag, 40ms)); }
+.an-rise.play .el { animation-name: rise; } .an-slide.play .el { animation-name: slide; } .an-pop.play .el { animation-name: pop; }
+.an-fade.play .el { animation-name: fade; } .an-cascade.play .el { animation-name: rise; --stag: 110ms; } .an-none.play .el { animation: none; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes slide { from { opacity: 0; transform: translateX(36px); } }
+@keyframes pop { from { opacity: 0; transform: scale(.9); } }
+@keyframes fade { from { opacity: 0; } }
+/* text amount / tone */
+.ph p.long { font-size: 11.5px; color: #4a5a70; margin: 0; line-height: 1.45; }
+/* send bar */
+.sendbar.hide { display: none; }
+.sendbar { position: sticky; bottom: 0; z-index: 6; background: #fff; border-top: 1px solid var(--line); padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); }
+.sendbar-in { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.sendbar input, .sendbar textarea { width: 100%; font: inherit; font-size: 16px; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.sendbar textarea { grid-column: 1 / -1; resize: vertical; min-height: 44px; }
+.send { min-height: 48px; padding: 0 22px; border: 0; border-radius: 12px; background: var(--ink); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.send[disabled] { opacity: .5; }
+.note { max-width: 1100px; margin: 0 auto; padding: 4px 18px 20px; font-size: 13px; color: var(--muted); }
+.done { max-width: 1100px; margin: 0 auto; padding: 18px; font-weight: 650; }
+@media (prefers-reduced-motion: reduce) { .play .el { animation: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pick the look of the BEV Navigator</h1>
+  <p>Seven quick choices. Tap the one you like most in each row (swipe sideways for more), then send. Takes two minutes.</p>
+</header>
+<div class="prog" aria-hidden="true"><div class="prog-in"><span id="cnt">0 of 7</span><span class="bar"><i id="bar"></i></span></div></div>
+<main id="qs"></main>
+<p class="note">Fake numbers in the mini screens. Votes go to the HSG project team only (name optional).</p>
+<div class="sendbar hide" id="sendwrap"><div class="sendbar-in" id="sendbar">
+  <input id="who" placeholder="Your name (optional)" aria-label="Your name (optional)" maxlength="60">
+  <button class="send" id="send" type="button" disabled>Send</button>
+  <textarea id="cmt" rows="1" placeholder="Anything else? (optional)" aria-label="Comment (optional)" maxlength="1500"></textarea>
+</div></div>
+<script>
+{
+const WEBHOOK = 'https://hsg-consultancy-project.app.n8n.cloud/webhook/feedback';
+const THEMES = {
+  blue:   { name: 'Current blue', accent: '#2564df', a2: '#3876ee', press: '#1d4fc0', soft: '#edf4ff', line: '#b7d1f8', ink: '#10294b', glow: '#78a8ff', mark: '#b7d1f8' },
+  zurich: { name: 'Zurich', accent: '#2167ae', a2: '#2f78c0', press: '#23366f', soft: '#eaf1f9', line: '#b6c6e8', ink: '#23366f', glow: '#91a9dd', mark: '#f69c00' },
+  mbp:    { name: 'myblueplanet', accent: '#2b69b4', a2: '#3f81cf', press: '#026298', soft: '#ebf2fb', line: '#b9d2ef', ink: '#2a2f36', glow: '#8fb8e6', mark: '#9bc0ea' },
+  duo:    { name: 'Zurich + myblueplanet', accent: '#23366f', a2: '#2f4686', press: '#141f43', soft: '#edf0f8', line: '#c3cbe3', ink: '#1d2a4f', glow: '#9cc3ea', mark: '#3f81cf' },
+  pine:   { name: 'Pine green', accent: '#0d6e52', a2: '#15886a', press: '#084a37', soft: '#e7f3ee', line: '#b4dac9', ink: '#13261f', glow: '#7fcfa9', mark: '#b4dac9' },
+  ink:    { name: 'Ink black', accent: '#1d1d1f', a2: '#3a3a3d', press: '#000', soft: '#f0eee8', line: '#d6d2c8', ink: '#1d1d1f', glow: '#e8d8a8', mark: '#ffd23f' },
+  petrol: { name: 'Petrol', accent: '#0f6b7a', a2: '#178597', press: '#09474f', soft: '#e6f2f4', line: '#b0d6dc', ink: '#102a33', glow: '#86c6cf', mark: '#b0d6dc' },
+};
+const LOGOS = {
+  road: { name: 'Road + plug', svg: (c) => `<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="${c}"/><path d="M14 48c13 0 9-20 22-20 6 0 8 7 13 7" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="14" cy="48" r="4" fill="#fff"/><path d="M45 12v11m8-11v11m-8 0h8v10h-8z" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
+  pin: { name: 'Map pin + bolt', svg: (c) => `<svg viewBox="0 0 64 64"><path d="M32 4C20 4 11 13 11 25c0 16 21 35 21 35s21-19 21-35C53 13 44 4 32 4z" fill="${c}"/><path d="M35 14 24 30h8l-3 14 11-17h-8z" fill="#fff"/></svg>` },
+  compass: { name: 'Compass', svg: (c) => `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="${c}"/><path d="M42 22 36 36 22 42l6-14z" fill="#fff"/><circle cx="32" cy="32" r="3" fill="${c}"/></svg>` },
+  word: { name: 'Name only', svg: () => '' },
+};
+const Q = [
+  { id: 'color', title: 'Colour', ask: 'Which colour fits the Navigator best?', opts: Object.keys(THEMES).map((k) => ({ k, label: THEMES[k].name, cfg: { theme: k } })) },
+  { id: 'buttons', title: 'Buttons', ask: 'Which buttons look best?', opts: [['raised', 'Raised (now)'], ['pill', 'Pill'], ['soft', 'Soft shadow'], ['flat', 'Flat, square'], ['outline', 'Outline'], ['dark', 'Black']].map(([k, label]) => ({ k, label, cfg: { btn: k } })) },
+  { id: 'motion', title: 'Animation', ask: 'How should a new screen come in? Tap Replay.', opts: [['rise', 'Rise (now)'], ['slide', 'Slide from the side'], ['pop', 'Pop'], ['fade', 'Fade only'], ['cascade', 'One after another'], ['none', 'No animation']].map(([k, label]) => ({ k, label, cfg: { anim: k } })) },
+  { id: 'speed', title: 'Speed', ask: 'Which speed feels right? Tap Replay.', opts: [['150', 'Fast · 150 ms'], ['220', 'Medium · 220 ms (now)'], ['350', 'Calm · 350 ms'], ['550', 'Slow · 550 ms']].map(([k, label]) => ({ k, label, cfg: { anim: 'rise', speed: +k } })) },
+  { id: 'amount', title: 'Amount of text', ask: 'How much text on a result?', opts: [['min', 'Only the number'], ['one', 'Number + one line (now)'], ['full', 'Number + explanation']].map(([k, label]) => ({ k, label, cfg: { screen: 'result', amount: k } })) },
+  { id: 'tone', title: 'How we write', ask: 'Which wording do you prefer?', opts: [['label', 'Short labels'], ['question', 'Questions (now)'], ['personal', 'Personal, "you"']].map(([k, label]) => ({ k, label, cfg: { tone: k } })) },
+  { id: 'logo', title: 'Logo', ask: 'Which logo?', opts: Object.keys(LOGOS).map((k) => ({ k, label: LOGOS[k].name, cfg: { logo: k } })) },
+];
+const TONE = {
+  label: { h: 'Your topics', keys: ['Charging', 'Range', 'Costs'], cta: 'Continue' },
+  question: { h: "What's holding you back?", keys: ['Charging access', 'Range & battery life', 'Costs & resale value'], cta: 'Continue' },
+  personal: { h: 'What worries you about going electric?', keys: ['Where would I charge?', 'Is the range enough for me?', 'Can I afford it?'], cta: "Let's look" },
+};
+const esc = (x) => String(x).replace(/[&<>"']/g, (y) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[y]));
+function mock(cfg) {
+  const t = THEMES[cfg.theme || 'blue'], lg = LOGOS[cfg.logo || 'road'], tn = TONE[cfg.tone || 'question'];
+  const vars = `--accent:${t.accent};--accent-2:${t.a2};--press:${t.press};--soft:${t.soft};--lineb:${t.line};--ink2:${t.ink};--glow:${t.glow};--mark:${t.mark};--d:${cfg.speed || 220}ms`;
+  let i = 0; const el = (html) => { const n = i++; return /^<\w+ class="/.test(html) ? html.replace(/^<(\w+) class="/, `<$1 style="--i:${n}" class="el `) : html.replace(/^<(\w+)/, `<$1 style="--i:${n}" class="el"`); };
+  const top = el(`<div class="top">${lg.svg(t.accent)}<span>BEV Navigator</span></div>`);
+  let body;
+  if (cfg.screen === 'result') {
+    body = el(`<h3>What does it cost you?</h3>`) + el(`<div class="card"><div class="big">CHF 42’100</div><b style="font-size:12.5px">more in 6 years than keeping your car</b>${cfg.amount !== 'min' ? '<span style="color:#5d6b80">about CHF 585 a month</span>' : ''}${cfg.amount === 'full' ? '<p class="long">The electric car costs more to buy. Lower running costs make up part of it, but none of the options pays off within 8 years. Insurance and tax are included; the value after 6 years is subtracted.</p>' : ''}</div>`)
+      + el(`<div class="rowl"><span>To pay today</span><b>CHF 35’600 – 51’000</b></div>`) + el(`<div class="rowl"><span>Per year</span><b>CHF 14’300 – 16’900</b></div>`)
+      + el(`<div class="cta"><div class="btn">Full analysis</div><div class="btn p">Continue</div></div>`);
+  } else {
+    body = el(`<h3>${esc(tn.h)}</h3>`) + el(`<p class="sub">Pick what matters to you.</p>`) + tn.keys.map((k, n) => el(`<div class="key${n < 2 ? ' on' : ''}"><i></i>${esc(k)}</div>`)).join('')
+      + el(`<div class="cta"><div class="btn p">${esc(tn.cta)}</div><div class="btn">Tell us in your own words</div></div>`);
+  }
+  return `<div class="ph bs-${cfg.btn || 'raised'} an-${cfg.anim || 'rise'}" style="${vars}">${top}${body}</div>`;
+}
+const votes = {}; let sent = false;
+try { Object.assign(votes, JSON.parse(localStorage.getItem('bevnav.gallery') || '{}')); sent = localStorage.getItem('bevnav.gallery.sent') === '1'; } catch { }
+const root = document.getElementById('qs');
+root.innerHTML = Q.map((q) => `<section class="q" id="q-${q.id}"><h2>${q.title}</h2><p>${q.ask}</p><div class="opts">${q.opts.map((o, n) => `
+  <div class="opt${votes[q.id] === o.k ? ' on' : ''}" data-q="${q.id}" data-k="${o.k}"><div class="lab"><b>${String.fromCharCode(65 + n)}</b><span>${esc(o.label)}</span></div>${mock(o.cfg)}
+  <div class="row"><button class="vote" type="button" aria-pressed="${votes[q.id] === o.k}">Pick ${String.fromCharCode(65 + n)}</button>${q.id === 'motion' || q.id === 'speed' || q.id === 'buttons' ? '<button class="replay" type="button">Replay</button>' : ''}</div></div>`).join('')}</div></section>`).join('');
+const upd = () => { const n = Object.keys(votes).length; document.getElementById('cnt').textContent = `${n} of ${Q.length}`; document.getElementById('bar').style.width = (n / Q.length * 100) + '%'; document.getElementById('send').disabled = sent || n === 0; document.getElementById('sendwrap').classList.toggle('hide', n === 0 && !sent); try { localStorage.setItem('bevnav.gallery', JSON.stringify(votes)); } catch { } };
+const play = (ph) => { ph.classList.remove('play'); void ph.offsetWidth; ph.classList.add('play'); const b = ph.querySelector('.btn.p'); if (b) setTimeout(() => { b.classList.add('down'); setTimeout(() => b.classList.remove('down'), 260); }, 700); };
+root.addEventListener('click', (e) => {
+  const opt = e.target.closest('.opt'); if (!opt) return;
+  if (e.target.closest('.replay')) return play(opt.querySelector('.ph'));
+  if (!e.target.closest('.vote')) return;
+  const q = opt.dataset.q; votes[q] = opt.dataset.k;
+  opt.parentElement.querySelectorAll('.opt').forEach((x) => { const on = x === opt; x.classList.toggle('on', on); x.querySelector('.vote').setAttribute('aria-pressed', String(on)); });
+  upd();
+});
+const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { play(en.target); io.unobserve(en.target); } }), { threshold: .5 });
+document.querySelectorAll('.ph').forEach((p) => io.observe(p));
+document.getElementById('send').addEventListener('click', async (ev) => {
+  const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const r = await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'gallery', choices: votes, voter: document.getElementById('who').value.trim().slice(0, 60), comment: document.getElementById('cmt').value.trim().slice(0, 1500), version: 'gallery-1' }) });
+    if (!r.ok) throw new Error(r.status);
+    sent = true; try { localStorage.setItem('bevnav.gallery.sent', '1'); } catch { }
+    document.getElementById('sendbar').innerHTML = '<p class="done">Thank you, your picks were sent.</p>';
+  } catch { btn.disabled = false; btn.textContent = 'Try again'; }
+});
+if (sent) document.getElementById('sendbar').innerHTML = '<p class="done">Thank you, your picks were sent.</p>';
+upd();
+}
+</script>
+</body>
+</html>

@@ -1,11 +1,14 @@
 # State – updated by Claude after every round
 
-Version: **V8.4** (18 Nov 2026, Claude: research of 12 other navigators, tap = next, big figure in the key card, accent themes; before: Codex review 003, Claude V8.3)
+Version: **V8.5** (18 Nov 2026 night, Claude: Simone's voice notes on every screen, feedback box, A/B gallery /gallery/)
 Live app: https://icy-snowflake-1754.ricordatilamail18.workers.dev
 Screen map (45 screens, wires = taps): https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/
 Text of every screen: `ui-loop/SCREENS.md`
 Last response: `outbox/response-002.md` (review 002)
 Loop: the scheduled Claude run is stopped. Codex implements and deploys directly while Simone reviews the map.
+
+## Changed in V8.5
+Numbers 15’000 (Swiss apostrophe). Error page: "Something went wrong" + Try again / Back. Footer without the data line. Old pages "I'm not sure" and "Connection & data" removed. Account: no "saved" line, no delete; "Delete your answers" on Your answers (also deletes the account copy). Summary waits for its AI text on the calculating screen, no Simple/With the numbers switch, no underline, one line per topic with a figure. Key card: big figure + its own line, the sentence is not repeated. Charging: short labels in one aligned grid, Write email = own screen. Edit your inputs = own screen (Back returns, Recalculate skips it in history). Topic pages: Next steps only for real outside actions, then Continue / Check another topic ("Your answers are kept"). Climate: −62 %, "Charged with", two plain bars. Which car: "Medium (450+ km)", one table, no Must/Any. Battery: "Battery health", Warranty and Value as info pop-ups. Questions: trips as a 2-column grid without subtitle, 1–7 work days, no separate "other trips" question, no budget subtitle, "How many people are in the car?" (you included, 1–6+), type approval on its own line, battery question "Which battery do you want to check?". "Was this helpful?" + comment at the end of the Summary → n8n workflow "Feedback – Navigator UI and A/B gallery" (sDwbPpWFwpI2GmXO) → data table ui_feedback. A/B gallery for the team: /gallery/ (colour, buttons, animation, speed, amount of text, wording, logo), votes to the same table.
 
 ## Changed in V8.4
 Start actions are separated from five topic keys; pressed keys are softer. The top badge counts selected topics; Start and Your answers link to Start fresh. Summary loses its three counters; the car-fit range loses its underline. Assistant is available in the top bar with shorter copy and a send icon. Full-width action icons align on the left. Range and Charging expose the trip editor from their results; changing kilometres on a distance-only trip keeps its country. The map has a clickable overview and the five topic results in one row. Start, Assistant, reset, Summary, answers, Range, Charging and Car fit screenshots are current; other screenshots still show V8.3.

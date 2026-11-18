@@ -1196,6 +1196,54 @@ div.nrow { cursor: default; }
 .trow2.done .stt { color: var(--good); font-weight: 650; }
 .trow2 .go { color: var(--muted); }
 @media (max-width: 760px) { .sharegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .takeaway .tk { font-size: 19px; } }
+
+/* ===== V8.3 – Simone 18.11 + review 002: fits the phone, one button system, flat lists ===== */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { overflow-x: clip; max-width: 100%; }
+img, svg, video, canvas, iframe, table { max-width: 100%; }
+/* iOS zooms into any field under 16px: every field is 16px */
+input, select, textarea, .input { font-size: 16px !important; }
+/* buttons: primary = filled, secondary = outline, link = text; same height, radius, weight and press */
+.btn { min-height: 48px; border-radius: 14px; font-size: 15.5px; font-weight: 650; border: 1.5px solid var(--accent-line); background: var(--surface); color: var(--accent); box-shadow: none; }
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.btn:active { transform: translateY(1px); }
+.btn.small { min-height: 38px; border-radius: 12px; font-size: 14px; padding: 0 14px; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--accent); }
+.btn.ghost:hover { background: var(--accent-soft); }
+.btn.block { width: 100%; }
+/* every segmented switch looks like the Summary switch */
+.seg { border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); padding: 3px; gap: 2px; overflow: visible; }
+.seg button { border: 0 !important; border-radius: 999px; min-height: 36px; padding: 0 14px; font-size: 14px; font-weight: 600; color: var(--muted); transition: background var(--t) var(--ease), color var(--t) var(--ease), box-shadow var(--t) var(--ease); }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--accent); box-shadow: 0 1px 4px rgba(16, 41, 75, .14); }
+/* What can you do next: plain rows, no blue panel, no cards */
+.nextband { background: none !important; color: var(--ink) !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; gap: 4px; }
+.nextband h2 { color: var(--ink) !important; font-size: 17px; margin-bottom: 2px; }
+.nextband .actions { display: flex !important; flex-direction: column; gap: 0 !important; }
+.nextband .action { background: none !important; border: 0 !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; box-shadow: none !important; padding: 13px 2px !important; min-height: 52px; color: var(--ink); }
+.nextband .action:last-child { border-bottom: 0 !important; }
+.nextband .action .ai { background: none; width: 24px; height: 24px; }
+.nextband .action .at b { font-size: 15px; font-weight: 600; }
+.nextband .inline-panel { border: 1px solid var(--line) !important; border-radius: 14px; }
+/* charging options: price and status only, no bars */
+.rank-row .barw .b, .rank-row .cbar { display: none; }
+/* Summary topics: one row each */
+.sumtopics { gap: 0 !important; }
+.sumrow2 { border: 0 !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; background: none !important; padding: 12px 2px !important; gap: 2px; }
+.sumrow2 .sl { font-size: 14px; color: var(--ink-2); }
+.nsteps2 { gap: 0 !important; }
+.nrow { border: 0 !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; background: none !important; padding: 12px 2px !important; }
+/* Your answers: two-line rows with rules */
+.anslist { gap: 0 !important; }
+.ansrow { border: 0 !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; padding: 10px 2px !important; min-height: 0; }
+.ansrow .ae { width: 32px; height: 32px; }
+.anstopics { gap: 0 !important; }
+.trow2 { border: 0 !important; border-bottom: 1px solid var(--line) !important; border-radius: 0 !important; background: none !important; padding: 12px 2px !important; }
+/* waiting */
+.batchlist li.now { color: var(--ink); font-weight: 650; }
+.batchlist li.now span { animation: lfade 900ms var(--ease) infinite alternate; background: var(--accent-soft); color: var(--accent); }
+.lbar { width: min(260px, 80%); height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin: 6px auto 0; }
+.lbar i { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 600ms var(--ease); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
 </style>
 </head>
 <body>
@@ -1633,8 +1681,7 @@ function b6Chart(part) {
 
 /* ---------- navigation ---------- */
 function nextBarrier(code) {
-  const inQueue = store.queue.filter((c) => !store.results[c]);
-  if (store.queue.length) return inQueue[0] || null;
+  if (store.queue.length) { const i = store.queue.indexOf(code); return i >= 0 ? store.queue[i + 1] || null : store.queue.find((c) => !store.results[c]) || null; }
   let list = BARRIERS[code].next.slice();
   if (code === 'B2' && (store.results.B2?.session?.charging_interest || []).some((x) => x !== 'everyday')) list.push('B4');
   return list.find((c) => !store.visited.includes(c)) || null;
@@ -1870,6 +1917,9 @@ function showResult(code) {
 
 function startQuick() { store.queue = []; ui.topicSel = null; saveStore(); startBarrier('QUICK'); }
 const QUICK_SESSION = { B2: { charging_interest: ['everyday'] }, B6: { battery_entry: 'forecast' } };
+const LOAD_MORE = ['Checking Swiss data for your answers…', 'Still on it, this one takes a few seconds…', 'Almost there…'];
+/** While a topic is calculated the sentence under the title changes every few seconds (no re-render). */
+const Waiting = { t: null, i: 0, start(el) { clearInterval(Waiting.t); Waiting.i = 0; Waiting.t = setInterval(() => { const p = document.querySelector('.lphrase'); if (!p || !['loading', 'batch'].includes(ui.view)) return clearInterval(Waiting.t); p.textContent = LOAD_MORE[Math.min(Waiting.i++, LOAD_MORE.length - 1)]; }, 4500); } };
 const LOAD_PHRASE = { B1: 'Measuring the range your trips need…', B2: 'Looking for charging stations near you…', B3: 'Adding up what the car costs you…', B4: 'Matching car sizes to your trips…', B6: 'Forecasting how the battery ages…', B7: 'Counting the CO2 over the whole life of the car…' };
 async function runAll(codes) {
   const myRev = ++store.rev;
@@ -1892,12 +1942,14 @@ async function runAll(codes) {
 }
 function viewBatch() {
   const b = ui.batch || { codes: [], done: [], need: [] };
+  queueMicrotask(() => Waiting.start());
   const cur = b.codes[b.done.length];
   return h('div', { class: 'col' }, h('div', { class: 'loading', role: 'status', 'aria-live': 'polite' },
     h('div', { class: 'spinner' }), h('h2', null, 'Calculating your results'),
     h('p', { class: 'lcount' }, `${Math.min(b.done.length + 1, b.codes.length)} of ${b.codes.length}`),
+    h('div', { class: 'lbar', role: 'progressbar', 'aria-valuemin': 0, 'aria-valuemax': b.codes.length, 'aria-valuenow': b.done.length }, h('i', { style: { width: `${Math.round((b.done.length + 0.5) / Math.max(1, b.codes.length) * 100)}%` } })),
     cur ? h('p', { class: 'lphrase' }, LOAD_PHRASE[cur] || 'One moment…') : null),
-    h('ul', { class: 'batchlist' }, b.codes.map((c) => h('li', { class: b.done.includes(c) ? (b.need.includes(c) ? 'need' : 'on') : '' },
+    h('ul', { class: 'batchlist' }, b.codes.map((c) => h('li', { class: b.done.includes(c) ? (b.need.includes(c) ? 'need' : 'on') : c === cur ? 'now' : '' },
       h('span', null, b.done.includes(c) ? (b.need.includes(c) ? '!' : '✓') : '·'), topicTitle(c)))),
     h('p', { class: 'small muted center' }, 'Each topic is calculated with Swiss data, a few seconds each.'));
 }
@@ -1951,6 +2003,21 @@ const topicTitle = (c) => (c === 'B6' ? 'Battery & resale' : BARRIERS[c]?.title 
 /** Battery & resale is shown inside Range (and Costs): the same page wherever you open it. */
 const openTopic = (c) => (c === 'B6' ? (store.results.B1 ? showResult('B1') : store.results.B3 ? showResult('B3') : showResult('B6')) : showResult(c));
 /** Short, schematic lines per topic for the summary ("Home charging needs approval"). */
+/** One schematic line per topic on the Summary: a status in Simple, a figure in With the numbers (only values already in the result). */
+function firstSentence(t) { return normNum(String(t || '')).split(/(?<=\.)\s+(?=[A-Z])/)[0]; }
+function topicMetric(c) {
+  const r = store.results[c]?.response?.result; if (!r) return null;
+  try {
+    if (c === 'B1' || c === 'B6') return topicLines(c)[0] || null;
+    if (c === 'B7') { const v = (r.variants || [])[0]?.block1; return v?.ev_share_pct != null ? `Electric car: ${fmt.n(v.ev_share_pct)} % of a petrol car's emissions` : null; }
+    if (c === 'B2') { const k = (r.ranking || []).filter((x) => x.cost_per_100km_chf != null).sort((a, b) => a.cost_per_100km_chf - b.cost_per_100km_chf)[0]; return k ? `Charging from CHF ${fmt.n(k.cost_per_100km_chf, 2)} per 100 km` : null; }
+  } catch { }
+  return null;
+}
+function oneLine(t, st) {
+  if (st === 'numbers') { const m = topicMetric(t.code); if (m) return m; }
+  return topicLines(t.code)[0] || firstSentence(Results.headline(t.code).statement) || firstSentence(t.text);
+}
 function topicLines(c) {
   const r = store.results[c]?.response?.result; if (!r) return [];
   try {
@@ -1998,8 +2065,7 @@ function viewSummary() {
       rows.map((t) => { const lines = topicLines(t.code); const status = t.status;
         return h('button', { class: 'sumrow2' + (status ? ' st-' + status : ''), type: 'button', onclick: () => openTopic(t.code) },
           h('span', { class: 'sh' }, h('span', { class: 'sic' }, icon(status ? { works: 'check', limitation: 'info', open: 'compass' }[status] || 'arrow' : TOPIC_ICON[t.code] || 'arrow')), h('b', null, topicTitle(t.code)), h('span', { class: 'go' }, '›')),
-          h('span', { class: 'sl' }, ...(lines.length ? lines : normNum(t.text || Results.headline(t.code).statement).split(/(?<=\.)\s+(?=[A-Z])/)).map((x) => h('span', null, x))),
-          st === 'numbers' && t.sources?.length ? h('span', { class: 'xsmall muted' }, 'Sources ' + t.sources.map((x) => '[' + x.n + ']').join(' ')) : null); })),
+          h('span', { class: 'sl' }, oneLine(t, st))); })),
     ok && sm.next_steps?.length ? h('section', { class: 'nsteps2' }, h('h2', null, 'Your next steps'),
       sm.next_steps.map((x, i) => { const go2 = x.topic_code && store.results[x.topic_code];
         return h(go2 ? 'button' : 'div', { class: 'nrow', type: go2 ? 'button' : null, onclick: go2 ? () => openTopic(x.topic_code) : null }, h('span', { class: 'nn' }, String(i + 1)), h('span', { class: 'nt' }, normNum(x.button_label || x.text || x.full_step || x.topic)), go2 ? h('span', { class: 'go' }, '›') : null); })) : null,
@@ -2134,7 +2200,7 @@ function viewReset() {
 /* ---------- motion (Mobility selection: A01 + A04 first open, B03 + A06 question change, A14 progress, B08 summary) ---------- */
 const Motion = {
   off: () => !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches,
-  D: 260, ease: 'cubic-bezier(.2,.8,.2,1)',
+  D: 220, ease: 'cubic-bezier(.25,.8,.25,1)',
   rise(el, delay = 0) { if (el) el.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' }); },
   fog(el, o = {}) { Motion.rise(el, o.delay || 0); },
   enter(kind) {
@@ -2605,7 +2671,6 @@ const Questions = {
     const isLast = remaining === 0 && !(b === 3 && ui.flow.ownTrips) && !(b === 6 && (ui.flow.interest || ['everyday']).includes('everyday') && !store.session.charging_interest) && b !== 11;
     const lastLabel = code === 'MULTI' ? 'Show my results' : 'Show my result';
     return h('div', { class: 'flow' },
-      topicStrip(code),
       h('div', { class: 'stepbar' },
         h('div', { class: 'segs', 'aria-hidden': 'true' }, Array.from({ length: total }, (_, i) => h('span', { class: i <= pos ? 'on' : '' }))),
         h('div', { class: 'lab' }, h('span', null, `Question ${pos + 1} of ${total}`))),
@@ -3420,10 +3485,13 @@ function renderB7(r) {
             rs.length > 1 ? seg(rs.map((c) => [c, `${fmt.n(median(c))} km`]), st.cls, (c) => { st.cls = c; render(); }, true)
               : h('span', { class: 'ctrlv' }, rs.length ? `${fmt.n(median(rs[0]))} km` : 'Range data unavailable')); })(),
         h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Electricity'), seg([['consumer_mix', 'Swiss mix'], ['renewable_product', 'Renewable']], el, (x) => x !== el && setField('electricity_product', x), true))),
+      h('div', { class: 'frow' }, h('span', null, `New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`), h('b', null, '100 %')),
+      h('div', { class: 'frow' }, h('span', null, `${SZ[v.size]} electric car, ${fmt.n(v.wltp_range_median_km)} km range`), h('b', null, `${fmt.n(b1.ev_share_pct)} %`))),
+    rsec('Where the emissions come from', null,
       bar(`New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`, 100, b1.ref_stages_pct_of_ref, 100),
-      bar(`${SZ[v.size]} electric car, ${fmt.n(v.wltp_range_median_km)} km range`, b1.ev_share_pct, b1.ev_stages_pct_of_ref, b1.ev_share_pct),
+      bar(`${SZ[v.size]} electric car`, b1.ev_share_pct, b1.ev_stages_pct_of_ref, b1.ev_share_pct),
       h('div', { class: 'legend' }, STAGES.map(([k, c]) => h('span', null, h('i', { style: { background: c } }), r.stage_labels?.[k] || k))),
-      h('p', { class: 'note' }, `Greenhouse gases over 16 years / 200.000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`)),
+      h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Over 16 years / 200.000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`))),
     b2 ? h('section', { class: 'rsec' }, h('h2', null, b2.title || 'Keep driving or switch now?'),
       h('p', { class: 'lead2', style: { color: good ? 'var(--ink)' : 'var(--ink-2)' } }, b2.statement),
       b2.type === '2a' ? (() => { const mx = Math.max(b2.keep_t_per_year || 0, b2.switch_t_per_year || 0, 0.01); const row = (l, val, c) => h('div', { class: 'b7row' }, h('div', { class: 'b7lab' }, h('span', null, l), h('b', null, `${fmt.n(val, 1)} t / year`)), h('div', { class: 'hbar', style: { width: Math.max(2, (val / mx) * 100) + '%', height: '18px' } }, h('span', { style: { width: '100%', background: c } })));
@@ -3512,7 +3580,6 @@ const Results = {
     if (det) det.addEventListener('toggle', () => { (ui.deep = ui.deep || {})[code] = det.open; });
     const steps = [...b.actions.filter((a) => a && !a.to), ...Actions.common(code)];
     return h('div', { class: 'col wide res' },
-      topicStrip(code),
       h('div', { class: 'rhead' },
         h('h1', null, BARRIERS[code].question),
         h('button', { class: 'iconbtn chg', type: 'button', onclick: () => Questions.openEdit(code), 'aria-label': 'Change your answers', title: 'Change your answers' }, icon('edit'))),
@@ -3526,7 +3593,7 @@ const Results = {
       Questions.editPanel(code),
       h('section', { class: 'nextband' }, h('h2', null, 'What can you do next?'),
         h('div', { class: 'actions' }, steps.map(Actions.card)), h('div', { class: 'inline-panel', id: 'action-panel', hidden: true })),
-      nxt ? h('div', { class: 'endnav' }, h('button', { class: 'btn primary block', onclick: () => startBarrier(nxt) }, 'Continue with ' + BARRIERS[nxt].title, icon('arrow'))) : null);
+      nxt ? h('div', { class: 'endnav' }, h('button', { class: 'btn primary block', onclick: () => (store.results[nxt] ? showResult(nxt) : startBarrier(nxt)) }, 'Continue with ' + BARRIERS[nxt].title, icon('arrow'))) : null);
   },
 };
 function aiSlot(ai) {

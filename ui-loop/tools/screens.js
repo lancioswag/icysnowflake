@@ -3,9 +3,12 @@ const fs = require('fs');
 const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive: true });
 (async () => {
   const { browser, page } = await open({ delay: 200 });
-  const log = [];
+  const log = []; const overflow = [];
   const cap = async (id, wait = 500) => { await page.waitForTimeout(wait); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(150);
-    await page.screenshot({ path: OUT + id + '.v.png' }); await page.screenshot({ path: OUT + id + '.f.png', fullPage: true }); fs.writeFileSync(OUT + id + '.txt', await page.evaluate(() => (document.querySelector('.nav .navt')?.innerText || '') + '\n' + (document.querySelector('main')?.innerText || ''))); log.push(id); };
+    await page.screenshot({ path: OUT + id + '.v.png' }); await page.screenshot({ path: OUT + id + '.f.png', fullPage: true }); fs.writeFileSync(OUT + id + '.txt', await page.evaluate(() => (document.querySelector('.nav .navt')?.innerText || '') + '\n' + (document.querySelector('main')?.innerText || ''))); log.push(id);
+    const ov = await page.evaluate(() => { const W = document.documentElement.clientWidth; const clipped = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p); if (/(hidden|clip|auto|scroll)/.test(o.overflowX)) return true; } return false; };
+      return [...document.querySelectorAll('body *')].filter((e) => { const r = e.getBoundingClientRect(); return r.width && (r.right > W + 1 || r.left < -1) && getComputedStyle(e).position !== 'fixed' && !clipped(e); }).slice(0, 4).map((e) => e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0] + ' ' + Math.round(e.getBoundingClientRect().right)); });
+    if (ov.length) overflow.push(id + ': ' + ov.join(', ')); };
   const seed = () => page.evaluate((F) => {
     const S = { B2: { barrier: BARRIERS.B2.name, charging_interest: ['everyday', 'trips_ch', 'abroad'] }, B6: { barrier: BARRIERS.B6.name, battery_entry: 'forecast' } };
     for (const [c, resp] of Object.entries(F.fx)) { const r = JSON.parse(JSON.stringify(resp)); r.profile = store.profile; store.results[c] = { response: r, request_id: 'fx' + c, at: F.at, session: S[c] || { barrier: BARRIERS[c].name }, sig: inputSig(store.profile, c) }; }
@@ -61,6 +64,7 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   await ev(() => go('reset')); await cap('reset', 200);
   await ev(() => go('orient')); await cap('orient', 200);
   fs.writeFileSync(OUT + 'list.json', JSON.stringify(log));
+  console.log('overflow', overflow);
   console.log(log.length, 'screens; errors', page.errors);
   await browser.close();
 })();

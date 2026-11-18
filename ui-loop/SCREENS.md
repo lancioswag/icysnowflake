@@ -407,12 +407,6 @@ Back
 ## r-B2
 ```
 Charging access
-1
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Where can you charge?
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
@@ -436,17 +430,12 @@ Guide: charging in condominiums (EnergieSchweiz)
 Official charging map (BFE)
 Save as PDF
 Email me this result
+Continue with Range & battery life
 ```
 
 ## r-B2-full
 ```
 Charging access
-1
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Where can you charge?
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
@@ -519,17 +508,12 @@ Guide: charging in condominiums (EnergieSchweiz)
 Official charging map (BFE)
 Save as PDF
 Email me this result
+Continue with Range & battery life
 ```
 
 ## r-B1
 ```
 Range & battery life
-✓
-Charging access
-2
-Range & battery life
-✓
-Costs & resale value
 How much range do you need?
 A real range of 270 km covers all your trips.
 Real range: what a car does in everyday driving.
@@ -546,17 +530,12 @@ Check the battery of a used EV
 Add or change a trip
 Save as PDF
 Email me this result
+Continue with Costs & resale value
 ```
 
 ## r-B1-full
 ```
 Range & battery life
-✓
-Charging access
-2
-Range & battery life
-✓
-Costs & resale value
 How much range do you need?
 A real range of 270 km covers all your trips.
 Real range: what a car does in everyday driving.
@@ -599,16 +578,11 @@ Check the battery of a used EV
 Add or change a trip
 Save as PDF
 Email me this result
+Continue with Costs & resale value
 ```
 
 ## r-B3
 ```
-Costs & resale value
-✓
-Charging access
-✓
-Range & battery life
-3
 Costs & resale value
 What does it cost you?
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
@@ -640,12 +614,6 @@ Email me this result
 
 ## r-B3-full
 ```
-Costs & resale value
-✓
-Charging access
-✓
-Range & battery life
-3
 Costs & resale value
 What does it cost you?
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
@@ -791,12 +759,6 @@ Email me this result
 ## r-B7
 ```
 Climate impact
-✓
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Is it better for the climate?
 Over its whole life, a medium electric car causes about 38 % of the greenhouse gases of a comparable new petrol car.
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
@@ -814,12 +776,6 @@ New petrol car
 100 %
 Medium electric car, 500 km range
 38 %
-Vehicle production
-Battery
-Fuel / electricity
-Maintenance
-Road
-Disposal
 Full analysis
 Edit your inputs
 What can you do next?
@@ -832,12 +788,6 @@ Email me this result
 ## r-B7-full
 ```
 Climate impact
-✓
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Is it better for the climate?
 Over its whole life, a medium electric car causes about 38 % of the greenhouse gases of a comparable new petrol car.
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
@@ -855,13 +805,19 @@ New petrol car
 100 %
 Medium electric car, 500 km range
 38 %
+Full analysis
+Where the emissions come from
+New petrol car
+100 %
+Medium electric car
+38 %
 Vehicle production
 Battery
 Fuel / electricity
 Maintenance
 Road
 Disposal
-Full analysis
+Over 16 years / 200.000 km. Petrol car = 100 % (320.5 g CO2eq/km).
 Keep driving or switch now?
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
 Keep your VW Golf 7 1.0 TSI
@@ -896,12 +852,6 @@ Email me this result
 ## r-B4
 ```
 Which car fits me
-✓
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Which electric car fits you?
 A medium electric car with at least 450 km range does 230 of your 230 driving days.
 No other car is needed for your trips.
@@ -925,12 +875,6 @@ Email me this result
 ## r-B4-full
 ```
 Which car fits me
-✓
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Which electric car fits you?
 A medium electric car with at least 450 km range does 230 of your 230 driving days.
 No other car is needed for your trips.
@@ -979,12 +923,6 @@ Email me this result
 ## r-B2-email-site
 ```
 Charging access
-1
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Where can you charge?
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
@@ -1069,17 +1007,12 @@ Guide: charging in condominiums (EnergieSchweiz)
 Official charging map (BFE)
 Save as PDF
 Email me this result
+Continue with Range & battery life
 ```
 
 ## r-B2-edit
 ```
 Charging access
-1
-Charging access
-✓
-Range & battery life
-✓
-Costs & resale value
 Where can you charge?
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
@@ -1144,6 +1077,7 @@ Guide: charging in condominiums (EnergieSchweiz)
 Official charging map (BFE)
 Save as PDF
 Email me this result
+Continue with Range & battery life
 ```
 
 ## r-B6
@@ -1224,25 +1158,21 @@ Your topics
 Charging access
 ›
 Home charging needs approval
-Workplace charging: not available
-Public charging nearby
 Range & battery life
 ›
 Range needed: 270 km
 Costs & resale value
 ›
-Kept for 6 years, a medium-sized electric car costs about CHF 42.100 more than keeping your current car.
-On these figures the switch does not pay off within 8 years.
+Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 Battery & resale
 ›
 Battery after 8 years: 87 %
-Value after 5 years: 12 % of new price
 Climate impact
 ›
-This is calculated for about 37.306 km a year.
+Over its whole life, a medium electric car causes about 38 % of the greenhouse gases of a comparable new petrol car.
 Which car fits me
 ›
-A medium electric car with 5 seats and at least 450 km of rated range fits your trips.
+A medium electric car with at least 450 km range does 230 of your 230 driving days.
 Your next steps
 1
 Review the cost assumptions
@@ -1272,28 +1202,22 @@ With the numbers
 Your topics
 Charging access
 ›
-Home charging needs approval
-Workplace charging: not available
-Public charging nearby
-Sources [1] [2]
+Charging from CHF 5.37 per 100 km
 Range & battery life
 ›
 Range needed: 270 km
-Sources [3]
 Costs & resale value
 ›
-Kept for 6 years, a medium-sized electric car costs about CHF 42.100 more than keeping your current car.
-The switch does not pay off within 8 years.
+Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 Battery & resale
 ›
 Battery after 8 years: 87 %
-Value after 5 years: 12 % of new price
 Climate impact
 ›
-The ecology calculation uses about 37.306 km a year and the standard Swiss electricity mix, a default.
+Electric car: 38 % of a petrol car's emissions
 Which car fits me
 ›
-A medium electric car with 5 seats and at least 450 km of rated range fits your trips and covers all the trips you entered.
+A medium electric car with at least 450 km range does 230 of your 230 driving days.
 Your next steps
 1
 Review the cost assumptions

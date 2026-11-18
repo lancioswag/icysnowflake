@@ -445,10 +445,6 @@ body::before { background: var(--bg); }
 .iconbtn:hover { background: var(--surface-2); }
 .iconbtn.wash { background: var(--surface-2); }
 .iconbtn svg { width: 21px; height: 21px; }
-.bubble { position: fixed; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 24; width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--surface);
-  background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 22px rgba(27, 122, 80, .28); transition: translate var(--t) var(--ease); }
-.bubble:hover { translate: 0 -2px; background: var(--accent-hover); }
-.bubble svg { width: 24px; height: 24px; }
 main.main { padding-block: 12px 110px; }
 .flow { max-width: var(--flow); margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 .kicker { text-align: center; color: var(--muted); font-size: 13px; }
@@ -520,7 +516,6 @@ body::before { background: var(--page); }
 main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 @media (max-width: 380px) { main.main { padding-left: 16px; padding-right: 16px; } }
 .col, .col.wide, .flow { max-width: none; }
-.bubble { right: max(calc(20px + env(safe-area-inset-right, 0px)), calc((100vw - 440px) / 2 + 22px)); bottom: calc(28px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 8px 22px rgba(40, 100, 200, .17); }
 .foot { padding: 0 22px 28px; font-size: 11.5px; }
 .foot-in { flex-direction: column; gap: 6px; }
 .foot-in > span:first-child { display: none; }
@@ -578,7 +573,6 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 .btn.ghost { box-shadow: none; }
 .tile-opt, .choice, .set { box-shadow: 0 1px 2px rgba(21, 61, 120, .04), 0 6px 16px rgba(21, 61, 120, .05); background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%); }
 .tile-opt[aria-pressed="true"], .choice[aria-pressed="true"] { background: linear-gradient(180deg, #f3f7ff 0%, #e6efff 100%); }
-.bubble { background: linear-gradient(180deg, #3876ee 0%, #2459d6 100%); }
 .chip[aria-pressed="true"] { background: linear-gradient(180deg, #3876ee 0%, #2459d6 100%); border-color: #2459d6; }
 /* fields: one column, labels and inputs aligned to the same left edge */
 .qcard .field { width: 100%; }
@@ -1055,7 +1049,6 @@ button.tip { display: inline; padding: 0; border: 0; background: none; font: inh
 @media (max-width: 760px) {
   .qcard .qnav { position: sticky; bottom: 0; z-index: 5; margin-inline: -16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
     background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid var(--line); }
-  .bubble { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 .qtitle { text-align: left !important; }
@@ -1248,6 +1241,9 @@ input, select, textarea, .input { font-size: 16px !important; }
 .home .cta .btn.block svg, .home .cta .talk svg { width: 21px; height: 21px; }
 .home .cta .talk { width: 100%; border: 1px solid var(--line-2); border-radius: 16px; background: var(--surface); color: var(--ink); font-size: 16px; font-weight: 600; box-shadow: 0 2px 5px rgba(16, 41, 75, .08); }
 .home .cta .start-fresh { align-self: center; }
+.navl { display: flex; align-items: center; gap: 6px; }
+.iconbtn.assist-launch { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(180deg, #3876ee, #2459d6); color: #fff; box-shadow: 0 3px 8px rgba(37, 100, 223, .18); }
+.iconbtn.assist-launch:hover { background: #2459d6; }
 .topicbtn[aria-pressed="true"] { background: linear-gradient(180deg, #f5f8ff, #e6efff) !important; border-color: #9dbbf2 !important; color: #174891 !important; box-shadow: inset 0 2px 3px rgba(23, 72, 145, .14), 0 2px 5px rgba(16, 41, 75, .08) !important; transform: translateY(1px); }
 .topicbtn[aria-pressed="true"] svg { color: #2564df !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
@@ -1739,7 +1735,7 @@ function render() {
   const app = document.getElementById('app');
   app.className = 'app';
   const main = ui.assistantOpen ? Assistant.screen() : renderView();
-  app.replaceChildren(...[h('div', { class: 'page' }, renderTopbar(), h('main', { class: 'main', id: 'main' }, main), renderFoot()), renderBubble()].filter(Boolean));
+  app.replaceChildren(h('div', { class: 'page' }, renderTopbar(), h('main', { class: 'main', id: 'main' }, main), renderFoot()));
   if (ui.assistantOpen) Assistant.afterRender();
   queueMicrotask(() => document.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
   const kind = ui.anim; ui.anim = null;
@@ -1757,16 +1753,13 @@ function renderTopbar() {
   const atHome = (ui.view === 'home' || ui.view === 'topics') && !ui.assistantOpen;
   const topicCount = (ui.topicSel ?? store.queue).filter((c) => ORDER.includes(c)).length;
   return h('header', { class: 'nav' }, h('div', { class: 'nav-in' },
-    atHome ? h('span') : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back')),
+    h('span', { class: 'navl' }, atHome ? null : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back')),
+      ui.assistantOpen ? null : h('button', { class: 'iconbtn assist-launch', type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'))),
     h('span', { class: 'navt' }, atHome ? '' : navTitle()),
     h('span', { class: 'navr' },
       !ui.assistantOpen && ui.view !== 'answers' && (profileLines(store.profile).length || topicCount) ? h('button', { class: 'iconbtn ans', type: 'button', onclick: () => go('answers'), 'aria-label': `Your answers, ${topicCount} topics selected` }, icon('list'), topicCount ? h('span', { class: 'badge' }, String(topicCount)) : null) : null,
       Account.on() ? h('button', { class: 'iconbtn', type: 'button', onclick: () => go('account'), 'aria-label': Account.user ? 'Your account' : 'Log in' }, icon('user')) : null,
       atHome ? null : h('button', { class: 'iconbtn wash', onclick: () => { ui.assistantOpen = false; go('home'); }, 'aria-label': 'Back to all barriers' }, icon('home')))));
-}
-/** No floating assistant button: it covered fields and buttons at 390 px. The assistant opens from Start ("in your own words"). */
-function renderBubble() {
-  return ui.assistantOpen ? null : h('button', { class: 'bubble', type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'));
 }
 function renderFoot() {
   if (ui.assistantOpen) return null;

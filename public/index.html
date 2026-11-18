@@ -1059,6 +1059,139 @@ button.tip { display: inline; padding: 0; border: 0; background: none; font: inh
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 .qtitle { text-align: left !important; }
 .stepbar .lab { justify-content: flex-end; }
+
+/* ===== V8.1 – Simone 18.11: one result template, real back, schematic summary, quieter buttons ===== */
+:root { --t: 220ms; --ease: cubic-bezier(.25,.8,.25,1); --press: #1d4fc0; }
+/* top bar stays when scrolling */
+.nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+/* one key design: Next, pressed topics, chips and choices share color, radius and depth */
+.btn { transition: background var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease); }
+.btn.primary, .btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 0 var(--press); }
+.btn.primary:hover { background: #2259cf; }
+.btn.primary:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--press); }
+.btn.primary[disabled] { background: #c9d8f2; border-color: #c9d8f2; box-shadow: none; transform: none; }
+.topicbtn, .choice, .chip, .tile-opt { transition: background var(--t) var(--ease), color var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease) !important; }
+.topicbtn[aria-pressed="true"], .choice[aria-pressed="true"], .chip[aria-pressed="true"], .tile-opt[aria-pressed="true"] {
+  background: var(--accent) !important; border-color: var(--accent) !important; box-shadow: 0 1px 0 var(--press), inset 0 1px 2px rgba(0, 0, 0, .12) !important; transform: translateY(1px); }
+.topicbtn:active { transform: translateY(1px); }
+.choice:hover { translate: none; }
+/* page heads */
+.rhead { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.rhead h1 { flex: 1; margin: 0; }
+.iconbtn.chg { width: 40px; height: 40px; flex: none; color: var(--accent); background: var(--accent-soft); margin-top: 2px; }
+.iconbtn.chg svg, .iconbtn.sm svg { width: 18px; height: 18px; }
+.iconbtn.sm { width: 36px; height: 36px; color: var(--accent); }
+.kinfo { display: flex; gap: 6px; align-items: flex-start; font-size: 12.5px; color: var(--muted); line-height: 1.4; margin: 0; }
+.kinfo svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
+/* short fact card (battery, value later) */
+.factcard { display: flex; flex-direction: column; gap: 8px; padding: 4px 4px 0; }
+.factcard h2 { font-size: 17px; display: flex; align-items: center; gap: 8px; margin: 0 0 2px; }
+.factcard h2 svg { width: 20px; height: 20px; color: var(--accent); }
+.frow { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.frow b { font-variant-numeric: tabular-nums; text-align: right; }
+/* full analysis: one quiet button, no box in a box inside */
+details.fullan { border: 0; background: none; padding: 0; }
+details.fullan > summary { list-style: none; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; border-radius: 14px; border: 1.5px solid var(--accent-line); background: var(--surface); color: var(--accent); font-weight: 650; font-size: 15.5px; cursor: pointer; transition: background var(--t) var(--ease); }
+details.fullan > summary::-webkit-details-marker { display: none; }
+details.fullan > summary:hover { background: var(--accent-soft); }
+details.fullan > summary svg { width: 18px; height: 18px; transition: transform var(--t) var(--ease); }
+details.fullan[open] > summary svg { transform: rotate(180deg); }
+.fa-body { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+.fa-body > .rsec, .fa-body > section, .fa-body > details { background: transparent !important; border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; padding: 20px 2px !important; box-shadow: none !important; }
+.fa-body > details.more { padding: 14px 2px !important; }
+.fa-body > details.more > summary { font-size: 15px; font-weight: 600; color: var(--muted); }
+.fa-body .tile { background: var(--surface-2); border: 0; }
+.fa-body .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.trow > span:only-child { color: var(--ink); font-size: 14px; }
+/* edit inputs: a plain row above the next steps */
+details.editp { background: transparent !important; border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; padding: 14px 2px !important; }
+details.editp > summary { font-size: 15.5px; }
+/* charging */
+.mailrow { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--accent-line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.mailrow .mi { width: 38px; height: 38px; border-radius: 11px; background: var(--accent); color: #fff; display: grid; place-items: center; flex: none; }
+.mailrow .mi svg { width: 18px; height: 18px; }
+.mailrow b { display: block; color: var(--accent); font-size: 15px; }
+.mailrow small { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.35; margin-top: 1px; }
+.mailbox { padding: 4px 0 0; }
+.subsbox { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding: 10px 12px; border-radius: 12px; background: #f3f7f0; border: 1px dashed #b9d3b0; }
+.subsbox a, .subsbox div { display: flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
+.subsbox a span, .subsbox div span { color: var(--muted); font-size: 12.5px; }
+.subsbox a svg { width: 14px; height: 14px; margin-left: auto; color: var(--good); }
+.tlist { display: flex; flex-direction: column; }
+.trow { display: flex; flex-direction: column; gap: 1px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.trow:last-child { border-bottom: 0; }
+.trow b { font-size: 15px; font-weight: 650; }
+.trow span { font-size: 13.5px; color: var(--ink-2); }
+.siteslot { min-height: 40px; }
+.siteinfo { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); }
+.siteinfo .si-top { display: flex; align-items: center; gap: 8px; }
+.siteinfo .si-top b { flex: 1; min-width: 0; }
+.siteinfo .si-top .mk { position: static; width: 12px !important; height: 12px !important; margin: 0 !important; border-width: 0; flex: none; }
+.siteinfo .si-dist { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.siteinfo .sub { font-size: 13px; color: var(--ink-2); }
+.noprice { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: none; align-self: flex-start; }
+.noprice svg { width: 14px; height: 14px; }
+.leaflet-marker-icon.mk { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important; cursor: pointer; transition: transform var(--t) var(--ease); }
+.leaflet-marker-icon.mk.on { transform-origin: center; outline: 3px solid rgba(37, 100, 223, .45); }
+/* next steps: compact rows */
+.action { align-items: center !important; }
+.action .go { margin-left: auto; color: var(--accent); display: grid; place-items: center; }
+.action .go svg { width: 16px; height: 16px; }
+/* loading */
+.loading .lcount { margin: 0; font-weight: 650; color: var(--accent); font-variant-numeric: tabular-nums; }
+.loading .lphrase { margin: 0; color: var(--ink-2); min-height: 1.4em; animation: lfade 2.4s var(--ease) infinite alternate; }
+@keyframes lfade { from { opacity: .55; } to { opacity: 1; } }
+.small.center { text-align: center; }
+/* summary */
+.summary3 { gap: 22px; }
+.shead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.shead h1 { margin: 0; }
+.shead .frac { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 15px; }
+.takeaway { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 20px; background: var(--surface-2); }
+.takeaway .tk { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+.cline { display: flex; flex-wrap: wrap; gap: 6px; }
+.cline .c { font-size: 13px; padding: 5px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--line); }
+.cline .c b { font-variant-numeric: tabular-nums; margin-right: 2px; }
+.cline .c.ok b { color: var(--good); } .cline .c.lim b { color: #b06a00; } .cline .c.open b { color: var(--accent); }
+.pillswitch { display: inline-flex; align-self: flex-start; padding: 4px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); gap: 2px; }
+.pillswitch.full { display: flex; align-self: stretch; }
+.pillswitch.full button { flex: 1; }
+.pillswitch button { border: 0; border-radius: 999px; min-height: 36px; padding: 0 16px; font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); background: transparent; cursor: pointer; transition: background var(--t) var(--ease), color var(--t) var(--ease), box-shadow var(--t) var(--ease); }
+.pillswitch button[aria-pressed="true"] { background: #fff; color: var(--accent); box-shadow: 0 1px 4px rgba(16, 41, 75, .14); }
+.sumtopics h2, .nsteps2 h2, .sumshare h2, .anstopics h2 { font-size: 17px; margin: 0 0 4px; }
+.sumtopics { gap: 8px; }
+.sumrow2 { display: flex; flex-direction: column; gap: 4px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; transition: border-color var(--t) var(--ease); }
+.sumrow2:hover { border-color: var(--accent-line); }
+.sumrow2 .sh { display: flex; align-items: center; gap: 10px; }
+.sumrow2 .sh b { flex: 1; color: var(--accent); font-size: 15.5px; }
+.sumrow2 .sic { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); flex: none; }
+.sumrow2 .sic svg { width: 16px; height: 16px; }
+.sumrow2.st-works .sic { background: #e3f4ea; color: var(--good); } .sumrow2.st-limitation .sic { background: #fdf0e3; color: #b06a00; }
+.sumrow2 .go { color: var(--muted); font-size: 20px; line-height: 1; }
+.sumrow2 .sl { display: flex; flex-direction: column; gap: 1px; padding-left: 38px; font-size: 14px; color: var(--ink); line-height: 1.4; }
+.nsteps2 { display: flex; flex-direction: column; gap: 6px; }
+.nrow { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; line-height: 1.35; cursor: pointer; }
+div.nrow { cursor: default; }
+.nrow .nn { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 12.5px; flex: none; }
+.nrow .nt { flex: 1; min-width: 0; }
+.nrow .go { color: var(--muted); font-size: 20px; }
+.sumshare { background: none !important; border: 0 !important; padding: 0 !important; box-shadow: none !important; }
+.sharegrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.sharebtn { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px; min-height: 84px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 14.5px; font-weight: 650; text-align: left; cursor: pointer; transition: border-color var(--t) var(--ease), background var(--t) var(--ease); }
+.sharebtn:hover { border-color: var(--accent-line); background: var(--accent-soft); }
+.sharebtn svg { width: 20px; height: 20px; color: var(--accent); }
+/* your answers */
+.ansrow { grid-template-areas: "k e" "v e"; }
+.ansrow .ae { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); }
+.anstopics { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.trow2 { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto 16px; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.trow2 .dot { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; }
+.trow2.done .dot { background: var(--good); color: #fff; } .trow2.done .dot svg { width: 13px; height: 13px; stroke-width: 3; }
+.trow2.todo .dot { background: #fde8e8; box-shadow: inset 0 0 0 6px #fde8e8, inset 0 0 0 11px #d64545; }
+.trow2 .stt { font-size: 13px; color: var(--muted); }
+.trow2.done .stt { color: var(--good); font-weight: 650; }
+.trow2 .go { color: var(--muted); }
+@media (max-width: 760px) { .sharegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .takeaway .tk { font-size: 19px; } }
 </style>
 </head>
 <body>
@@ -1122,6 +1255,7 @@ function s(tag, attrs, ...kids) {
   return el;
 }
 const ICONS = {
+  chev: 'M6 9l6 6 6-6',
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z',
   plug: 'M9 2v4M15 2v4M7 6h10v4a5 5 0 0 1-10 0V6zM12 15v7',
@@ -1156,15 +1290,18 @@ function icon(name) {
   return svg;
 }
 const clone = (x) => (x == null ? x : JSON.parse(JSON.stringify(x)));
+/* Numbers: dot as thousands separator, ranges "30.000 – 45.000" (Simone 18.11). */
+const grp = (x, d = 0) => { const [i, f] = Math.abs(Number(x)).toFixed(d).split('.'); return (Number(x) < 0 && Number(x).toFixed(d) != 0 ? '-' : '') + i.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (f ? '.' + f : ''); };
 const fmt = {
-  n: (x, d = 0) => (x == null || isNaN(x) ? '–' : Number(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })),
-  chf: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + Math.round(x).toLocaleString('en-US')),
-  chf100: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + (Math.round(x / 100) * 100).toLocaleString('en-US')),
+  n: (x, d = 0) => (x == null || isNaN(x) ? '–' : grp(x, d)),
+  chf: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x))),
+  chf100: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x / 100) * 100)),
   band: (b, round100 = true) => {
     if (!b || b.min == null) return '–';
-    const r = (v) => (round100 ? Math.round(v / 100) * 100 : Math.round(v)).toLocaleString('en-US');
-    return r(b.min) === r(b.max ?? b.min) ? 'CHF ' + r(b.min) : `CHF ${r(b.min)}–${r(b.max)}`;
+    const r = (v) => grp(round100 ? Math.round(v / 100) * 100 : Math.round(v));
+    return r(b.min) === r(b.max ?? b.min) ? 'CHF ' + r(b.min) : `CHF ${r(b.min)} – ${r(b.max)}`;
   },
+  range: (a, b) => (a == null ? '–' : grp(a) === grp(b ?? a) ? grp(a) : `${grp(a)} – ${grp(b)}`),
   hm: (h) => { if (h == null) return '–'; const t = Math.round(h * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')} h`; },
   dist: (m) => (m == null ? '–' : m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`),
 };
@@ -1208,6 +1345,7 @@ const BARRIERS = {
 const ORDER = ['B1', 'B2', 'B3', 'B7', 'B4'];   // B6 is shown inside B1 (battery) and B3 (resale)
 const QUICK_CODES = ['B1', 'B2', 'B3', 'B6', 'B7', 'B4'];
 BARRIERS.EDIT = { name: 'Edit', title: 'Your answers', question: '', next: [] };
+BARRIERS.MULTI = { name: 'Your topics', title: 'Your topics', question: '', next: [] };   // the questions of all picked topics, each asked once
 BARRIERS.QUICK = { name: 'Quick check', title: 'Quick check', question: '', next: [] };   // all topics in one short run (Christian: early summary, deep dive later)
 
 /* ---------- state ---------- */
@@ -1460,25 +1598,33 @@ function startB6(entry) {
   ui.flow = { history: [], ownTrips: false, forced: null, current: 11, entry };
   const nb = Questions.nextBlock(); nb == null ? calculate('B6') : gotoBlock(nb);
 }
-function b6Part(part) {
-  const rec = store.results.B6, r = rec?.session?.battery_entry === 'forecast' ? rec.response.result : null;
-  const title = part === 'soh' ? 'How long the battery lasts' : 'What the car is worth later';
-  const years = r?.years || [];
-  if (!years.length) return rsec(title, null, h('p', { class: 'small muted' }, b6Busy ? 'Calculating…' : 'Not calculated yet.'), b6Busy ? null : h('button', { class: 'btn small', type: 'button', onclick: () => startB6('forecast') }, 'Show it'));
+/** Battery (under Range) and value (under Costs): two short lines from the precalculated B6 forecast, chart in the full analysis. */
+function b6Forecast() { const rec = store.results.B6; return rec?.session?.battery_entry === 'forecast' ? rec.response.result : null; }
+function b6Card(part) {
+  const r = b6Forecast(); const years = r?.years || [];
+  const title = part === 'soh' ? 'Battery' : 'Value later';
+  if (!years.length) return h('section', { class: 'factcard' }, h('h2', null, icon(part === 'soh' ? 'battery' : 'wallet'), title), h('p', { class: 'small muted' }, b6Busy ? 'Calculating…' : 'Not calculated yet.'));
+  const at = (Y) => years.find((q) => q.year === Y) || years[years.length - 1];
+  const last = years[years.length - 1].year;
+  const pick = [5, last].filter((y, i, a) => a.indexOf(y) === i && years.some((q) => q.year === y));
+  const row = (l, v) => h('div', { class: 'frow' }, h('span', null, l), h('b', null, v));
+  const w = r.checks?.warranty || { min_pct: 70, years: 8, km: 160000 };
+  if (part === 'soh') return h('section', { class: 'factcard' }, h('h2', null, icon('battery'), 'Battery'),
+    ...pick.map((Y) => row(`After ${Y} years`, `${fmt.n(at(Y).soh_pct)} % capacity`)),
+    h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Warranty: usually ${w.min_pct} % within ${w.years || 8} years or ${fmt.n(w.km || 160000)} km.`)));
+  const val = (p) => (p < 5 ? 'under 5 %' : `${fmt.n(p)} %`);
+  return h('section', { class: 'factcard' }, h('h2', null, icon('wallet'), 'Value later'),
+    ...[3, 5].filter((Y) => years.some((q) => q.year === Y)).map((Y) => row(`After ${Y} years (${fmt.n(at(Y).km)} km)`, `${val(at(Y).resale_pct)} of the new price`)));
+}
+function b6Chart(part) {
+  const r = b6Forecast(); const years = r?.years || [];
+  if (!years.length) return null;
   const ctrl = { year: 8, subs: [], heads: [], set(Y) { ctrl.year = Y; ctrl.subs.forEach((f) => f(Y)); ctrl.heads.forEach((f) => f(Y)); } };
-  const line = h('p', { class: 'lead2' });
-  const upd = (Y) => { const yy = years.find((q) => q.year === Y) || {}; line.replaceChildren(...highlight(part === 'soh'
-    ? `After ${Y} year${Y > 1 ? 's' : ''} and ${fmt.n(yy.km)} km: battery health about ${fmt.n(yy.soh_pct)} %, so about ${fmt.n(yy.soh_pct)} % of today's range.`
-    : `After ${Y} year${Y > 1 ? 's' : ''}: the car is worth about ${fmt.n(yy.resale_pct)} % of the new price.`)); };
-  ctrl.heads.push(upd); upd(8);
   const w = r.checks?.warranty || { min_pct: 70 };
   const sohMin = Math.min(60, Math.floor(Math.min(...years.map((y) => y.soh_pct)) / 10) * 10);
-  return rsec(title, 'tap or drag the chart', line,
+  return rsec(part === 'soh' ? 'Battery health over the years' : 'Value over the years', null,
     part === 'soh' ? yearChart(years, 'soh_pct', sohMin, 100, 'Battery health', ctrl, [{ d: (x, y) => `M${x(1)} ${y(w.min_pct)} H${x(8)}`, dash: '6 4', label: `Warranty ${w.min_pct} %`, lx: (x) => x(8) - 2, ly: (y) => y(w.min_pct) - 5 }])
-      : yearChart(years, 'resale_pct', 0, 70, 'Resale value', ctrl),
-    h('p', { class: 'note keep' }, part === 'soh' ? `Dashed line: typical manufacturer warranty, ${w.min_pct} % battery health within 8 years.` : 'Typical resale prices of electric cars in Switzerland (Eurotax retail values, BFE/EBP study 2023).'),
-    h('div', { class: 'linkrow' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => showResult('B6') }, icon('info'), 'Details and how we calculate'),
-      part === 'soh' ? h('button', { class: 'linkbtn', type: 'button', onclick: () => startB6('used_car') }, icon('car'), 'Check the battery of a used EV') : null));
+      : yearChart(years, 'resale_pct', 0, 70, 'Value', ctrl));
 }
 
 /* ---------- navigation ---------- */
@@ -1491,6 +1637,41 @@ function nextBarrier(code) {
 }
 function go(view) { if (ui.view === 'loading' || ui.view === 'batch') { store.rev++; inflight?.abort(); } if (view !== 'result') ui.editOpen = null; ui.view = view; ui.anim = { home: 'home', topics: 'home', summary: 'summary', orient: 'question', settings: 'question', reset: 'question' }[view] || 'soft'; render(); window.scrollTo({ top: 0 }); }
 
+/* ---------- history: back = the page you saw before (also the phone's back gesture) ---------- */
+const Nav = {
+  stack: [], last: null, restoring: false,
+  key() {
+    if (ui.assistantOpen || ['loading', 'batch', 'error'].includes(ui.view)) return null;
+    if (ui.view === 'question') return 'q:' + ui.barrier + ':' + ui.flow?.current;
+    if (ui.view === 'result') return 'r:' + ui.barrier;
+    return ui.view === 'topics' ? 'home' : ui.view;
+  },
+  snap(k) { return { key: k, view: ui.view === 'topics' ? 'home' : ui.view, barrier: ui.barrier, flow: ui.flow ? clone(ui.flow) : null, session: clone(store.session || {}) }; },
+  afterRender() {
+    const k = Nav.key(); if (!k) return;
+    if (Nav.restoring) Nav.restoring = false;
+    else if (Nav.last && Nav.last.key !== k) { Nav.stack.push(Nav.last); if (Nav.stack.length > 60) Nav.stack.shift(); try { history.pushState({ bev: Nav.stack.length }, ''); } catch { } }
+    Nav.last = Nav.snap(k);
+  },
+  restore(s) {
+    Nav.restoring = true;
+    store.session = s.session || {};
+    if (s.view === 'question' && s.flow) { ui.barrier = s.barrier; ui.flow = s.flow; ui.draft = clone(store.profile); ui.editOpen = null; ui.view = 'question'; ui.anim = 'question'; render(); window.scrollTo({ top: 0 }); return; }
+    if (s.view === 'result') { if (store.results[s.barrier]) { ui.flow = null; showResult(s.barrier); return; } Nav.restoring = false; return Nav.back(); }
+    go(s.view);
+  },
+  back() {
+    if (ui.assistantOpen) { ui.assistantOpen = false; render(); return; }
+    if (ui.view === 'loading' || ui.view === 'batch') { store.rev++; inflight?.abort(); }
+    const s = Nav.stack.pop();
+    if (s) return Nav.restore(s);
+    if (Nav.key() !== 'home') { Nav.restoring = true; go('home'); }
+  },
+};
+/** The back arrow: through the browser history when we pushed an entry, so the phone's back gesture and the arrow do the same. */
+function appBack() { if (!ui.assistantOpen && Nav.stack.length && history.state && history.state.bev) history.back(); else Nav.back(); }
+window.addEventListener('popstate', () => { if (ui.assistantOpen) { ui.assistantOpen = false; try { history.pushState({ bev: Nav.stack.length }, ''); } catch { } render(); return; } Nav.back(); });
+
 /* ---------- frame ---------- */
 function render() {
   gloss.used = new Set();
@@ -1502,20 +1683,15 @@ function render() {
   queueMicrotask(() => document.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
   const kind = ui.anim; ui.anim = null;
   if (kind) Motion.enter(kind);
+  Nav.afterRender();
 }
 function navTitle() {
   if (ui.assistantOpen) return 'Assistant';
   const t = ui.barrier && BARRIERS[ui.barrier]?.title;
-  return ({ home: 'BEV Navigator', topics: 'BEV Navigator', orient: "I'm not sure", question: t, edit: t, result: t, loading: t, error: t, summary: 'Your results', batch: 'Your results', answers: 'Your answers', account: 'Your account', settings: 'Connection & data', reset: 'Your data' })[ui.view] || 'BEV Navigator';
+  if (ui.view === 'question' && ui.barrier === 'MULTI') return store.queue.length + ' topics';
+  return ({ home: 'BEV Navigator', topics: 'BEV Navigator', orient: "I'm not sure", question: t, edit: t, result: t, loading: t, error: t, summary: 'Summary', batch: 'Your results', answers: 'Your answers', account: 'Your account', settings: 'Connection & data', reset: 'Your data' })[ui.view] || 'BEV Navigator';
 }
-function navBack() {
-  if (ui.assistantOpen) { ui.assistantOpen = false; render(); return; }
-  switch (ui.view) {
-    case 'question': return Questions.back();
-    case 'edit': ui.flow = null; return showResult(ui.barrier);
-    default: return go('home');
-  }
-}
+function navBack() { appBack(); }
 function renderTopbar() {
   const atHome = (ui.view === 'home' || ui.view === 'topics') && !ui.assistantOpen;
   return h('header', { class: 'nav' }, h('div', { class: 'nav-in' },
@@ -1559,7 +1735,8 @@ function renderView() {
 /* ---------- topic selection ---------- */
 function viewTopics() {
   const anyDone = ORDER.some((c) => store.results[c]);
-  const sel = (ui.topicSel || []).filter((c) => ORDER.includes(c));
+  const sel = (ui.topicSel ?? store.queue).filter((c) => ORDER.includes(c));
+  const allDone = sel.length > 0 && sel.every((c) => store.results[c]);
   const set = (a) => { ui.topicSel = a; render(); };
   const toggle = (c) => { const a = sel.slice(); const i = a.indexOf(c); if (i >= 0) a.splice(i, 1); else a.push(c); set(a); };
   const btn = (c, picked) => h('button', { class: 'topicbtn', type: 'button', 'data-code': c, 'aria-pressed': String(picked),
@@ -1576,9 +1753,9 @@ function viewTopics() {
       sel.length ? picked : null,
       h('div', { class: 'topiclist' }, ORDER.filter((c) => !sel.includes(c)).map((c) => btn(c, false)))),
     h('div', { class: 'cta' },
-      h('button', { class: 'btn primary block', type: 'button', onclick: () => (sel.length ? startQueue(sel) : startQuick()) },
-        sel.length ? 'Continue' : 'Check all topics', icon('arrow')),
-      anyDone ? h('button', { class: 'btn ghost block', type: 'button', onclick: () => go('summary') }, 'Your results') : null,
+      h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
+        !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue', icon(allDone ? 'refresh' : 'arrow')),
+      anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), 'Your results') : null,
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), 'Or tell us about you in your own words')));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
@@ -1654,8 +1831,21 @@ function startQueue(codes) {
   store.queue = codes.filter((c, i) => ORDER.includes(c) && codes.indexOf(c) === i);   // tap order = priority
   ui.topicSel = null;
   saveStore();
-  const first = store.queue.find((c) => !store.results[c]) || store.queue[0];
-  if (store.results[first]) showResult(first); else startBarrier(first);
+  if (store.queue.length === 1) { const c = store.queue[0]; return store.results[c] ? showResult(c) : startBarrier(c); }
+  if (!multiTodo().length) return go('summary');
+  ui.barrier = 'MULTI'; ui.editOpen = null; store.session = {};
+  ui.flow = { history: [], ownTrips: false, forced: null, current: null };
+  const first = Questions.nextBlock();
+  first == null ? runAll(multiTodo()) : gotoBlock(first);
+}
+/** Topics to calculate after the question round; battery forecast with range or costs, so their pages need no extra calculation. */
+function multiTodo() {
+  const q = store.queue.slice(); if (q.some((c) => c === 'B1' || c === 'B3')) q.push('B6');
+  return q.filter((c) => !store.results[c] || (c === 'B6' && store.results.B6.session?.battery_entry !== 'forecast'));
+}
+function recalcTopics(sel) {
+  sel.forEach((c) => delete store.results[c]); if (sel.some((c) => c === 'B1' || c === 'B3')) delete store.results.B6;
+  saveResults(); startQueue(sel);
 }
 function startBarrier(code) {
   ui.barrier = code; ui.editOpen = null;
@@ -1678,11 +1868,12 @@ function showResult(code) {
 
 function startQuick() { store.queue = []; ui.topicSel = null; saveStore(); startBarrier('QUICK'); }
 const QUICK_SESSION = { B2: { charging_interest: ['everyday'] }, B6: { battery_entry: 'forecast' } };
+const LOAD_PHRASE = { B1: 'Measuring the range your trips need…', B2: 'Looking for charging stations near you…', B3: 'Adding up what the car costs you…', B4: 'Matching car sizes to your trips…', B6: 'Forecasting how the battery ages…', B7: 'Counting the CO2 over the whole life of the car…' };
 async function runAll(codes) {
   const myRev = ++store.rev;
   ui.batch = { codes, done: [], need: [] }; ui.view = 'batch'; render(); window.scrollTo({ top: 0 });
   for (const code of codes) {
-    const session = { barrier: BARRIERS[code].name, ...(QUICK_SESSION[code] || {}) };
+    const session = { barrier: BARRIERS[code].name, ...(QUICK_SESSION[code] || {}), ...(code === 'B2' && store.session.charging_interest ? { charging_interest: store.session.charging_interest.slice() } : {}) };
     let resp = null;
     try { resp = store.settings.demo ? null : await postJSON('navigator', { profile: wireProfile(store.profile), session, request_id: uid(), state_revision: myRev }); } catch { /* listed as "needs a look" */ }
     if (myRev !== store.rev) return;   // the user left the page
@@ -1699,15 +1890,18 @@ async function runAll(codes) {
 }
 function viewBatch() {
   const b = ui.batch || { codes: [], done: [], need: [] };
+  const cur = b.codes[b.done.length];
   return h('div', { class: 'col' }, h('div', { class: 'loading', role: 'status', 'aria-live': 'polite' },
-    h('div', { class: 'spinner' }), h('h2', null, `Calculating your results – ${b.done.length} of ${b.codes.length}`),
-    h('p', { class: 'muted' }, 'Each topic is calculated with Swiss data. A few seconds each.')),
+    h('div', { class: 'spinner' }), h('h2', null, 'Calculating your results'),
+    h('p', { class: 'lcount' }, `${Math.min(b.done.length + 1, b.codes.length)} of ${b.codes.length}`),
+    cur ? h('p', { class: 'lphrase' }, LOAD_PHRASE[cur] || 'One moment…') : null),
     h('ul', { class: 'batchlist' }, b.codes.map((c) => h('li', { class: b.done.includes(c) ? (b.need.includes(c) ? 'need' : 'on') : '' },
-      h('span', null, b.done.includes(c) ? (b.need.includes(c) ? '!' : '✓') : '·'), BARRIERS[c].title))));
+      h('span', null, b.done.includes(c) ? (b.need.includes(c) ? '!' : '✓') : '·'), topicTitle(c)))),
+    h('p', { class: 'small muted center' }, 'Each topic is calculated with Swiss data, a few seconds each.'));
 }
 
 /* ---------- loading / error ---------- */
-const LOAD_MSGS = [[8000, 'Still calculating – stations and tariffs take a little longer.'], [25000, 'Almost there…']];
+const LOAD_MSGS = [[6000, 'Checking Swiss data for your answers…'], [14000, 'Still calculating, stations and tariffs take a little longer…'], [25000, 'Almost there…']];
 let loadTimers = [];
 function startLoadMsgs() {
   loadTimers.forEach(clearTimeout);
@@ -1717,8 +1911,8 @@ function viewLoading() {
   startLoadMsgs();
   const b = BARRIERS[ui.barrier];
   return h('div', { class: 'col' }, h('div', { class: 'loading', role: 'status', 'aria-live': 'polite' },
-    h('div', { class: 'spinner' }), h('h2', null, 'Calculating ' + (b ? b.title.toLowerCase() : 'your result') + '…'),
-    h('p', { class: 'muted', id: 'load-msg' }, 'Routes, tariffs and Swiss data – a few seconds.')),
+    h('div', { class: 'spinner' }), h('h2', null, 'Calculating ' + (b ? b.title.toLowerCase() : 'your result')),
+    h('p', { class: 'lphrase', id: 'load-msg' }, LOAD_PHRASE[ui.barrier] || 'One moment…')),
     h('div', { class: 'card flat' }, h('div', { class: 'skel', style: { width: '70%' } }), h('div', { class: 'skel', style: { width: '90%' } }), h('div', { class: 'skel', style: { width: '55%' } })));
 }
 function viewError() {
@@ -1729,7 +1923,7 @@ function viewError() {
     h('p', { class: 'muted' }, e.message || 'Please try again.', ' Your answers are kept.'),
     h('div', { class: 'btn-row' },
       e.retryable !== false ? h('button', { class: 'btn primary', onclick: () => calculate(e.barrier) }, 'Try again') : null,
-      h('button', { class: 'btn ghost', onclick: () => go('home') }, 'Back to all barriers'))));
+      h('button', { class: 'btn ghost', onclick: () => appBack() }, 'Back'))));
 }
 
 /* ---------- summary: statuses by fixed rules, wording by AI (n8n "AI summary v3", POST /summary) ---------- */
@@ -1752,71 +1946,63 @@ const Summary = {
 };
 const ST_LABEL = { works: 'works', limitation: 'works, with a limitation', open: 'still open' };
 const topicTitle = (c) => (c === 'B6' ? 'Battery & resale' : BARRIERS[c]?.title || c);
+/** Battery & resale is shown inside Range (and Costs): the same page wherever you open it. */
+const openTopic = (c) => (c === 'B6' ? (store.results.B1 ? showResult('B1') : store.results.B3 ? showResult('B3') : showResult('B6')) : showResult(c));
+/** Short, schematic lines per topic for the summary ("Home charging needs approval"). */
+function topicLines(c) {
+  const r = store.results[c]?.response?.result; if (!r) return [];
+  try {
+    if (c === 'B1') { const cov = r.coverage || {}; return cov.r100_km != null ? [`Range needed: ${fmt.n(cov.r90_km ?? cov.r100_km)} km`, ...(cov.r90_km != null && cov.r90_km < cov.r100_km ? [`All trips: ${fmt.n(cov.r100_km)} km`] : [])] : []; }
+    if (c === 'B2') {
+      const L = [];
+      if (r.home) L.push({ H0: 'Home charging: available', H1: 'Home charging needs a wallbox', H2: 'Home charging needs approval', H3: 'Home charging needs the landlord', HX: 'Home charging: no fixed parking' }[r.home.node] || r.home.what);
+      if (r.work) L.push(r.work.relevant === false ? 'Workplace charging: not available' : r.work.node === 'W0' ? 'Workplace charging: available' : 'Workplace charging: ask your employer');
+      if ((r.ranking || []).some((x) => String(x.option).startsWith('public') && x.available_now)) L.push('Public charging nearby');
+      return L.filter(Boolean);
+    }
+    if (c === 'B6') { const y = r.years || []; const a = y.find((q) => q.year === 8) || y[y.length - 1], b = y.find((q) => q.year === 5); return [a ? `Battery after ${a.year} years: ${fmt.n(a.soh_pct)} %` : null, b ? `Value after 5 years: ${b.resale_pct < 5 ? 'under 5' : fmt.n(b.resale_pct)} % of new price` : null].filter(Boolean); }
+  } catch { }
+  return [];
+}
 function viewSummary() {
   const st = Summary.style, sm = Summary.get(st);
-  if (!sm && Summary.codes().length && !store.settings.demo) queueMicrotask(() => Summary.load(st));
-  if (!sm || sm.failed) return viewSummaryPlain(!sm && !store.settings.demo && Summary.codes().length > 0);
+  const codes = Summary.codes();
+  if (!sm && codes.length && !store.settings.demo) queueMicrotask(() => Summary.load(st));
+  const ok = !!(sm && !sm.failed);
+  const loading = !sm && codes.length > 0 && !store.settings.demo;
+  const done = sm?.based_on?.done ?? codes.length;
   const todo = ORDER.filter((c) => !store.results[c]);
-  const box = (n, label, cls) => h('div', { class: 'cnt ' + cls }, h('b', null, String(n)), h('span', null, label));
-  return h('div', { class: 'col wide summary2' },
-    h('div', { class: 'qhead' }, h('div', { class: 'eyebrow' }, `Your results · based on ${sm.based_on?.done ?? Summary.codes().length} of 6 topics`),
-      h('h1', null, sm.outcome?.title || 'What we found for you'),
-      sm.headline ? h('p', { class: 'lead' }, ...highlight(sm.headline)) : null,
-      ...(sm.outcome?.limitations || []).map((l) => h('p', { class: 'small' }, l.text))),
-    h('div', { class: 'cnts' }, box(sm.counts?.works || 0, 'work for you', 'ok'), box(sm.counts?.limitation || 0, 'with a limitation', 'lim'), box(sm.counts?.open || 0, 'still open', 'open')),
-    h('div', { class: 'seg', role: 'group', 'aria-label': 'How to show the summary' }, [['simple', 'Simple'], ['numbers', 'With the numbers']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st === v), onclick: () => { Summary.style = v; render(); } }, l))),
+  const rows = ok ? sm.topics : codes.map((code) => ({ code }));
+  const n = (x) => String(x ?? 0);
+  return h('div', { class: 'col wide summary3' },
+    h('div', { class: 'shead' }, h('h1', null, 'Summary'), h('span', { class: 'frac' }, `Topics ${done}/${QUICK_CODES.length}`)),
+    loading ? h('div', { class: 'takeaway', role: 'status', 'aria-label': 'Writing your summary' }, h('span', { class: 'flabel' }, 'Takeaway'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
+    ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(sm.outcome?.title || sm.headline || '')),
+      h('div', { class: 'cline' }, h('span', { class: 'c ok' }, h('b', null, n(sm.counts?.works)), ' work for you'), h('span', { class: 'c lim' }, h('b', null, n(sm.counts?.limitation)), ' with a limitation'), h('span', { class: 'c open' }, h('b', null, n(sm.counts?.open)), ' still open'))) : null,
+    ok ? h('div', { class: 'pillswitch', role: 'group', 'aria-label': 'How to show the summary' }, [['simple', 'Simple'], ['numbers', 'With the numbers']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st === v), onclick: () => { if (Summary.style !== v) { Summary.style = v; render(); } } }, l))) : null,
     h('section', { class: 'sumtopics' }, h('h2', null, 'Your topics'),
-      sm.topics.map((t) => h('button', { class: 'sumrow st-' + t.status, type: 'button', onclick: () => showResult(t.code) },
-        h('span', { class: 'sic' }, icon({ works: 'check', limitation: 'info', open: 'compass' }[t.status] || 'arrow')),
-        h('span', { class: 'stx' }, h('span', { class: 'eyebrow' }, `${topicTitle(t.code)} · ${ST_LABEL[t.status] || t.status}`), h('b', null, t.text || Results.headline(t.code).statement),
-          st === 'numbers' && t.sources?.length ? h('span', { class: 'small muted' }, 'Sources ' + t.sources.map((x) => '[' + x.n + ']').join(' ')) : null),
-        h('span', { class: 'go' }, '›')))),
-    sm.next_steps?.length ? h('section', { class: 'nsteps' }, h('h2', null, sm.next_steps.length > 1 ? 'Your next steps' : 'Your next step'),
-      sm.next_steps.map((x, i) => h('div', { class: 'nstep' }, h('span', { class: 'nn' }, String(i + 1)),
-        h('div', null, h('span', { class: 'eyebrow' }, x.topic), x.text ? h('p', null, x.text) : null,
-          x.topic_code && store.results[x.topic_code] ? h('button', { class: 'btn small', type: 'button', onclick: () => showResult(x.topic_code) }, x.button_label || 'Open', icon('arrow')) : null)))) : null,
-    sm.revisit?.length ? h('section', { class: 'rsec' }, h('h2', null, 'Worth revisiting later'), sm.revisit.map((x) => h('p', null, x.text))) : null,
+      rows.map((t) => { const lines = topicLines(t.code); const status = t.status;
+        return h('button', { class: 'sumrow2' + (status ? ' st-' + status : ''), type: 'button', onclick: () => openTopic(t.code) },
+          h('span', { class: 'sh' }, h('span', { class: 'sic' }, icon(status ? { works: 'check', limitation: 'info', open: 'compass' }[status] || 'arrow' : TOPIC_ICON[t.code] || 'arrow')), h('b', null, topicTitle(t.code)), h('span', { class: 'go' }, '›')),
+          h('span', { class: 'sl' }, ...(lines.length ? lines : normNum(t.text || Results.headline(t.code).statement).split(/(?<=\.)\s+(?=[A-Z])/)).map((x) => h('span', null, x))),
+          st === 'numbers' && t.sources?.length ? h('span', { class: 'xsmall muted' }, 'Sources ' + t.sources.map((x) => '[' + x.n + ']').join(' ')) : null); })),
+    ok && sm.next_steps?.length ? h('section', { class: 'nsteps2' }, h('h2', null, 'Your next steps'),
+      sm.next_steps.map((x, i) => { const go2 = x.topic_code && store.results[x.topic_code];
+        return h(go2 ? 'button' : 'div', { class: 'nrow', type: go2 ? 'button' : null, onclick: go2 ? () => openTopic(x.topic_code) : null }, h('span', { class: 'nn' }, String(i + 1)), h('span', { class: 'nt' }, normNum(x.button_label || x.text || x.full_step || x.topic)), go2 ? h('span', { class: 'go' }, '›') : null); })) : null,
     todo.length ? h('section', { class: 'sumtodo' }, h('h2', null, 'Not checked yet'), h('div', { class: 'chipline' }, todo.map((c) => h('button', { class: 'chip', type: 'button', onclick: () => startBarrier(c) }, BARRIERS[c].title)))) : null,
-    h('section', { class: 'sumshare' }, h('h2', null, 'Save or share'),
-      h('div', { class: 'sumbtns' },
-        h('button', { class: 'btn primary', type: 'button', onclick: (e) => Actions.saveOnePager(sm, e.currentTarget) }, icon('down'), 'Save as one-page PDF'),
-        h('button', { class: 'btn', type: 'button', onclick: (e) => Actions.savePdf(pdfCodes(ORDER.filter((c) => store.results[c])), e.currentTarget) }, icon('down'), 'Full report as PDF')),
-      Account.on() ? h('button', { class: 'linkbtn', type: 'button', onclick: () => go('account') }, icon('user'), Account.user ? 'Your answers are saved to your account' : 'Create an account to continue later') : null),
-    sm.sources?.length ? h('details', { class: 'rsec more' }, h('summary', null, icon('info'), h('span', null, `Sources (${sm.sources.length})`)),
-      h('ol', { class: 'srclist' }, sm.sources.map((x) => h('li', null, safeUrl(x.url) ? h('a', { href: safeUrl(x.url), target: '_blank', rel: 'noopener noreferrer' }, x.name) : x.name, x.year ? ', ' + x.year : '')))) : null,
-    h('p', { class: 'small muted' }, sm.note || ''),
-    h('div', { class: 'linkrow' },
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('answers') }, icon('edit'), 'Change one answer'),
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('topics') }, icon('home'), 'Back to the start'),
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, icon('refresh'), 'Start over')));
-}
-function viewSummaryPlain(loading) {
-  const done = ORDER.filter((c) => store.results[c]);
-  const todo = ORDER.filter((c) => !store.results[c]);
-  const need = ui.batch?.need || [];
-  const row = (c) => h('button', { class: 'sumrow', type: 'button', onclick: () => showResult(c) },
-    h('span', { class: 'sic' }, icon(TOPIC_ICON[c] || 'arrow')), h('span', { class: 'stx' }, h('span', { class: 'eyebrow' }, BARRIERS[c].title), h('b', null, Results.headline(c).statement)), h('span', { class: 'go' }, '›'));
-  return h('div', { class: 'col wide' },
-    h('div', { class: 'qhead' }, h('div', { class: 'eyebrow' }, 'Your results'), h('h1', null, done.length ? 'What we found for you' : 'No results yet'),
-      h('p', { class: 'lead' }, done.length ? 'One line per topic. Tap a topic for the details, the sources and your next steps.' : 'Pick a topic or run the quick check.')),
-    loading ? h('div', { class: 'card flat', role: 'status' }, h('p', { class: 'small muted' }, icon('spark'), ' Writing your summary…'), h('div', { class: 'skel', style: { width: '80%' } }), h('div', { class: 'skel', style: { width: '60%' } })) : null,
-    done.length ? h('div', { class: 'sumlist' }, done.map(row)) : null,
-    todo.length ? h('section', { class: 'sumtodo' }, h('h2', null, done.length ? 'Not checked yet' : 'Topics'),
-      h('div', { class: 'chipline' }, todo.map((c) => h('button', { class: 'chip', type: 'button', onclick: () => startBarrier(c) }, BARRIERS[c].title + (need.includes(c) ? ' – a few more answers' : store.visited.includes(c) ? ' – update' : ''))))) : null,
-    done.length ? h('section', { class: 'sumshare' }, h('h2', null, 'Save or share'),
-      h('p', { class: 'small muted' }, 'No account needed: the PDF is your copy of the results.', Account.on() ? [' ', h('button', { class: 'linkbtn inline', type: 'button', onclick: () => go('account') }, Account.user ? 'Your answers are saved to your account.' : 'Or create an account to continue later on any device.')] : null),
-      h('div', { class: 'sumbtns' },
-        h('button', { class: 'btn primary', type: 'button', onclick: (e) => Actions.savePdf(pdfCodes(done), e.currentTarget) }, icon('down'), 'Save all as PDF'),
-        h('button', { class: 'btn', type: 'button', onclick: (e) => Actions.sendPdf(pdfCodes(done), e.currentTarget) }, icon('mail'), 'Email me the PDF'))) : null,
-    h('div', { class: 'linkrow' },
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('answers') }, icon('edit'), 'Change one answer'),
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('topics') }, icon('home'), 'Back to the start'),
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, icon('refresh'), 'Start over')));
+    codes.length ? h('section', { class: 'sumshare' }, h('h2', null, 'Save or share'),
+      h('div', { class: 'sharegrid' },
+        h('button', { class: 'sharebtn', type: 'button', onclick: (e) => (ok ? Actions.saveOnePager(sm, e.currentTarget) : Actions.savePdf(pdfCodes(ORDER.filter((c) => store.results[c])), e.currentTarget)) }, icon('down'), h('span', null, ok ? 'One-page PDF' : 'Save as PDF')),
+        h('button', { class: 'sharebtn', type: 'button', onclick: (e) => Actions.savePdf(pdfCodes(ORDER.filter((c) => store.results[c])), e.currentTarget) }, icon('list'), h('span', null, 'Full report')),
+        h('button', { class: 'sharebtn', type: 'button', onclick: (e) => Actions.sendPdf(pdfCodes(ORDER.filter((c) => store.results[c])), e.currentTarget) }, icon('mail'), h('span', null, 'Email me')),
+        Account.on() && !Account.user ? h('button', { class: 'sharebtn', type: 'button', onclick: () => go('account') }, icon('user'), h('span', null, 'Save your answers')) : null)) : null,
+    ok && st === 'numbers' && sm.sources?.length ? h('details', { class: 'fullan small' }, h('summary', null, h('span', null, `Sources (${sm.sources.length})`), icon('chev')),
+      h('ol', { class: 'srclist' }, sm.sources.map((x) => h('li', null, safeUrl(x.url) ? h('a', { href: safeUrl(x.url), target: '_blank', rel: 'noopener noreferrer' }, x.name) : x.name, x.year ? ', ' + x.year : '')))) : null);
 }
 
 const pdfCodes = (done) => (store.results.B6 && (done.includes('B1') || done.includes('B3')) ? [...done, 'B6'] : done);
 /* ---------- what you told us ---------- */
-const BUDGETS = [['lt30', 'Up to CHF 30,000', 30000], ['30_45', 'CHF 30,000–45,000', 45000], ['45_60', 'CHF 45,000–60,000', 60000], ['gt60', 'More than CHF 60,000', Infinity], ['unsure', 'Not sure yet', null]];
+const BUDGETS = [['lt30', 'Up to CHF 30.000', 30000], ['30_45', 'CHF 30.000 – 45.000', 45000], ['45_60', 'CHF 45.000 – 60.000', 60000], ['gt60', 'More than CHF 60.000', Infinity], ['unsure', 'Not sure yet', null]];
 const budgetMax = () => BUDGETS.find((b) => b[0] === store.profile.budget)?.[2] ?? null;
 function profileLines(p) {
   const c = commuteOf(p); const L = [];
@@ -1838,14 +2024,11 @@ function editAnswer(b) {
 function viewAnswers() {
   const L = profileLines(store.profile);
   return h('div', { class: 'col' },
-    h('div', { class: 'qhead' }, h('div', { class: 'eyebrow' }, 'Your answers'), h('h1', null, 'What you told us'),
-      h('p', { class: 'lead' }, 'Tap an answer to change only that one. Results that depend on it are calculated again.')),
-    L.length ? h('div', { class: 'anslist' }, L.map(([k, v]) => h('button', { class: 'ansrow', type: 'button', onclick: () => editAnswer(LINE_BLOCK[k]) }, h('span', { class: 'ak' }, k), h('span', { class: 'av' }, v), h('span', { class: 'ae' }, icon('edit'), 'Change')))) : h('p', { class: 'muted' }, 'Nothing yet.'),
-    h('section', { class: 'rsec' }, h('h2', null, 'Your topics'),
-      h('div', { class: 'sumlist' }, ORDER.map((c) => h('button', { class: 'sumrow' + (store.results[c] ? '' : ' todo'), type: 'button', onclick: () => (store.results[c] ? showResult(c) : startBarrier(c)) },
-        h('span', { class: 'sic' }, icon(TOPIC_ICON[c])), h('span', { class: 'stx' }, h('b', null, BARRIERS[c].title), h('span', null, store.results[c] ? 'Done – tap to see it again' : 'Not checked yet')), h('span', { class: 'go' }, '›'))))),
-    h('div', { class: 'linkrow' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => go('home') }, icon('home'), 'Back to the start'),
-      h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, icon('refresh'), 'Start over (delete all answers)')));
+    L.length ? h('div', { class: 'anslist' }, L.map(([k, v]) => h('button', { class: 'ansrow', type: 'button', onclick: () => editAnswer(LINE_BLOCK[k]), 'aria-label': `Change: ${k}` }, h('span', { class: 'ak' }, k), h('span', { class: 'av' }, v), h('span', { class: 'ae' }, icon('edit'))))) : h('p', { class: 'muted' }, 'Nothing yet.'),
+    h('section', { class: 'anstopics' }, h('h2', null, 'Your topics'),
+      h('div', { class: 'sumlist' }, ORDER.map((c) => { const on = !!store.results[c];
+        return h('button', { class: 'trow2 ' + (on ? 'done' : 'todo'), type: 'button', onclick: () => (on ? showResult(c) : startBarrier(c)) },
+          h('span', { class: 'dot' }, on ? icon('check') : null), h('b', null, BARRIERS[c].title), h('span', { class: 'stt' }, on ? 'Done' : 'Not checked yet'), h('span', { class: 'go' }, '›')); }))));
 }
 
 /* ---------- account (Supabase Auth, dev project; Zurich next: small login at the start, account at the end) ---------- */
@@ -1889,24 +2072,21 @@ const Account = {
   view() {
     if (Account.user) return h('div', { class: 'col' }, h('div', { class: 'qcard' },
       h('h1', { class: 'qtitle' }, 'Your account'),
-      h('p', { class: 'muted' }, 'Logged in as ', h('b', null, Account.user.email || ''), '. Your answers are saved to your account whenever they change, so you can continue on any device.'),
+      h('p', { class: 'muted' }, h('b', null, Account.user.email || ''), ' · your answers are saved.'),
       h('div', { class: 'qnav' },
         h('button', { class: 'btn primary block', type: 'button', onclick: () => go(ORDER.some((c) => store.results[c]) ? 'summary' : 'home') }, 'Continue', icon('arrow')),
         h('button', { class: 'btn ghost block', type: 'button', onclick: () => Account.wipe() }, icon('refresh'), 'Delete my saved answers'),
         h('button', { class: 'btn ghost block', type: 'button', onclick: () => Account.logout() }, 'Log out'))));
-    const st = Account.form = Account.form || { email: '', pw: '', create: !hasProfile() ? false : true };
+    const st = Account.form = Account.form || { email: '', pw: '', create: true };
     const email = h('input', { class: 'input', id: 'acc-email', type: 'email', autocomplete: 'email', value: st.email, oninput: (e) => { st.email = e.target.value.trim(); } });
     const pw = h('input', { class: 'input', id: 'acc-pw', type: 'password', autocomplete: st.create ? 'new-password' : 'current-password', value: st.pw, oninput: (e) => { st.pw = e.target.value; } });
     return h('div', { class: 'col' }, h('form', { class: 'qcard', onsubmit: (e) => { e.preventDefault(); if (/.+@.+\..+/.test(st.email) && st.pw.length >= 8) Account.submit(st.email, st.pw, st.create); else { Account.msg = 'Enter your email and a password of at least 8 characters.'; render(); } } },
-      h('h1', { class: 'qtitle' }, st.create ? 'Create an account' : 'Log in'),
-      h('p', { class: 'qsub' }, 'Optional. With an account your answers are saved and you can continue later on any device. Without one, everything stays in this browser.'),
-      h('div', { class: 'seg' }, h('button', { type: 'button', 'aria-pressed': String(!st.create), onclick: () => { st.create = false; Account.msg = ''; render(); } }, 'Log in'), h('button', { type: 'button', 'aria-pressed': String(st.create), onclick: () => { st.create = true; Account.msg = ''; render(); } }, 'Create account')),
+      h('h1', { class: 'qtitle' }, 'Save your answers'),
+      h('div', { class: 'pillswitch full' }, h('button', { type: 'button', 'aria-pressed': String(st.create), onclick: () => { st.create = true; Account.msg = ''; render(); } }, 'Create account'), h('button', { type: 'button', 'aria-pressed': String(!st.create), onclick: () => { st.create = false; Account.msg = ''; render(); } }, 'Log in')),
       h('div', { class: 'field' }, h('label', { for: 'acc-email' }, 'Email'), email),
-      h('div', { class: 'field' }, h('label', { for: 'acc-pw' }, 'Password (at least 8 characters)'), pw),
+      h('div', { class: 'field' }, h('label', { for: 'acc-pw' }, 'Password'), pw),
       Account.msg ? h('p', { class: 'fmsg err', role: 'alert' }, Account.msg) : null,
-      st.create ? h('p', { class: 'small muted' }, 'We save your postal code, address, trips, cars and budget to the account, nothing else. You can delete them at any time.') : null,
-      h('div', { class: 'qnav' }, h('button', { class: 'btn primary block', type: 'submit', disabled: Account.busy }, Account.busy ? 'One moment…' : st.create ? 'Create account and save' : 'Log in'),
-        h('button', { class: 'btn ghost block', type: 'button', onclick: () => go('home') }, 'Not now'))));
+      h('div', { class: 'qnav' }, h('button', { class: 'btn primary block', type: 'submit', disabled: Account.busy }, Account.busy ? 'One moment…' : st.create ? 'Create account' : 'Log in'))));
   },
 };
 
@@ -2014,7 +2194,9 @@ function routeFor(code) {
     case 'B2': return ss.charging_interest ? (ss.charging_interest.includes('everyday') ? [6, 1, 5, 2] : [6]) : [6];
     case 'B3': return dedupe([3, ...own, 1, 7, 8, 9, 10]);
     case 'B4': return dedupe([3, ...own, 1, 7, 9, 10, 13]);
-    case 'QUICK': return [1, 3, 2, 5, 7, 8, 9, 13];   // trips before work: a commute answer would otherwise skip the trip picker
+    case 'QUICK': return [1, 3, 2, 5, 7, 8, 9, 13];
+    case 'MULTI': { const q = store.queue, has = (...c) => c.some((x) => q.includes(x)); const ci = ss.charging_interest; const every = has('B2') && (!ci || ci.includes('everyday'));
+      return dedupe([has('B2') ? 6 : null, 1, 3, ...own, has('B1') || every ? 2 : null, every ? 5 : null, has('B3', 'B4', 'B7') ? 7 : null, has('B3') ? 8 : null, has('B3', 'B4') ? 9 : null, has('B3', 'B4') ? 10 : null, has('B4') ? 13 : null].filter((x) => x != null)); }   // trips before work: a commute answer would otherwise skip the trip picker
     case 'B6': return ss.battery_entry === 'used_car' ? [11, 12] : ss.battery_entry === 'forecast' ? dedupe([11, 3, ...own]) : [11];
     case 'B7': return dedupe([3, ...own, 7]);
   }
@@ -2089,7 +2271,7 @@ function monthYearField(idp, label, value, onchange, minY) {
   yy.addEventListener('input', () => { st.y = yy.value.replace(/\D/g, ''); upd(); });
   return h('div', { class: 'field' }, h('span', { class: 'flabel' }, label), h('div', { class: 'my' }, mm, h('span', { class: 'sep' }, '/'), yy));
 }
-const kmField = (id, label, value, onv, max) => textField(id, label, value, (v) => onv(v === '' ? null : Number(v.replace(/[’',\s]/g, ''))), { inputmode: 'numeric', suffix: 'km', placeholder: '0', check: (v) => V.int(Number(v.replace(/[’',\s]/g, '')), 0, max), errText: `Up to ${max.toLocaleString('en-US')} km` });
+const kmField = (id, label, value, onv, max) => textField(id, label, value, (v) => onv(v === '' ? null : Number(v.replace(/[’'.,\s]/g, ''))), { inputmode: 'numeric', suffix: 'km', placeholder: '0', check: (v) => V.int(Number(v.replace(/[’'.,\s]/g, '')), 0, max), errText: `Up to ${fmt.n(max)} km` });
 
 /* ---------- first registration (month + year dropdowns) and mileage (number), §1.5.1 blocks 8 / 12 ---------- */
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -2373,6 +2555,7 @@ const Questions = {
     ui.flow.tf = null; ui.flow.gate = undefined; ui.flow.veh = null; ui.flow.my = null;
     const nb = Questions.nextBlock();
     if (nb == null && ui.barrier === 'QUICK') { runAll(QUICK_CODES); return; }
+    if (nb == null && ui.barrier === 'MULTI') { const todo = multiTodo(); todo.length ? runAll(todo) : go('summary'); return; }
     if (nb == null && ui.flow.single) { const stale = store.visited.filter((c) => !store.results[c]); if (stale.length) runAll(stale); else { toast('Saved'); go('answers'); } return; }
     if (nb == null) {
       const rec = store.results[ui.barrier];
@@ -2389,11 +2572,13 @@ const Questions = {
   view() {
     const b = ui.flow.current, B = BLOCKS[b], d = ui.draft, code = ui.barrier;
     const r = ui.flow.forced || routeFor(code);
-    const pos = Math.max(0, r.indexOf(b));
-    const remaining = r.filter((x, i) => i > pos && (!answered(x, store.profile) || (x === 8 && r.indexOf(7) >= pos))).length;   // count the car details until the car is known, so the total does not jump
+    const at = Math.max(0, r.indexOf(b));
+    const remaining = r.filter((x, i) => i > at && (!answered(x, store.profile) || (x === 8 && r.indexOf(7) >= at && !answered(7, store.profile)))).length;
+    const pos = ui.flow.history.length;   // questions really asked so far, skipped ones do not count   // count the car details until the car is known, so the total does not jump
     const total = pos + 1 + remaining;
     const qi = store.queue.indexOf(code);
     const isLast = remaining === 0 && !(b === 3 && ui.flow.ownTrips) && !(b === 6 && (ui.flow.interest || ['everyday']).includes('everyday') && !store.session.charging_interest) && b !== 11;
+    const lastLabel = code === 'MULTI' ? 'Show my results' : 'Show my result';
     return h('div', { class: 'flow' },
       topicStrip(code),
       h('div', { class: 'stepbar' },
@@ -2404,8 +2589,7 @@ const Questions = {
         h('h1', { class: 'qtitle' }, B.heading ? B.heading(d) : B.title),
         ...B.render(d, 'ask'),
         h('div', { class: 'qnav' },
-          h('button', { class: 'btn primary block', id: 'qnext', type: 'submit', disabled: !B.valid(d, 'ask') }, ui.flow.single ? 'Save' : isLast ? 'Show my result' : 'Next', icon('arrow')),
-          h('button', { class: 'btn ghost block', type: 'button', onclick: Questions.back }, icon('back'), ui.flow.history.length ? 'Previous question' : ui.flow.single ? 'Cancel' : 'Back to the topics'))));
+          h('button', { class: 'btn primary block', id: 'qnext', type: 'submit', disabled: !B.valid(d, 'ask') }, ui.flow.single ? 'Save' : isLast ? lastLabel : 'Next', icon('arrow')))));
   },
   /* "Edit your inputs" – a page of its own (no collapsible section) */
   editBlocks(code) {
@@ -2510,11 +2694,13 @@ function gloss(str) {
   }
   return [str];
 }
+/** Numbers written by n8n or the AI ("37,306") in the app's style ("37.306"). */
+const normNum = (t) => String(t ?? '').replace(/(\d)[,’'](?=\d{3}(?!\d))/g, '$1.').replace(/(\d)–(\d)/g, '$1 – $2');
 function highlight(text) {
   const out = [];
   const re = /(CHF\s?[\d,'’.]+(?:\s?–\s?[\d,'’.]+)?|[\d][\d,'’.]*\+?\s?(?:km\+?|%|t CO2eq|t)(?![\w]))/g;
   let last = 0, m;
-  const str = String(text ?? '');
+  const str = normNum(text);
   while ((m = re.exec(str))) { out.push(str.slice(last, m.index), h('mark', null, m[0])); last = m.index + m[0].length; }
   out.push(str.slice(last));
   return out.flatMap((x) => (typeof x === 'string' ? gloss(x) : [x]));
@@ -2610,9 +2796,9 @@ function renderB1(r) {
   const r90 = cov.r90_km, r100 = cov.r100_km, rare = r90 != null && r100 != null && r90 < r100;
   const toggle = (t) => h('button', { class: 'switch', role: 'switch', 'aria-checked': String(!!t.charge_at_dest), 'aria-label': 'Charging at destination for ' + t.label, onclick: () => setField(`trips.${t.trip_id}.charge_at_dest`, !t.charge_at_dest) });
   const sections = [
-    rsec('Range each trip needs', 'on one charge',
+    trips.length > 1 ? rsec('Range each trip needs', null,
       tripBars(trips, rare ? r90 : null),
-      h('p', { class: 'note' }, rare ? `Orange: rare trips above ${fmt.n(r90)} km – charge on the way, or use another car or the train for them.` : 'Each bar is one of your trips, there and back without charging.', ' Real range in normal conditions; winter, motorway and trailer are added in "Which car fits me".')),
+      rare ? h('p', { class: 'note' }, `Orange: rare trips above ${fmt.n(r90)} km, charge on the way or take another car or the train.`) : null) : null,
     rsec('Your trips', h('button', { class: 'btn small', onclick: () => Questions.openEdit('B1', 'add') }, '+ Add trip'),
       h('div', { class: 'triplist' }, trips.map((t) => h('div', { class: 'tripitem' },
         h('div', { class: 'ti-main' }, h('b', null, t.label),
@@ -2622,13 +2808,12 @@ function renderB1(r) {
           t.charging_stops ? h('span', { class: 'sub' }, `${t.charging_stops} charging stop${t.charging_stops === 1 ? '' : 's'} on the way`) : null),
         h('div', { class: 'ti-need' }, h('span', null, 'Range needed'), h('b', null, `${fmt.n(t.range_need_km)} km`)),
         h('div', { class: 'ti-foot' }, h('label', { class: 'ti-sw' }, toggle(t), h('span', null, 'I can charge there')),
-          h('button', { class: 'btn ghost small', onclick: () => Questions.openEdit('B1', t.trip_type === 'commute' ? 'commute' : t.trip_id) }, 'Edit'))))),
-      h('p', { class: 'note' }, '≈ = drive time estimated at 100 km/h for trips entered in km. Switch "charging at destination" on if you can charge where you arrive; the range needed is recalculated.')),
+          h('button', { class: 'iconbtn sm', 'aria-label': 'Edit ' + t.label, onclick: () => Questions.openEdit('B1', t.trip_type === 'commute' ? 'commute' : t.trip_id) }, icon('edit'))))))),
   ];
   if (r.country_hints?.length) sections.push(rsec('Charging abroad', null, h('ul', { class: 'clean' }, r.country_hints.map((c) => h('li', null, h('b', null, `${c.country} (${c.label}): `), c.text)))));
   return {
-    statement: r100 == null ? r.key_statement : rare ? `A real range of ${fmt.n(r90)} km covers 9 out of 10 of your driving days. For every trip you would need ${fmt.n(r100)} km.` : `A real range of ${fmt.n(r100)} km covers all your trips.`,
-    detail: 'Real range is what the car does in everyday driving – less than the official WLTP figure in the brochure.', sections,
+    statement: r100 == null ? r.key_statement : rare ? `A real range of ${fmt.n(r90)} km covers 9 out of 10 of your driving days, ${fmt.n(r100)} km covers all of them.` : `A real range of ${fmt.n(r100)} km covers all your trips.`,
+    info: 'Real range: what a car does in everyday driving.', sections,
     actions: [
       { icon: 'car', title: 'Find the car class for these trips', desc: 'Choosing the car turns this range into a class you can ask a dealer for.', to: 'B4', run: () => startBarrier('B4') },
       { icon: 'plug', title: 'See where you could charge', desc: 'At home, at work and the public chargers near you.', to: 'B2', run: () => startBarrier('B2') },
@@ -2652,57 +2837,96 @@ function cheapest(site, dc) {
   for (const t of site.tariff_options || []) { const v = t[key]; if (v != null && (best == null || v < best.v)) best = { v, plan: t.plan_name, fee: t.subscription_fee_chf_month, url: t.source_url }; }
   return best;
 }
-function siteTable(list, dc, title) {
-  if (!list?.length) return null;
-  return h('div', { class: 'section' }, h('h3', null, title),
-    h('div', { class: 'sitelist' }, list.map((x, i) => { const p = cheapest(x, dc);
-      return h('div', { class: 'siteitem' },
-        h('span', { class: 'mk ' + (dc ? 'dc' : 'ac') }, String(i + 1)),
-        h('div', { class: 'si-main' }, h('b', null, x.location_name),
-          h('span', { class: 'sub' }, [[x.address, x.postal_code].filter(Boolean).join(', '), x.operator].filter(Boolean).join(' · ')),
-          h('span', { class: 'sub' }, `${fmt.n(x.max_power_kw)} kW · ${fmt.n(x.points)} point${x.points === 1 ? '' : 's'}`),
-          p ? h('span', { class: 'sub price' }, h('b', null, `${p.v.toFixed(2)} CHF/kWh`), ` with ${p.plan || 'the operator plan'} (${p.fee ? `CHF ${Number(p.fee).toFixed(2)} a month` : 'no monthly fee'})`) : h('span', { class: 'sub' }, "No price data – check the operator's app")),
-        h('b', { class: 'si-dist' }, fmt.dist(x.distance_m))); })));
+/* Charging sites: one entry per place (same operator within 40 m, e.g. "Hotel Leo PP 21 22 23"), names without the operator or address repeated. */
+const OPERATOR_APP = [[/ecarup/i, 'https://www.ecarup.com'], [/electra/i, 'https://www.go-electra.com'], [/m-?charge|migros/i, 'https://www.migros.ch'], [/avia/i, 'https://www.avia.ch'], [/move\b/i, 'https://www.move.ch'], [/swisscharge/i, 'https://www.swisscharge.ch'], [/gofast/i, 'https://www.gofast.swiss'], [/ionity/i, 'https://ionity.eu'], [/tesla/i, 'https://www.tesla.com/supercharger'], [/evpass/i, 'https://www.evpass.ch'], [/plug.?n.?roll/i, 'https://www.plugnroll.com'], [/easy4you/i, 'https://www.easy4you.ch'], [/fastned/i, 'https://www.fastnedcharging.com']];
+/** Operator app or website; placeholder: the official charging map until n8n delivers a link per operator. */
+function operatorLink(site) { const t = (site.tariff_options || []).map((x) => safeUrl(x.source_url)).find(Boolean); if (t) return t; const m = OPERATOR_APP.find(([re]) => re.test(site.operator || '')); return m ? m[1] : 'https://www.ich-tanke-strom.ch'; }
+function cleanSiteName(x) {
+  let n = String(x.location_name || '').trim();
+  const op = String(x.operator || '').trim();
+  if (op && n.toLowerCase().startsWith(op.toLowerCase()) && n.length > op.length + 3) n = n.slice(op.length).trim();
+  if (x.address) { const i = n.toLowerCase().indexOf(String(x.address).toLowerCase()); if (i > 3) n = n.slice(0, i).trim(); }
+  n = n.replace(/\bPP(\s+\d+)+\b/g, '').replace(/\b(?=[A-Z0-9]*\d)(?=[A-Z0-9]*[A-Z])[A-Z0-9]{6,}\b/g, '').replace(/[\s\-|·,]+$/, '').replace(/\s{2,}/g, ' ').trim();
+  return n || x.location_name || 'Charging site';
 }
-function mapBox(place) {
-  const pts = [...(place.ac?.nearest || []).map((p, i) => ({ ...p, n: i + 1, k: 'ac' })), ...(place.dc?.nearest || []).map((p, i) => ({ ...p, n: i + 1, k: 'dc' }))].filter((p) => p.latitude != null);
-  if (!pts.length) return null;
-  const el = h('div', { class: 'map', 'data-chart': '1', role: 'img', 'aria-label': 'Map of the charging sites listed below' });
+function groupSites(list, k) {
+  const out = [];
+  for (const x of list || []) {
+    if (x.latitude == null) continue;
+    const near = out.find((o) => (o.operator || '') === (x.operator || '') && Math.hypot((o.latitude - x.latitude) * 111000, (o.longitude - x.longitude) * 75000) < 40);
+    if (near) { near.points = (near.points || 0) + (x.points || 0); near.max_power_kw = Math.max(near.max_power_kw || 0, x.max_power_kw || 0); near.distance_m = Math.min(near.distance_m ?? Infinity, x.distance_m ?? Infinity); if (!near.tariff_options?.length) near.tariff_options = x.tariff_options; continue; }
+    out.push({ ...x, k, name: cleanSiteName(x) });
+  }
+  return out;
+}
+function siteInfo(x) {
+  const p = cheapest(x, x.k === 'dc');
+  const opInName = x.operator && x.name.toLowerCase().includes(String(x.operator).split(/\s/)[0].toLowerCase());
+  return h('div', { class: 'siteinfo' },
+    h('div', { class: 'si-top' }, h('span', { class: 'mk ' + x.k }), h('b', null, x.name), h('span', { class: 'si-dist' }, fmt.dist(x.distance_m))),
+    h('span', { class: 'sub' }, [x.address, opInName ? null : x.operator].filter(Boolean).join(' · ')),
+    h('span', { class: 'sub' }, `${x.k === 'dc' ? 'Fast' : 'Normal'} · ${fmt.n(x.max_power_kw)} kW · ${fmt.n(x.points)} point${x.points === 1 ? '' : 's'}`),
+    p ? h('span', { class: 'sub price' }, h('b', null, `CHF ${p.v.toFixed(2)} / kWh`), p.fee ? ` · CHF ${Number(p.fee).toFixed(2)} a month` : '')
+      : h('a', { class: 'noprice', href: operatorLink(x), target: '_blank', rel: 'noopener noreferrer' }, 'No price data', icon('arrow')));
+}
+/** One circle around all sites; tapping a point shows its details under the map. */
+function siteMap(place) {
+  const sites = [...groupSites(place.ac?.nearest, 'ac'), ...groupSites(place.dc?.nearest, 'dc')];
+  if (!sites.length) return null;
+  const info = h('div', { class: 'siteslot' }, h('p', { class: 'small muted' }, 'Tap a point on the map.'));
+  const el = h('div', { class: 'map', 'data-chart': '1', role: 'img', 'aria-label': 'Map of the charging sites near you' });
   el._draw = () => {
     if (el._done || !el.clientWidth) return; el._done = true;
-    if (!window.L) { el.replaceChildren(h('p', { class: 'small muted', style: { padding: '14px' } }, 'The map could not be loaded. The sites are listed below.')); el.style.height = 'auto'; return; }
+    if (!window.L) { el.remove(); info.replaceChildren(...sites.map(siteInfo)); return; }
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
     L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 18, attribution: '© swisstopo' }).addTo(map);
-    const group = pts.map((p) => L.marker([p.latitude, p.longitude], { icon: L.divIcon({ className: 'mk ' + p.k, html: String(p.n) }), title: p.location_name }).addTo(map));
-    map.fitBounds(L.featureGroup(group).getBounds().pad(0.25));
+    const lat = sites.reduce((a, x) => a + x.latitude, 0) / sites.length, lon = sites.reduce((a, x) => a + x.longitude, 0) / sites.length;
+    const rad = Math.max(150, ...sites.map((x) => Math.hypot((x.latitude - lat) * 111000, (x.longitude - lon) * 75000))) + 120;
+    map.setView([lat, lon], 15);
+    const circle = L.circle([lat, lon], { radius: rad, color: '#2459d6', weight: 1.5, fillColor: '#2459d6', fillOpacity: 0.07 }).addTo(map);
+    let sel = null;
+    sites.forEach((x) => {
+      const m = L.marker([x.latitude, x.longitude], { icon: L.divIcon({ className: 'mk ' + x.k, html: '', iconSize: [18, 18] }), title: x.name, keyboard: true }).addTo(map);
+      m.on('click', () => { sel?.getElement()?.classList.remove('on'); sel = m; m.getElement()?.classList.add('on'); info.replaceChildren(siteInfo(x)); });
+    });
+    map.fitBounds(circle.getBounds().pad(0.05));
   };
   if (window.ResizeObserver) new ResizeObserver(() => el._draw()).observe(el);
-  return h('div', { class: 'section' }, el, h('div', { class: 'legend' }, h('span', null, h('i', { class: 'lg-ac' }), 'Normal charging (AC)'), h('span', null, h('i', { class: 'lg-dc' }), 'Fast charging (DC)')));
+  return h('div', { class: 'section' }, el, h('div', { class: 'legend' }, h('span', null, h('i', { class: 'lg-ac' }), 'Normal (AC)'), h('span', null, h('i', { class: 'lg-dc' }), 'Fast (DC)')), info);
 }
 function costTiles(costs, node) {
   if (!costs) return null;
   const t = [];
-  if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'One-off'), h('b', null, `CHF ${fmt.n(costs.one_off.min)}–${fmt.n(costs.one_off.max)}`)));
-  if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, `CHF ${fmt.n(costs.monthly_extra.min)}–${fmt.n(costs.monthly_extra.max)}`)));
-  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, 'Charging at home'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`)));
+  if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'Installation, once'), h('b', null, `CHF ${fmt.range(costs.one_off.min, costs.one_off.max)}`), h('small', null, 'per parking space')));
+  if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, `CHF ${fmt.range(costs.monthly_extra.min, costs.monthly_extra.max)}`)));
+  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, 'Electricity at home'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`)));
   return t.length ? h('div', { class: 'tiles' }, t) : null;
 }
 /* Status of home / work charging at a glance: icon + one line, then the next step and what it costs. */
-const CHARGE_STATE = { H0: ['good', 'check', 'You can charge at home'], H1: ['warn', 'plug', 'Possible – a wallbox is needed'], H2: ['warn', 'plug', "Possible – the owners' meeting decides"], H3: ['warn', 'plug', 'Possible – your landlord decides'], HX: ['bad', 'close', 'Not possible – no fixed parking'],
-  W0: ['good', 'check', 'You can charge at work'], W1: ['warn', 'plug', 'Possible – ask your employer'], W2: ['warn', 'plug', 'Possible – ask your employer'] };
-function chargeBlock(kind, b, extra) {
+const CHARGE_STATE = { H0: ['good', 'check', 'Available'], H1: ['warn', 'plug', 'Possible'], H2: ['warn', 'plug', 'Possible'], H3: ['warn', 'plug', 'Possible'], HX: ['bad', 'close', 'Not possible'],
+  W0: ['good', 'check', 'Available'], W1: ['warn', 'plug', 'Possible'], W2: ['warn', 'plug', 'Possible'] };
+const MAIL_HINT = { H1: 'Email template to ask for a wallbox at your parking space', H2: 'Email template to send to your property management to propose the charging infrastructure', H3: 'Email template to ask your landlord for a charging point', W1: 'Email template to ask your employer for charging at work', W2: 'Email template to ask your employer for charging at work' };
+function chargeBlock(kind, b) {
   if (!b || b.relevant === false) return null;
   const [tone, ic, head] = CHARGE_STATE[b.node] || ['warn', 'plug', b.what || ''];
+  const box = h('div', { class: 'mailbox', hidden: true });
+  const toggle = () => { if (!box.firstChild) box.append(emailComposer(b.email, { hint: false })); box.hidden = !box.hidden; };
+  const subs = [...(b.subsidies || []).map((sb) => [sb.name_en || sb.name, sb.contributor, sb.url]), ...(b.city_programme ? [[b.city_programme.programme_type || 'Programme', b.city_programme.city, b.city_programme.url]] : [])];
   return rsec(kind === 'home' ? 'At home' : 'At work', null,
     h('div', { class: 'cstate ' + tone }, h('span', { class: 'ci' }, icon(ic)), h('div', null, h('b', null, head), b.what && b.what !== head ? h('span', null, b.what) : null)),
-    b.next_step ? h('div', { class: 'nextstep' }, h('span', { class: 'ns-l' }, 'Next step'), h('b', null, b.next_step)) : null,
-    emailCard(b.email),
-    (() => { const words = (t) => new Set(String(t || '').toLowerCase().match(/[a-z]{4,}/g) || []); const nw = words(b.next_step); const st = (b.steps || []).filter((x) => { const w = [...words(x)]; return !w.length || w.filter((k) => nw.has(k)).length / w.length < 0.6; }); return st.length ? h('ol', { class: 'steps' }, st.slice(0, 3).map((x) => h('li', null, x))) : null; })(),
+    b.email?.body ? h('button', { class: 'mailrow', type: 'button', onclick: toggle }, h('span', { class: 'mi' }, icon('mail')), h('span', null, h('b', null, 'Write email'), h('small', null, MAIL_HINT[b.node] || 'Email template'))) : null,
+    b.email?.body ? box : null,
     costTiles(b.costs, b.node),
-    b.subsidies?.length ? h('div', { class: 'subs' }, h('span', { class: 'ns-l' }, 'Subsidy for your postal code'), b.subsidies.map((sb) => h('div', { class: 'sub' }, h('b', null, sb.name_en || sb.name), h('span', null, sb.contributor || ''), sourceNode('Details', sb.url)))) : null,
-    b.city_programme ? h('div', { class: 'subs' }, h('span', { class: 'ns-l' }, 'Programme in your area'), h('div', { class: 'sub' }, h('b', null, b.city_programme.programme_type || b.city_programme.city), h('span', null, b.city_programme.city), sourceNode('Details', b.city_programme.url))) : null,
-    b.links?.length ? h('div', { class: 'btn-row' }, b.links.map((l) => safeUrl(l.url) ? h('a', { class: 'btn small', href: safeUrl(l.url), target: '_blank', rel: 'noopener noreferrer' }, icon('link'), l.label) : null)) : null,
-    extra);
+    subs.length ? h('div', { class: 'subsbox' }, h('span', { class: 'flabel' }, 'Subsidy for your postal code'), subs.map(([n, c, u]) => safeUrl(u) ? h('a', { href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('b', null, n), c ? h('span', null, c) : null, icon('arrow')) : h('div', null, h('b', null, n), c ? h('span', null, c) : null))) : null);
+}
+/** "1-2 times per week" / "20-30 minutes" from the n8n text; one short line per way of charging. */
+function chargeTimes(ct) {
+  const m = (t, re) => { const x = re.exec(String(t || '')); return x ? x[1].replace(/\s*-\s*/, '–') : null; };
+  const rows = [];
+  if (ct.home_ac) rows.push(['Home wallbox, 11 kW', `${m(ct.home_ac, /(\d+\s*-\s*\d+) times per week/) || '1–2'} times a week, overnight`]);
+  if (ct.public_ac) rows.push(['Public normal charging (AC)', '3–5 hours, or overnight']);
+  if (ct.public_dc) rows.push(['Fast charging (DC)', `${m(ct.public_dc, /(\d+\s*-\s*\d+) minutes/) || '20–30'} minutes`]);
+  return rows.length ? rsec('How long does charging take?', null, h('div', { class: 'tlist' }, rows.map(([a, b]) => h('div', { class: 'trow' }, h('b', null, a), h('span', null, b))))) : null;
 }
 function renderB2(r) {
   const sections = [];
@@ -2710,12 +2934,12 @@ function renderB2(r) {
   if (rk.length) {
     const maxC = Math.max(...rk.map((x) => x.cost_per_100km_chf || 0), 0.01);
     const target = { home: 'b2-home', work: 'b2-work', public_ac: 'b2-public', public_dc: 'b2-public' };
-    sections.push(rsec('Your charging options', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }) },
+    sections.push(rsec('Your charging options', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => { const fa = document.getElementById('fullan'); if (fa && !fa.open) fa.open = true; document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
       h('div', { class: 'lab' }, h('b', null, RANK_LABEL[x.option] || x.option), h('span', { class: 'pill ' + tone }, txt)),
       h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, 'per 100 km')]
         : [h('b', { class: 'muted' }, '–'), h('span', null, x.option === 'work' ? 'Price set by your employer' : 'No price data')]),
       x.cost_per_100km_chf != null ? h('div', { class: 'cbar', 'aria-hidden': 'true' }, h('span', { style: { width: Math.max(4, (x.cost_per_100km_chf / maxC) * 100) + '%' } })) : null); })),
-      h('p', { class: 'note keep' }, `Cost per 100 km for an average electric car (${r.cost_basis?.kwh_per_100km ?? 17} kWh/100 km), without subscription fees.`)));
+      h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Per 100 km, average electric car (${r.cost_basis?.kwh_per_100km ?? 17} kWh), no subscription.`))));
   }
   const hb = chargeBlock('home', r.home), wb = chargeBlock('work', r.work);
   if (hb) hb.id = 'b2-home'; if (wb) wb.id = 'b2-work';
@@ -2724,41 +2948,46 @@ function renderB2(r) {
   if (pub) {
     if (pub.status === 'unavailable') sections.push(rsec('Public charging', null, h('p', { class: 'muted' }, 'Station data not available right now.')));
     else {
-      const tab = pub[ui.b2tab] ? ui.b2tab : 'home';
-      const place = pub[tab] || {};
-      const where = tab === 'home' ? 'your home' : 'your workplace';
-      const lab = (t) => t === 'home' ? (store.profile.home_address || store.profile.postal_code || 'Home') : (store.profile.work_address || store.profile.work_postal_code || 'Work');
-      sections.push(Object.assign(rsec('Public charging', null,
-        pub.work ? seg([['home', 'Near home'], ['work', 'Near work']], tab, (v) => { ui.b2tab = v; render(); }) : null,
-        h('p', { class: 'small muted' }, lab(tab)),
-        h('p', { style: { fontWeight: 600 } }, (place.ac?.count_within_500m || 0) > 0 ? `${fmt.n(place.ac.count_within_500m)} normal charging points at ${fmt.n(place.ac.sites_within_500m)} sites within 500 m of ${where}.` : `No normal charging point within 500 m of ${where}.${mapBox(place) ? ' The nearest ones are on the map.' : ''}`),
-        mapBox(place),
-        siteTable(place.ac?.nearest, false, 'Normal charging (AC) – park overnight or for several hours'),
-        siteTable(place.dc?.nearest, true, 'Fast charging (DC) – charge while shopping'),
-        h('p', { class: 'note keep' }, "Cheapest price per kWh at this site over all plans of its operator. Starting prices; check the price in the operator's app before charging.")), { id: 'b2-public' }));
+      // switching near home / near work redraws only this block: the full analysis stays open
+      const sec = rsec('Public charging', null); sec.id = 'b2-public';
+      const head = sec.firstChild;
+      const fill = (tab) => {
+        ui.b2tab = tab;
+        const place = pub[tab] || {};
+        const where = tab === 'home' ? 'home' : 'work';
+        const nAc = place.ac?.count_within_500m || 0;
+        const dc0 = groupSites(place.dc?.nearest, 'dc')[0];
+        sec.replaceChildren(head,
+          pub.work ? seg([['home', 'Near home'], ['work', 'Near work']], tab, (v) => v !== ui.b2tab && fill(v)) : null,
+          h('div', { class: 'tlist' },
+            h('div', { class: 'trow' }, h('b', null, nAc ? `${fmt.n(nAc)} normal charging points` : 'No normal charging point'), h('span', null, `within 500 m of ${where}`)),
+            dc0 ? h('div', { class: 'trow' }, h('b', null, `Fast charging ${fmt.dist(dc0.distance_m)} away`), h('span', null, dc0.name)) : null),
+          siteMap(place));
+        queueMicrotask(() => sec.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
+      };
+      fill(pub[ui.b2tab] ? ui.b2tab : 'home');
+      sections.push(sec);
     }
   }
-  if (r.charging_time) sections.push(rsec('How long does charging take?', null, h('div', { class: 'tiles' },
-    [['Home wallbox (11 kW AC)', r.charging_time.home_ac], ['Public AC', r.charging_time.public_ac], ['Fast charging (DC)', r.charging_time.public_dc]].filter((x) => x[1]).map(([t, v]) => h('div', { class: 'tile' }, h('span', null, t), h('small', { style: { color: 'var(--ink)', fontSize: '13.5px' } }, v))))));
+  if (r.charging_time) sections.push(chargeTimes(r.charging_time));
   if (r.info_b) sections.push(rsec('Long trips', null,
-    (r.info_b.hpc_sites != null) ? h('p', null, `${fmt.n(r.info_b.hpc_sites)} high-power sites with ${fmt.n(r.info_b.hpc_points)} points (up to ${fmt.n(r.info_b.max_power_kw)} kW).`) : null,
-    r.info_b.tips?.length ? h('ul', { class: 'clean' }, r.info_b.tips.map((x) => h('li', null, x))) : null,
-    h('p', { class: 'note' }, [r.info_b.source, r.info_b.data_as_of].filter(Boolean).join(' · '))));
-  if (r.info_c) sections.push(rsec('Abroad', r.info_c.shown_for === 'neighbouring_countries' ? 'Neighbouring countries' : 'Countries of your trips',
-    h('div', { class: 'section' }, (r.info_c.countries || []).map((c) => h('div', { class: 'card tight flat' }, h('b', null, c.country), h('p', { class: 'small' }, c.coverage_statement)))),
-    r.info_c.general_tips?.length ? h('ul', { class: 'clean' }, r.info_c.general_tips.slice(0, 3).map((x) => h('li', null, x))) : null));
+    h('div', { class: 'tlist' },
+      r.info_b.hpc_sites != null ? h('div', { class: 'trow' }, h('b', null, `${fmt.n(r.info_b.hpc_sites)} high-power sites in Switzerland`), h('span', null, `${fmt.n(r.info_b.hpc_points)} points, up to ${fmt.n(r.info_b.max_power_kw)} kW`)) : null,
+      ...(r.info_b.tips || []).filter((x) => !/sites in Switzerland/i.test(x)).slice(0, 2).map((x) => h('div', { class: 'trow' }, h('span', null, normNum(x)))))));
+  if (r.info_c) sections.push(rsec('Abroad', null,
+    h('div', { class: 'tlist' }, (r.info_c.countries || []).map((c) => h('div', { class: 'trow' }, h('b', null, c.country), h('span', null, normNum(c.coverage_statement)))),
+      ...(r.info_c.general_tips || []).slice(0, 2).map((x) => h('div', { class: 'trow' }, h('span', null, normNum(x)))))));
 
   const actions = [];
-  if (r.home?.email) actions.push({ icon: 'mail', title: 'Email your landlord or owners', desc: r.home.email.subject, run: () => openMail(r.home.email) });
-  if (r.work?.email) actions.push({ icon: 'mail', title: 'Email your employer', desc: r.work.email.subject, run: () => openMail(r.work.email) });
-  (r.home?.links || []).forEach((l) => safeUrl(l.url) && actions.push({ icon: 'link', title: l.label, desc: 'Guide with practical examples', href: safeUrl(l.url) }));
-  (r.home?.subsidies || []).slice(0, 2).forEach((sb) => safeUrl(sb.url) && actions.push({ icon: 'link', title: 'Check subsidy: ' + (sb.name_en || sb.name), desc: sb.contributor || 'Subsidy programme', href: safeUrl(sb.url) }));
-  actions.push({ icon: 'link', title: 'Open the official charging map', desc: 'All public charging stations in Switzerland, live availability (BFE).', href: 'https://www.ich-tanke-strom.ch' });
+  if (r.home?.email) actions.push({ icon: 'mail', title: { H3: 'Email your landlord' }[r.home.node] || 'Email your property management', run: () => openMail(r.home.email) });
+  if (r.work?.email && r.work.relevant !== false) actions.push({ icon: 'mail', title: 'Email your employer', run: () => openMail(r.work.email) });
+  (r.home?.links || []).slice(0, 1).forEach((l) => safeUrl(l.url) && actions.push({ icon: 'info', title: l.label, href: safeUrl(l.url) }));
+  actions.push({ icon: 'plug', title: 'Official charging map (BFE)', href: 'https://www.ich-tanke-strom.ch' });
   actions.push({ icon: 'calc', title: 'What would charging cost me per year?', desc: 'Costs uses these tariffs for your trips.', to: 'B3', run: () => startBarrier('B3') });
   const st = (o) => rk.find((x) => x.option === o);
   return {
-    statement: r.home?.what ? `${r.home.what}${r.ranking ? ' ' + (rk.some((x) => String(x.option).startsWith('public') && x.available_now === true) ? 'Public charging nearby is available today.' : '') : ''}` : (r.info_c ? 'Here is what to know about charging on trips.' : 'Your charging options.'),
-    detail: r.home?.next_step || null, sections, actions,
+    statement: r.home?.what ? `${r.home.what}${r.ranking && rk.some((x) => String(x.option).startsWith('public') && x.available_now === true) ? ' Public charging is available nearby.' : ''}` : (r.info_c ? 'Here is what to know about charging on trips.' : 'Your charging options.'),
+    detail: null, sections, actions,
     facts: { home: r.home ? { node: r.home.node, what: r.home.what, next_step: r.home.next_step, running_rp_per_kwh: r.home.costs?.running?.rp_per_kwh, monthly_extra: r.home.costs?.monthly_extra } : null, work: r.work ? { node: r.work.node, what: r.work.what } : null,
       ranking: rk.map((x) => ({ option: x.option, available_now: x.available_now, cost_per_100km_chf: x.cost_per_100km_chf })), public_ac_within_500m: r.public?.home?.ac?.count_within_500m ?? null,
       interests: store.session.charging_interest || null },
@@ -2897,7 +3126,7 @@ function renderB3(r) {
         ['Leasing', 'Leasing or a car subscription shifts the value risk to the provider.'],
         ['Insurance', 'Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.'],
         ['Subsidies can change', 'Cantonal tax rebates and purchase subsidies are reviewed regularly.']].map(([t, x]) => h('div', { class: 'ibox' }, h('b', null, t), h('span', null, x))),
-      h('button', { class: 'ibox link', type: 'button', onclick: () => startBarrier('B6') }, h('b', null, 'Battery and resale'), h('span', null, 'How the battery ages and what the car is worth later. Open Battery & resale.')))),
+      h('button', { class: 'ibox link', type: 'button', onclick: () => (store.results.B1 ? showResult('B1') : startBarrier('B1')) }, h('b', null, 'Battery and resale'), h('span', null, 'How the battery ages and what the car is worth later. Open Battery & resale.')))),
   ];
   return {
     statement, detail, sections,
@@ -2977,12 +3206,12 @@ function renderB4(r) {
   };
   const sections = [
     h('section', { class: 'rsec' }, h('h2', null, 'Your options'),
-      h('p', { class: 'note keep' }, 'Each option is an electric car class plus a plan for the trips it does not cover. Calculated for winter and motorway. WLTP = the official range from the type test.'),
+      h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Calculated for winter and motorway.')),
       r.no_option ? h('p', { class: 'callout' }, 'No electric car does your "Must" trips. Set some trips to "Any".') : null,
       opts.some(overBudget) ? h('p', { class: 'callout' }, `Prices marked ⚠ start above your budget (${BUDGETS.find((b) => b[0] === store.profile.budget)?.[1]}). A used electric car or a smaller class can close the gap – "Battery life & resale" checks a used car.`) : null,
       h('div', { class: 'b4board', role: 'region', 'aria-label': 'Options side by side', tabindex: '0', style: { gridTemplateRows: `repeat(${nRows}, auto)` } }, reqCard, cols.map(optCol)),
       cols.length === 1 && trips.some((t) => t.coverage === 'must_ev') ? h('p', { class: 'note keep' }, 'Only one size does all your "Must" trips. Set the long ones to "Any" to see a smaller car.') : null,
-      h('p', { class: 'note keep' }, cols.length > 1 ? h('span', { class: 'swipehint' }, 'Swipe to compare. ') : null, '"Must": your electric car does this trip. "Any": a second car, rental, car sharing or the train can do it. Changes recalculate the options.')),
+      h('p', { class: 'note keep' }, cols.length > 1 ? h('span', { class: 'swipehint' }, 'Swipe to compare. ') : null, '"Must": the electric car does it. "Any": another car or the train can.')),
   ];
   const dealer = sel ? `Electric car, ${sel.size_label.toLowerCase()}\n- Range: at least ${fmt.n(sel.min_wltp_km)} km (WLTP)\n- Seats: ${sel.seats}\n- Towbar: ${TOW[sel.towbar] || 'not needed'}\n- Typical new price: ${fmt.band(sel.price_band_chf)}\n(From the BEV Navigator – a class, not a specific model.)` : '';
   return {
@@ -3048,7 +3277,7 @@ function renderB6(r) {
             h('div', { class: 'tile' }, h('span', null, 'Age'), h('b', null, `${fmt.n(l.age_years, 1)} years`)),
             h('div', { class: 'tile' }, h('span', null, 'Mileage'), h('b', null, `${fmt.n(l.odometer_km)} km`)),
             h('div', { class: 'tile' }, h('span', null, 'Per year'), h('b', null, l.age_years > 0.4 ? `${fmt.n(Math.round(l.odometer_km / l.age_years / 1000) * 1000)} km` : '–'))),
-          h('p', { class: 'small' }, 'This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160,000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.')),
+          h('p', { class: 'small' }, 'This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160.000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.')),
         rsec('Check the battery', null,
           h('div', { class: 'checklist' }, [
               ['Battery read-out at the dealer', 'Diagnostic device reads the battery health value the car calculates itself', 'minutes · often free', 'brand dealers, garages'],
@@ -3101,9 +3330,9 @@ function renderB6(r) {
         h('span', null, h('span', { class: 'pill' }, `Charging category ${r.charging_category?.category || '–'} · ${fmt.n(r.charging_category?.dc_share_pct)} % fast charging`))),
       h('p', { class: 'callout plain' }, 'These are approximations. Most manufacturers also give a battery warranty – check the exact terms for the model you buy. If you prefer not to carry the risk of battery ageing and resale value yourself, leasing or a car subscription shifts it to the provider.'),
       more('How we calculate',
-        h('p', { class: 'small' }, h('b', null, 'Battery health (SoH)'), ' is the lower of two estimates. ', h('i', null, 'By age:'), ' the battery loses about 1.5 / 2.2 / 3.0 % per year, depending on how much of your charging is fast charging (up to 12 % / 12–40 % / over 40 % of energy) – based on a fleet analysis by Geotab (2025). Your category comes from your trips and where you charge. ', h('i', null, 'By use:'), ' median of more than 500,000 AVILOO battery tests on 20 popular models (AVILOO 2026), scaled to the battery size of your class: a car with a smaller range goes through more charging cycles per km.'),
-        h('p', { class: 'small' }, h('b', null, 'Value of the car'), ' is the typical resale price as a share of the new price for small or mid-size EVs in Switzerland (Eurotax retail values, BFE/EBP study 2023); years 7–8 follow the study\'s own extrapolation; mileage above or below 15,000 km per year changes the value by 2 % per 10,000 km (TCS method).'),
-        h('p', { class: 'small' }, h('b', null, 'Checks:'), ' EU Euro 7 minimum battery durability for new models (80 % after 5 years, 72 % after 8 years) and the typical manufacturer warranty (70 % within 8 years / 160,000 km). All values are approximations for a typical car of this class.')),
+        h('p', { class: 'small' }, h('b', null, 'Battery health (SoH)'), ' is the lower of two estimates. ', h('i', null, 'By age:'), ' the battery loses about 1.5 / 2.2 / 3.0 % per year, depending on how much of your charging is fast charging (up to 12 % / 12–40 % / over 40 % of energy) – based on a fleet analysis by Geotab (2025). Your category comes from your trips and where you charge. ', h('i', null, 'By use:'), ' median of more than 500.000 AVILOO battery tests on 20 popular models (AVILOO 2026), scaled to the battery size of your class: a car with a smaller range goes through more charging cycles per km.'),
+        h('p', { class: 'small' }, h('b', null, 'Value of the car'), ' is the typical resale price as a share of the new price for small or mid-size EVs in Switzerland (Eurotax retail values, BFE/EBP study 2023); years 7–8 follow the study\'s own extrapolation; mileage above or below 15.000 km per year changes the value by 2 % per 10.000 km (TCS method).'),
+        h('p', { class: 'small' }, h('b', null, 'Checks:'), ' EU Euro 7 minimum battery durability for new models (80 % after 5 years, 72 % after 8 years) and the typical manufacturer warranty (70 % within 8 years / 160.000 km). All values are approximations for a typical car of this class.')),
     ],
     actions: [
       { icon: 'calc', title: 'See what this means for your costs', desc: 'Costs uses this resale value over the years you keep the car.', to: 'B3', run: () => startBarrier('B3') },
@@ -3148,7 +3377,7 @@ function renderB7(r) {
       bar(`New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`, 100, b1.ref_stages_pct_of_ref, 100),
       bar(`${SZ[v.size]} electric car, ${fmt.n(v.wltp_range_median_km)} km range`, b1.ev_share_pct, b1.ev_stages_pct_of_ref, b1.ev_share_pct),
       h('div', { class: 'legend' }, STAGES.map(([k, c]) => h('span', null, h('i', { style: { background: c } }), r.stage_labels?.[k] || k))),
-      h('p', { class: 'note' }, `Greenhouse gases over 16 years / 200,000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`)),
+      h('p', { class: 'note' }, `Greenhouse gases over 16 years / 200.000 km. Petrol car = 100 % (${fmt.n(b1.ref_total_g_km, 1)} g CO2eq/km).`)),
     b2 ? h('section', { class: 'rsec' }, h('h2', null, b2.title || 'Keep driving or switch now?'),
       h('p', { class: 'lead2', style: { color: good ? 'var(--ink)' : 'var(--ink-2)' } }, b2.statement),
       b2.type === '2a' ? (() => { const mx = Math.max(b2.keep_t_per_year || 0, b2.switch_t_per_year || 0, 0.01); const row = (l, val, c) => h('div', { class: 'b7row' }, h('div', { class: 'b7lab' }, h('span', null, l), h('b', null, `${fmt.n(val, 1)} t / year`)), h('div', { class: 'hbar', style: { width: Math.max(2, (val / mx) * 100) + '%', height: '18px' } }, h('span', { style: { width: '100%', background: c } })));
@@ -3220,39 +3449,40 @@ const Results = {
     const nxt = nextBarrier(code);
     const ai = Results.ai[code] || { status: 'idle' };
     const assumptions = rec.response.result?.assumptions;
-    return h('div', { class: 'col wide' },
+    // one template for every topic: question · key card · one block · full analysis · edit · next steps (Christian: early summary, deep dive on demand)
+    const all = b.sections.filter(Boolean);
+    let top, deep;
+    if (code === 'B1') { top = [b6Card('soh')]; deep = [...all, b6Chart('soh')]; }
+    else if (code === 'B3') { top = [b6Card('resale')]; deep = [...all, b6Chart('resale')]; }
+    else { top = all.slice(0, 1); deep = all.slice(1); }
+    top = top.filter(Boolean); deep = deep.filter(Boolean);
+    const src = assumptionsSection(assumptions);
+    const det = deep.length || src ? h('details', { class: 'fullan', id: 'fullan', open: !!(ui.deep && ui.deep[code]) }, h('summary', null, h('span', null, 'Full analysis'), icon('chev')), h('div', { class: 'fa-body' }, ...deep, src)) : null;
+    if (det) det.addEventListener('toggle', () => { (ui.deep = ui.deep || {})[code] = det.open; });
+    const steps = [...b.actions.filter((a) => a && !a.to), ...Actions.common(code)];
+    return h('div', { class: 'col wide res' },
       topicStrip(code),
       h('div', { class: 'rhead' },
-        h('span', { class: 'eyebrow' }, BARRIERS[code].title),
         h('h1', null, BARRIERS[code].question),
-        h('button', { class: 'btn small ghost chg', type: 'button', onclick: () => Questions.openEdit(code) }, icon('edit'), 'Change your answers')),
+        h('button', { class: 'iconbtn chg', type: 'button', onclick: () => Questions.openEdit(code), 'aria-label': 'Change your answers', title: 'Change your answers' }, icon('edit'))),
       h('section', { class: 'keycard', 'aria-live': 'polite' },
         h('p', { class: 'keystat', id: 'keystat' }, highlight(b.statement)),
         b.detail ? h('p', { class: 'keydetail' }, ...gloss(String(b.detail))) : null,
+        b.info ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, b.info)) : null,
         CONFIG.aiSummary ? h('div', { class: 'aislot', id: 'aislot' }, aiSlot(ai)) : null),
-      ...(() => { const [first, ...rest] = b.sections.filter(Boolean);   // Christian: early summary, deep dive on demand
-        if (code === 'B3') { rest.unshift(first); return [b6Part('resale'), h('details', { class: 'rsec more deep' }, h('summary', null, icon('list'), h('span', null, `See the full cost analysis (${rest.length} parts)`)), ...rest)]; }   // Martin: one sentence and one number at the top
-        return [first, code === 'B1' ? b6Part('soh') : null, rest.length ? h('details', { class: 'rsec more deep' }, h('summary', null, icon('list'), h('span', null, `See the full analysis (${rest.length} more ${rest.length === 1 ? 'part' : 'parts'})`)), ...rest) : null]; })(),
+      ...top,
+      det,
       Questions.editPanel(code),
-      (() => { const steps = b.actions.filter((a) => a && !a.to);
-        return steps.length ? h('section', { class: 'nextband' }, h('h2', null, 'What you can do next'),
-          h('div', { class: 'actions' }, steps.map(Actions.card), h('div', { class: 'inline-panel', id: 'action-panel', hidden: true }))) : h('div', { class: 'inline-panel', id: 'action-panel', hidden: true }); })(),
-      h('section', { class: 'sharerow' }, h('h2', null, 'Save or share'),
-        h('div', { class: 'sumbtns' }, Actions.common(code).map((a) => h('button', { class: 'btn', type: 'button', onclick: a.run }, icon(a.icon), a.title)))),
-      assumptionsSection(assumptions),
-      h('div', { class: 'endnav' },
-        nxt ? h('button', { class: 'btn primary block', onclick: () => startBarrier(nxt) }, 'Continue with ' + BARRIERS[nxt].title, icon('arrow'))
-          : h('button', { class: 'btn primary block', onclick: () => go('summary') }, 'See all your results', icon('arrow')),
-        (() => { const others = ORDER.filter((c) => c !== code && c !== nxt);
-          return others.length ? h('div', { class: 'others' }, h('span', { class: 'flabel' }, 'Other topics'), h('div', { class: 'chipline' }, others.map((c) => h('button', { class: 'chip sm', type: 'button', onclick: () => (store.results[c] && c !== 'B2' && c !== 'B6' ? showResult(c) : startBarrier(c)) }, BARRIERS[c].title)))) : null; })(),
-        h('div', { class: 'linkrow' }, store.visited.length ? h('button', { class: 'linkbtn', onclick: () => { Questions.closeEdit(); go('summary'); } }, icon('list'), 'All your results') : null, h('button', { class: 'linkbtn', onclick: () => { Questions.closeEdit(); go('home'); } }, icon('home'), 'Back to all barriers'))));
+      h('section', { class: 'nextband' }, h('h2', null, 'What can you do next?'),
+        h('div', { class: 'actions' }, steps.map(Actions.card)), h('div', { class: 'inline-panel', id: 'action-panel', hidden: true })),
+      nxt ? h('div', { class: 'endnav' }, h('button', { class: 'btn primary block', onclick: () => startBarrier(nxt) }, 'Continue with ' + BARRIERS[nxt].title, icon('arrow'))) : null);
   },
 };
 function aiSlot(ai) {
   const label = (txt) => h('span', { class: 'ailabel' }, icon('spark'), txt);
-  if (ai.status === 'loading') return [label('Writing a short explanation…'), h('div', { class: 'skel', style: { width: '92%' } }), h('div', { class: 'skel', style: { width: '74%' } })];
-  if (ai.status === 'ok') return [label('What this means for you · written by AI from the figures on this page'), h('p', null, ai.text)];
-  if (ai.status === 'demo') return [label('What this means for you'), h('p', { class: 'small muted' }, 'In the connected version a short, personal explanation appears here. It is written by AI from the figures on this page and never changes them.')];
+  if (ai.status === 'loading') return [h('div', { class: 'skel', style: { width: '92%' } }), h('div', { class: 'skel', style: { width: '74%' } })];
+  if (ai.status === 'ok') return [label('In short'), h('p', null, ai.text)];
+  if (ai.status === 'demo') return [];
   return [];
 }
 
@@ -3266,13 +3496,13 @@ const esc = (x) => String(x ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const Actions = {
   card(a) {
     if (!a) return null;
-    const body = [h('span', { class: 'ai' }, icon(a.icon || 'arrow')), h('span', { class: 'at' }, h('b', null, a.title), a.desc ? h('span', null, a.desc) : null, a.href ? h('span', { class: 'kind' }, 'Opens ' + new URL(a.href).hostname.replace(/^www\./, '')) : null)];
+    const body = [h('span', { class: 'ai' }, icon(a.icon || 'arrow')), h('span', { class: 'at' }, h('b', null, a.title), a.desc ? h('span', null, a.desc) : null), h('span', { class: 'go' }, icon(a.href ? 'link' : 'arrow'))];
     return a.href ? h('a', { class: 'action', href: a.href, target: '_blank', rel: 'noopener noreferrer' }, body) : h('button', { class: 'action', type: 'button', onclick: a.run }, body);
   },
   common(code) {
     return [
       { icon: 'down', title: 'Save as PDF', run: (e) => Actions.savePdf(pdfCodes([code]), e.currentTarget) },
-      { icon: 'mail', title: 'Email me the PDF', run: (e) => Actions.sendPdf(pdfCodes([code]), e.currentTarget) },
+      { icon: 'mail', title: 'Email me this result', run: (e) => Actions.sendPdf(pdfCodes([code]), e.currentTarget) },
     ];
   },
   /** Result summary as an editable email in the person's own mail app (no n8n /action needed). */
@@ -3485,7 +3715,7 @@ const Report = {
 
   /* ---------- small builders ---------- */
   t(x) { return x == null || x === '' ? '–' : String(x); },
-  /** Number-like cells are right-aligned and never broken ("100 km/h", "CHF 1,200"). */
+  /** Number-like cells are right-aligned and never broken ("100 km/h", "CHF 1.200"). */
   isNum(x) { return typeof x === 'string' && /^(CHF\s|[-–+]?\d|about \d|from CHF)/.test(x) && x.length < 28 && !/\b(times|once|twice|days?|years?|of)\b/.test(x); },
   table(head, rows, widths) {
     if (!rows.length) return null;
@@ -3537,7 +3767,7 @@ const Report = {
       if (b.next_step) out.push({ text: 'Next step: ' + b.next_step, margin: [0, 0, 0, 4] });
       if ((b.steps || []).length) out.push({ ol: b.steps, margin: [0, 0, 0, 6], fontSize: 9 });
       const co = b.costs || {};
-      out.push(R.kv([['One-off cost', co.one_off ? `${fmt.chf(co.one_off.min)}–${fmt.n(co.one_off.max)}` : null], ['Extra per month', co.monthly_extra ? `${fmt.chf(co.monthly_extra.min)}–${fmt.n(co.monthly_extra.max)}` : null],
+      out.push(R.kv([['One-off cost', co.one_off ? `${fmt.chf(co.one_off.min)} – ${fmt.n(co.one_off.max)}` : null], ['Extra per month', co.monthly_extra ? `${fmt.chf(co.monthly_extra.min)} – ${fmt.n(co.monthly_extra.max)}` : null],
         ['Electricity at home', co.running?.rp_per_kwh != null ? `${fmt.n(co.running.rp_per_kwh, 1)} Rp/kWh (CHF ${fmt.n(co.running.chf_per_100km, 2)} per 100 km)` : null]]));
       if ((b.subsidies || []).length) out.push({ text: 'Subsidies for your postal code', bold: true, fontSize: 9 }, R.list(b.subsidies.map((x) => `${x.name_en || x.name} – ${x.contributor}${x.url ? ' · ' + x.url : ''}`)));
       if (b.city_programme) out.push(R.list([`${b.city_programme.city}: ${b.city_programme.programme_type}${b.city_programme.url ? ' · ' + b.city_programme.url : ''}`]));
@@ -3580,7 +3810,7 @@ const Report = {
     if (r.mode === 'assessment') return [R.kv([['First registration', r.listing?.first_registration], ['Mileage', r.listing?.odometer_km != null ? `${fmt.n(r.listing.odometer_km)} km` : null], ['Age', r.listing?.age_years != null ? `${fmt.n(r.listing.age_years, 1)} years` : null], ['Estimated battery health today', r.soh_today_pct != null ? `${fmt.n(r.soh_today_pct)} %` : null]])];
     const W = { within: 'within', case_likely: 'claim likely', outside_km: 'outside (km)' };
     return [R.kv([['Electric car', r.class?.class_id ? clsShort(r.class.class_id) : null], ['Km per year', fmt.n(r.ev_annual_km)], ['Everyday charging', { private_ac: 'private AC', public_ac: 'public AC', public_dc: 'fast charging (DC)' }[r.everyday_charging?.value] || null]]),
-      R.table(['Year', 'Km', 'Battery health', 'Value of the new price', 'Warranty (70 %, 8 years / 160,000 km)'], (r.years || []).map((y) => [String(y.year), fmt.n(y.km), `${fmt.n(y.soh_pct)} %`, `${fmt.n(y.resale_pct)} %`, W[y.warranty] || y.warranty]), ['auto', 'auto', 'auto', 'auto', '*'])]; },
+      R.table(['Year', 'Km', 'Battery health', 'Value of the new price', 'Warranty (70 %, 8 years / 160.000 km)'], (r.years || []).map((y) => [String(y.year), fmt.n(y.km), `${fmt.n(y.soh_pct)} %`, `${fmt.n(y.resale_pct)} %`, W[y.warranty] || y.warranty]), ['auto', 'auto', 'auto', 'auto', '*'])]; },
 
   B7(r) { const R = Report, start = r.start || {}, st = ui.b7 || { cls: start.class_id };
     const el = store.profile.electricity_product || start.electricity_product || 'consumer_mix';

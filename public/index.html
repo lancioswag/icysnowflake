@@ -2512,7 +2512,12 @@ function tripEditor(mode, withCommute) {
       const place = String(tf.place).trim();
       const t = { ...(prev || { trip_type: 'other', charge_at_dest: null, seats_needed: null, trailer: null, coverage: null, season: null }), label: tf.label.trim() || (place ? place.split(',')[0].trim() : `${Number(tf.km)} km trip`),
         dest_location: place || null, dest_km: place ? null : Number(tf.km), freq_n: Number(tf.n), freq_unit: tf.unit };
-      if (!prev || prev.dest_location !== t.dest_location || prev.dest_km !== t.dest_km) delete t.routing; // rule 1 (trip edit)
+      if (!prev || prev.dest_location !== t.dest_location || prev.dest_km !== t.dest_km) {
+        // A distance-only trip keeps its country when the user changes kilometres.
+        if (!place && prev?.routing && prev.routing.dest_lat == null && prev.routing.dest_lon == null)
+          t.routing = { ...prev.routing, dist_km: t.dest_km, drive_time_h: t.dest_km / 100 };
+        else delete t.routing;
+      }
       if (tf.idx == null) d.trips.push(t); else d.trips[tf.idx] = t;
       d.trips_source = 'user'; ui.flow.tf = null; render();
     } }, tf.idx == null ? 'Add trip' : 'Save');

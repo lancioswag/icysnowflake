@@ -12,8 +12,8 @@ lane(330,3,[[('q6','Q · What would you like to know?','Only when Charging is pi
             [('q11','Q · Battery: what to know?','Battery topic opened on its own'),('q12','Q · About the used car','Used EV check')]])
 lane(1070,1,[[('batch','Calculating your results','2+ topics')],[('loading','Calculating one topic')],[('error','Something went wrong')]])
 lane(1350,1,[[('summary-loading','Summary, AI still writing')],[('summary','Summary · Simple')],[('summary-numbers','Summary · With the numbers')]])
-lane(1640,5,[[('r-B2','Charging access'),('r-B1','Range & battery life'),('r-B3','Costs & resale value'),('r-B7','Climate impact'),('r-B4','Which car fits me')],
-             [('r-B2-full','Charging · Full analysis open'),('r-B1-full','Range · Full analysis open'),('r-B3-full','Costs · Full analysis open'),('r-B7-full','Climate · Full analysis open'),('r-B4-full','Which car · Full analysis open')],
+lane(1640,5,[[('r-B1','Range & battery life'),('r-B2','Charging access'),('r-B3','Costs & resale value'),('r-B7','Climate impact'),('r-B4','Which car fits me')],
+             [('r-B1-full','Range · Full analysis open'),('r-B2-full','Charging · Full analysis open'),('r-B3-full','Costs · Full analysis open'),('r-B7-full','Climate · Full analysis open'),('r-B4-full','Which car · Full analysis open')],
              [('r-B2-email-site','Charging · email + map point open'),('r-B2-edit','Charging · Edit your inputs open')],
              [('r-B6','Battery details','Only if Range and Costs are not done'),('r-B6-used','Used EV battery check')]])
 lane(2900,1,[[('answers','Your answers','List icon in the top bar')],[('answer-edit','Change one answer')],[('account-create','Save your answers · Create')],[('account-login','Save your answers · Log in')],[('account-in','Your account (logged in)')],[('reset','Start fresh?','From Start and Your answers')]])

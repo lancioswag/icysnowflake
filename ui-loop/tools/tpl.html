@@ -103,7 +103,7 @@ D.edges.forEach(([f,t,lab,k],ix)=>{
 svg.insertAdjacentHTML('beforeend',paths+labels);board.prepend(svg);
 let z=1;const setZ=v=>{z=Math.max(.15,Math.min(1.4,v));board.style.transform=`scale(${z})`;sizer.style.width=BW*z+'px';sizer.style.height=BH*z+'px'};
 const fit=()=>setZ(Math.min(wrap.clientWidth/BW,1));
-fit();addEventListener('resize',()=>{});
+fit();if(wrap.clientWidth<700)setZ(.55);addEventListener('resize',()=>{});
 document.getElementById('zi').onclick=()=>setZ(z*1.25);document.getElementById('zo').onclick=()=>setZ(z/1.25);document.getElementById('fit').onclick=fit;
 wrap.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();setZ(z*(e.deltaY<0?1.1:.9))},{passive:false});
 const hi=i=>{svg.classList.toggle('dim',!!i);svg.querySelectorAll('.w,.wl').forEach(p=>p.classList.toggle('on',!!i&&(p.dataset.f===i||p.dataset.t===i)));document.querySelectorAll('.card').forEach(c=>c.classList.toggle('sel',c.dataset.id===i))};

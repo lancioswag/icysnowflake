@@ -61,7 +61,6 @@ Yes, parking without charging
 Yes, but there is no parking
 No
 Where do you work?
-Fill in at least one.
 Postal code
 ✓ 8050 Zürich ZH
 Street and number
@@ -82,7 +81,6 @@ Costs & resale value
 Question 1 of 2
 Which trips do you make?
 Tap every trip you make. Change distance or frequency with "Edit".
-Commute to work
 Shopping
 Sport or hobby
 Kids' activities
@@ -421,10 +419,9 @@ Your charging options
 At home
 Not yet, needs the owners' decision
 CHF 5.37
-per 100 km
+per 100 km if installed
 Public normal charging (AC)
 Available, within 500 m
-–
 No price data
 Public fast charging (DC)
 Available, within 5 km
@@ -456,10 +453,9 @@ Your charging options
 At home
 Not yet, needs the owners' decision
 CHF 5.37
-per 100 km
+per 100 km if installed
 Public normal charging (AC)
 Available, within 500 m
-–
 No price data
 Public fast charging (DC)
 Available, within 5 km
@@ -475,7 +471,7 @@ Email template to send to your property management to propose the charging infra
 Installation, once
 CHF 2.000 – 3.500
 per parking space
-Electricity at home
+Electricity if installed
 CHF 5.37 / 100 km
 31.6 Rp/kWh
 Subsidy for your postal code
@@ -617,11 +613,22 @@ Costs & resale value
 What does it cost you?
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 None of the electric options pays off within 8 years.
-Value later
-After 3 years (111.918 km)
-34 % of the new price
-After 5 years (186.530 km)
-12 % of the new price
+Cost at a glance
+Years you keep it
+1
+2
+3
+4
+5
+6
+7
+8
+To pay today
+CHF 35.600 – 51.000
+Average total cost per year
+CHF 14.300 – 16.900
+Difference versus keeping your car over 6 years
+CHF 42.100 more
 Full analysis
 Edit your inputs
 What can you do next?
@@ -643,13 +650,7 @@ Costs & resale value
 What does it cost you?
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 None of the electric options pays off within 8 years.
-Value later
-After 3 years (111.918 km)
-34 % of the new price
-After 5 years (186.530 km)
-12 % of the new price
-Full analysis
-Your options
+Cost at a glance
 Years you keep it
 1
 2
@@ -659,6 +660,14 @@ Years you keep it
 6
 7
 8
+To pay today
+CHF 35.600 – 51.000
+Average total cost per year
+CHF 14.300 – 16.900
+Difference versus keeping your car over 6 years
+CHF 42.100 more
+Full analysis
+Your options
 Medium, 450+ km
 Selected
 Compared with your VW Golf 7 1.0 TSI
@@ -751,6 +760,11 @@ Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
 How the battery ages and what the car is worth later. Open Battery & resale.
+Value later
+After 3 years (111.918 km)
+34 % of the new price
+After 5 years (186.530 km)
+12 % of the new price
 Value over the years
 0 %
 20 %
@@ -792,10 +806,7 @@ Small
 Medium
 Large SUV
 Range
-– km
-– km
 500 km
-– km
 Electricity
 Swiss mix
 Renewable
@@ -836,10 +847,7 @@ Small
 Medium
 Large SUV
 Range
-– km
-– km
 500 km
-– km
 Electricity
 Swiss mix
 Renewable
@@ -897,6 +905,45 @@ Costs & resale value
 Which electric car fits you?
 A medium electric car with at least 450 km range does 230 of your 230 driving days.
 No other car is needed for your trips.
+Your car option
+Class
+Medium, 450+ km
+Driving days
+230 of 230
+Seats
+5
+New price
+CHF 42.000 – 57.400
+Full analysis
+Edit your inputs
+What can you do next?
+Copy your requirements for the dealer
+Save as PDF
+Email me this result
+```
+
+## r-B4-full
+```
+Which car fits me
+✓
+Charging access
+✓
+Range & battery life
+✓
+Costs & resale value
+Which electric car fits you?
+A medium electric car with at least 450 km range does 230 of your 230 driving days.
+No other car is needed for your trips.
+Your car option
+Class
+Medium, 450+ km
+Driving days
+230 of 230
+Seats
+5
+New price
+CHF 42.000 – 57.400
+Full analysis
 Your options
 Calculated for winter and motorway.
 Your trips
@@ -944,10 +991,9 @@ Your charging options
 At home
 Not yet, needs the owners' decision
 CHF 5.37
-per 100 km
+per 100 km if installed
 Public normal charging (AC)
 Available, within 500 m
-–
 No price data
 Public fast charging (DC)
 Available, within 5 km
@@ -971,7 +1017,7 @@ No mail app opens? Use Copy text, Gmail or Outlook.
 Installation, once
 CHF 2.000 – 3.500
 per parking space
-Electricity at home
+Electricity if installed
 CHF 5.37 / 100 km
 31.6 Rp/kWh
 Subsidy for your postal code
@@ -1040,10 +1086,9 @@ Your charging options
 At home
 Not yet, needs the owners' decision
 CHF 5.37
-per 100 km
+per 100 km if installed
 Public normal charging (AC)
 Available, within 500 m
-–
 No price data
 Public fast charging (DC)
 Available, within 5 km
@@ -1080,7 +1125,6 @@ Yes, parking without charging
 Yes, but there is no parking
 No
 Where do you work?
-Fill in at least one.
 Postal code
 ✓ 8050 Zürich ZH
 Street and number
@@ -1170,7 +1214,7 @@ Summary
 Summary
 Topics 6/6
 Takeaway
-An electric car fits how you drive. One point is still open.
+An electric car covers your trips, but costs about CHF 42.100 more over 6 years in this comparison.
 2 work for you
 3 with a limitation
 1 still open
@@ -1219,7 +1263,7 @@ Summary
 Summary
 Topics 6/6
 Takeaway
-An electric car fits how you drive. One point is still open.
+An electric car covers your trips, but costs about CHF 42.100 more over 6 years in this comparison.
 2 work for you
 3 with a limitation
 1 still open
@@ -1291,7 +1335,7 @@ Commute
 CHARGING AT HOME
 No
 YOUR CAR
-car
+VW Golf 7 1.0 TSI
 SECOND CAR
 No
 BUDGET

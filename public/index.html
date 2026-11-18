@@ -272,7 +272,7 @@ ol.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column;
 .rhead-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .keycard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
 .keystat { font-size: clamp(20px, 3.2vw, 27px); font-weight: 650; letter-spacing: -0.015em; line-height: 1.28; text-wrap: balance; }
-.keystat mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.keystat mark, .takeaway .tk mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 .keydetail { color: var(--ink-2); font-size: 15px; }
 .aislot { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .aislot .ailabel { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -632,6 +632,7 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 .ctrls { display: flex; flex-direction: column; gap: 10px; }
 .ctrl { display: grid; grid-template-columns: 82px minmax(0, 1fr); align-items: center; gap: 10px; }
 .ctrl .seg { justify-self: start; }
+.ctrlv { font-size: 14px; font-weight: 600; color: var(--ink); }
 .lead2 { font-size: 17px; font-weight: 600; line-height: 1.35; }
 .tile { align-items: flex-start; text-align: left; }
 .kfig div { align-items: flex-start; }
@@ -1089,6 +1090,9 @@ button.tip { display: inline; padding: 0; border: 0; background: none; font: inh
 .factcard h2 svg { width: 20px; height: 20px; color: var(--accent); }
 .frow { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
 .frow b { font-variant-numeric: tabular-nums; text-align: right; }
+.frow b.warn { color: var(--warn); } .frow b.good { color: var(--good); }
+.glance .yearchips { margin: 2px 0 4px; }
+.glance .frow b, .factcard .frow b { white-space: nowrap; }
 /* full analysis: one quiet button, no box in a box inside */
 details.fullan { border: 0; background: none; padding: 0; }
 details.fullan > summary { list-style: none; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; border-radius: 14px; border: 1.5px solid var(--accent-line); background: var(--surface); color: var(--accent); font-weight: 650; font-size: 15.5px; cursor: pointer; transition: background var(--t) var(--ease); }
@@ -1702,10 +1706,8 @@ function renderTopbar() {
       Account.on() ? h('button', { class: 'iconbtn', type: 'button', onclick: () => go('account'), 'aria-label': Account.user ? 'Your account' : 'Log in' }, icon('user')) : null,
       atHome ? null : h('button', { class: 'iconbtn wash', onclick: () => { ui.assistantOpen = false; go('home'); }, 'aria-label': 'Back to all barriers' }, icon('home')))));
 }
-function renderBubble() {
-  if (ui.assistantOpen || ui.view === 'home' || ui.view === 'topics') return null;
-  return h('button', { class: 'bubble', onclick: () => Assistant.toggle(), 'aria-label': 'Ask the assistant' }, icon('bot'));
-}
+/** No floating assistant button: it covered fields and buttons at 390 px. The assistant opens from Start ("in your own words"). */
+function renderBubble() { return null; }
 function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
@@ -1964,6 +1966,18 @@ function topicLines(c) {
   } catch { }
   return [];
 }
+/** Takeaway: the n8n sentence, unless the cost comparison says the EV costs more – then one sentence that says so (figures from the Costs result, nothing new). */
+function takeaway(sm) {
+  const base = sm.outcome?.title || sm.headline || '';
+  const f = store.results.B3 && Results.facts('B3');
+  const opt = (f?.lines || []).filter((l) => l.kind === 'option' && l.saving_vs_current?.min != null);
+  if (!opt.length || f.no_reference) return base;
+  const v = Math.max(...opt.map((l) => mid(l.saving_vs_current)));
+  if (!(v < 0)) return base;
+  const N = f.years_kept, b1 = store.results.B1?.response?.result, b4 = store.results.B4?.response?.result;
+  const covers = b1?.coverage?.r100_km != null && !b4?.no_option;
+  return `An electric car ${covers ? 'covers your trips, but ' : ''}costs about ${fmt.chf100(-v)} more over ${N} year${N > 1 ? 's' : ''} in this comparison.`;
+}
 function viewSummary() {
   const st = Summary.style, sm = Summary.get(st);
   const codes = Summary.codes();
@@ -1977,7 +1991,7 @@ function viewSummary() {
   return h('div', { class: 'col wide summary3' },
     h('div', { class: 'shead' }, h('h1', null, 'Summary'), h('span', { class: 'frac' }, `Topics ${done}/${QUICK_CODES.length}`)),
     loading ? h('div', { class: 'takeaway', role: 'status', 'aria-label': 'Writing your summary' }, h('span', { class: 'flabel' }, 'Takeaway'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
-    ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(sm.outcome?.title || sm.headline || '')),
+    ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(takeaway(sm))),
       h('div', { class: 'cline' }, h('span', { class: 'c ok' }, h('b', null, n(sm.counts?.works)), ' work for you'), h('span', { class: 'c lim' }, h('b', null, n(sm.counts?.limitation)), ' with a limitation'), h('span', { class: 'c open' }, h('b', null, n(sm.counts?.open)), ' still open'))) : null,
     ok ? h('div', { class: 'pillswitch', role: 'group', 'aria-label': 'How to show the summary' }, [['simple', 'Simple'], ['numbers', 'With the numbers']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st === v), onclick: () => { if (Summary.style !== v) { Summary.style = v; render(); } } }, l))) : null,
     h('section', { class: 'sumtopics' }, h('h2', null, 'Your topics'),
@@ -2162,9 +2176,11 @@ function tripPicker(d, mode, withCommute) {
     else { d.trips.push(presetTrip(p)); if (p[6] === 'commute' && d.charging_at_work === 'no_car_commute') d.charging_at_work = null; }
     d.trips_source = 'user'; ui.flow.tf = null; render();
   };
+  // a picked preset leaves the chips and shows once, in the trip list (Edit / Delete); deleting it brings the chip back
+  const free = TRIP_PRESETS.filter((p) => (withCommute || p[6] !== 'commute') && !d.trips.some(isP(p)));
   return [
     h('p', { class: 'qsub' }, 'Tap every trip you make. Change distance or frequency with "Edit".'),
-    h('div', { class: 'chips trippick' }, TRIP_PRESETS.filter((p) => withCommute || p[6] !== 'commute').map((p) => chip(p[1], d.trips.some(isP(p)), () => toggle(p)))),
+    free.length ? h('div', { class: 'chips trippick' }, free.map((p) => chip(p[1], false, () => toggle(p)))) : null,
     ...tripEditor(mode, withCommute)];
 }
 const FREQ = { week: 'per week', month: 'per month', year: 'per year' };
@@ -2183,7 +2199,13 @@ const TAS = {
   models() { return Array.isArray(window.TAS_MODELS) ? window.TAS_MODELS : null; },
   labelFor(num) { if (!num) return null; if (store.carLabels[num]) return store.carLabels[num]; const m = (TAS.models() || []).find((x) => x[2] === num); return m ? `${m[0]} ${m[1]}` : null; },
 };
-const carName = (num) => TAS.labelFor(num) || 'car';
+/** Car label from the model list, else the name n8n resolved for the current car (Costs / Climate); never a guessed brand or model. */
+function resolvedCar(num) {
+  if (!num || num !== store.profile.current_car.targa_id) return null;
+  const b3 = (store.results.B3?.response?.result?.lines || []).find((l) => l.kind === 'current_car' && l.label);
+  return b3?.label || store.results.B7?.response?.result?.calculated_for?.current_car?.name || null;
+}
+const carName = (num) => TAS.labelFor(num) || resolvedCar(num) || 'Car details unavailable';
 
 /* ---------- routing ---------- */
 const dedupe = (a) => a.filter((x, i) => a.indexOf(x) === i);
@@ -2417,6 +2439,8 @@ function tripEditor(mode, withCommute) {
   ];
 }
 
+/** q2: postal code, address or distance – one valid answer is enough. */
+function workPlaceOk(d) { const c = commuteOf(d); return V.plz(d.work_postal_code) || !!String(d.work_address || '').trim() || (!!c && V.int(Number(c.dest_km), 1, 300)); }
 /* ---------- blocks ---------- */
 const BLOCKS = {
   1: { title: 'Where do you live?', why: 'Your postal code sets the electricity price, local subsidies, tax and the charging stations near you.',
@@ -2435,7 +2459,7 @@ const BLOCKS = {
         choice('Yes, but there is no parking', null, d.charging_at_work === 'no_parking', () => setCW('no_parking')),
         choice('No', null, d.charging_at_work === 'no_car_commute', () => setCW('no_car_commute')))];
       if (d.charging_at_work && d.charging_at_work !== 'no_car_commute' && c) {
-        parts.push(h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Where do you work?'), h('p', { class: 'hint' }, 'Fill in at least one.'),
+        parts.push(h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Where do you work?'), h('p', { class: 'hint', id: 'work-hint', hidden: workPlaceOk(d) }, 'Fill in at least one.'),
           textField('work-plz', 'Postal code', d.work_postal_code, (v) => { d.work_postal_code = v.trim() || null; }, { inputmode: 'numeric', maxlength: 4, placeholder: 'e.g. 8050', check: V.plz, errText: 'Postcode not found – try e.g. 8050', okText: (v) => placeName(v.trim()) ? '✓ ' + v.trim() + ' ' + placeName(v.trim()) : '' }),
           textField('work-addr', 'Street and number', d.work_address, (v) => { d.work_address = v.trim() || null; }, { placeholder: 'e.g. Bahnhofstrasse 1, Zürich' }),
           kmField('wkm', 'Distance one way', c.dest_km, (v) => { c.dest_km = v; }, 300)),
@@ -2444,7 +2468,7 @@ const BLOCKS = {
       }
       return parts;
     },
-    valid: (d) => { if (!d.charging_at_work) return false; if (d.charging_at_work === 'no_car_commute') return true; const c = commuteOf(d); if (!c || !c.freq_n) return false; if (d.work_postal_code && !V.plz(d.work_postal_code)) return false; if (c.dest_km != null && !V.int(Number(c.dest_km), 1, 300)) return false; return V.plz(d.work_postal_code) || !!String(d.work_address || '').trim() || V.int(Number(c.dest_km), 1, 300); } },
+    valid: (d) => { if (!d.charging_at_work) return false; if (d.charging_at_work === 'no_car_commute') return true; const c = commuteOf(d); if (!c || !c.freq_n) return false; if (d.work_postal_code && !V.plz(d.work_postal_code)) return false; if (c.dest_km != null && !V.int(Number(c.dest_km), 1, 300)) return false; return workPlaceOk(d); } },
   3: { title: 'Which trips do you make?', why: 'Tap the trips you make; we use typical distances you can change.',
     render: (d, mode) => tripPicker(d, mode, true),
     valid: (d) => d.trips.length > 0 && !ui.flow.tf },
@@ -2533,6 +2557,7 @@ function topicStrip(code) {
 function refreshNav() {
   const b = document.getElementById('qnext');
   if (b && ui.view === 'question') b.disabled = !BLOCKS[ui.flow.current].valid(ui.draft, 'ask');
+  const wh = document.getElementById('work-hint'); if (wh && ui.draft) wh.hidden = workPlaceOk(ui.draft);
   const r = document.getElementById('recalc');
   if (r && ui.draft && (ui.view === 'edit' || ui.editOpen)) r.disabled = !Questions.editValid();
 }
@@ -2841,7 +2866,7 @@ function cheapest(site, dc) {
 /* Charging sites: one entry per place (same operator within 40 m, e.g. "Hotel Leo PP 21 22 23"), names without the operator or address repeated. */
 const OPERATOR_APP = [[/ecarup/i, 'https://www.ecarup.com'], [/electra/i, 'https://www.go-electra.com'], [/m-?charge|migros/i, 'https://www.migros.ch'], [/avia/i, 'https://www.avia.ch'], [/move\b/i, 'https://www.move.ch'], [/swisscharge/i, 'https://www.swisscharge.ch'], [/gofast/i, 'https://www.gofast.swiss'], [/ionity/i, 'https://ionity.eu'], [/tesla/i, 'https://www.tesla.com/supercharger'], [/evpass/i, 'https://www.evpass.ch'], [/plug.?n.?roll/i, 'https://www.plugnroll.com'], [/easy4you/i, 'https://www.easy4you.ch'], [/fastned/i, 'https://www.fastnedcharging.com']];
 /** Operator app or website; placeholder: the official charging map until n8n delivers a link per operator. */
-function operatorLink(site) { const t = (site.tariff_options || []).map((x) => safeUrl(x.source_url)).find(Boolean); if (t) return t; const m = OPERATOR_APP.find(([re]) => re.test(site.operator || '')); return m ? m[1] : 'https://www.ich-tanke-strom.ch'; }
+function operatorLink(site) { const t = (site.tariff_options || []).map((x) => safeUrl(x.source_url)).find(Boolean); if (t) return t; const m = OPERATOR_APP.find(([re]) => re.test(site.operator || '')); return m ? m[1] : null; }
 function cleanSiteName(x) {
   let n = String(x.location_name || '').trim();
   const op = String(x.operator || '').trim();
@@ -2868,7 +2893,7 @@ function siteInfo(x) {
     h('span', { class: 'sub' }, [x.address, opInName ? null : x.operator].filter(Boolean).join(' · ')),
     h('span', { class: 'sub' }, `${x.k === 'dc' ? 'Fast' : 'Normal'} · ${fmt.n(x.max_power_kw)} kW · ${fmt.n(x.points)} point${x.points === 1 ? '' : 's'}`),
     p ? h('span', { class: 'sub price' }, h('b', null, `CHF ${p.v.toFixed(2)} / kWh`), p.fee ? ` · CHF ${Number(p.fee).toFixed(2)} a month` : '')
-      : h('a', { class: 'noprice', href: operatorLink(x), target: '_blank', rel: 'noopener noreferrer' }, 'No price data', icon('arrow')));
+      : operatorLink(x) ? h('a', { class: 'noprice', href: operatorLink(x), target: '_blank', rel: 'noopener noreferrer' }, 'No price data', icon('arrow')) : h('span', { class: 'sub' }, 'No price data'));
 }
 /** One circle around all sites; tapping a point shows its details under the map. */
 function siteMap(place) {
@@ -2900,7 +2925,7 @@ function costTiles(costs, node) {
   const t = [];
   if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'Installation, once'), h('b', null, `CHF ${fmt.range(costs.one_off.min, costs.one_off.max)}`), h('small', null, 'per parking space')));
   if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, `CHF ${fmt.range(costs.monthly_extra.min, costs.monthly_extra.max)}`)));
-  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, 'Electricity at home'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`)));
+  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, node === 'H0' ? 'Electricity at home' : 'Electricity if installed'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`)));
   return t.length ? h('div', { class: 'tiles' }, t) : null;
 }
 /* Status of home / work charging at a glance: icon + one line, then the next step and what it costs. */
@@ -2937,8 +2962,8 @@ function renderB2(r) {
     const target = { home: 'b2-home', work: 'b2-work', public_ac: 'b2-public', public_dc: 'b2-public' };
     sections.push(rsec('Your charging options', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => { const fa = document.getElementById('fullan'); if (fa && !fa.open) fa.open = true; document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
       h('div', { class: 'lab' }, h('b', null, RANK_LABEL[x.option] || x.option), h('span', { class: 'pill ' + tone }, txt)),
-      h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, 'per 100 km')]
-        : [h('b', { class: 'muted' }, '–'), h('span', null, x.option === 'work' ? 'Price set by your employer' : 'No price data')]),
+      h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, x.option === 'home' && x.node !== 'H0' ? 'per 100 km if installed' : 'per 100 km')]
+        : [h('span', null, x.option === 'work' ? 'Price set by your employer' : 'No price data')]),
       x.cost_per_100km_chf != null ? h('div', { class: 'cbar', 'aria-hidden': 'true' }, h('span', { style: { width: Math.max(4, (x.cost_per_100km_chf / maxC) * 100) + '%' } })) : null); })),
       h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Per 100 km, average electric car (${r.cost_basis?.kwh_per_100km ?? 17} kWh), no subscription.`))));
   }
@@ -3080,6 +3105,13 @@ function renderB3(r) {
   if (gaps.length) detail = (detail ? detail + ' ' : '') + `Missing for your area: ${gaps.join(' and ')} – counted as 0, so the electric car looks cheaper than it is.`;
 
   const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), [1, 2, 3, 4, 5, 6, 7, 8].map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
+  // the one visible block: what you pay today, per year and in total against your car (same option as the headline)
+  const frow = (l, v, cls) => h('div', { class: 'frow' }, h('span', null, l), h('b', { class: cls || null }, v));
+  const glance = best ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Cost at a glance'), yearChips,
+    frow('To pay today', fmt.band(best.cash_need_today_chf)),
+    frow('Average total cost per year', fmt.band(yr(best).total_per_year)),
+    noRef ? frow(`Total in ${yrs}`, fmt.band(yr(best).total_over_n))
+      : frow(`Difference versus keeping your car over ${yrs}`, sv(best) >= 0 ? `${fmt.chf100(sv(best))} less` : `${fmt.chf100(-sv(best))} more`, sv(best) >= 0 ? 'good' : 'warn')) : null;
   const sumItems = (l) => Object.values(yr(l).items || {}).reduce((a, b) => a + Math.max(0, b || 0), 0);
   const scale = Math.max(...lines.map(sumItems), 1);
   const optCard = (l) => {
@@ -3101,7 +3133,8 @@ function renderB3(r) {
   const legend = h('div', { class: 'legend' }, ITEMS.filter(([k]) => lines.some((l) => (yr(l).items?.[k] || 0) > 0)).map(([, lab, c]) => h('span', null, h('i', { style: { background: c } }), lab)));
   const name = (l) => (l.kind === 'option' ? clsShort(l.class_id) : `Your ${l.label}`);
   const sections = [
-    h('section', { class: 'rsec' }, h('h2', null, 'Your options'), yearChips,
+    glance,
+    h('section', { class: 'rsec' }, h('h2', null, 'Your options'),
       noRef ? h('p', { class: 'infoline' }, r.no_reference === 'out_of_scope' ? 'Your car is not petrol or diesel, so there is no comparison with it.' : 'Without a current car there is no comparison.') : null,
       h('div', { class: 'ocards' }, opts.map(optCard), refCard), legend,
       h('p', { class: 'note keep' }, 'Bars: cost per year by item, same scale for all.')),
@@ -3205,7 +3238,15 @@ function renderB4(r) {
           p.cost_chf != null || p.cost_per_year_chf != null ? h('span', { class: 'sub st' }, [p.cost_chf != null ? `${fmt.chf(p.cost_chf)} per trip` : null, p.cost_per_year_chf != null ? `${fmt.chf(p.cost_per_year_chf)} a year` : null].filter(Boolean).join(' · ')) : null,
           p.key === 'train' && p.train_time_h ? h('span', { class: 'sub' }, `${fmt.hm(p.train_time_h)} by train (car ${fmt.hm(p.car_time_h)})`) : null); }));
   };
+  // the one visible block: the chosen class in simple rows; the side-by-side board goes into Full analysis
+  const frow = (l, v, cls) => h('div', { class: 'frow' }, h('span', null, l), h('b', { class: cls || null }, v));
+  const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), 'Your car option'),
+    frow('Class', clsShort(sel.class_id)),
+    frow('Driving days', `${fmt.n(sel.ev_days)} of ${fmt.n(sel.total_days)}`),
+    frow('Seats', String(sel.seats ?? '–')),
+    frow('New price', fmt.band(sel.price_band_chf) + (overBudget(sel) ? ' ⚠' : ''), overBudget(sel) ? 'warn' : null)) : null;
   const sections = [
+    pick,
     h('section', { class: 'rsec' }, h('h2', null, 'Your options'),
       h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Calculated for winter and motorway.')),
       r.no_option ? h('p', { class: 'callout' }, 'No electric car does your "Must" trips. Set some trips to "Any".') : null,
@@ -3355,6 +3396,7 @@ function renderB7(r) {
   const el = store.profile.electricity_product || start.electricity_product || 'consumer_mix';
   const byClass = r.controls?.classes_by_size || {};
   if (!(byClass[st.size] || []).includes(st.cls)) st.cls = (byClass[st.size] || [])[0];
+  { const withR = (byClass[st.size] || []).filter((c) => (r.variants || []).some((x) => x.class_id === c && x.wltp_range_median_km != null)); if (withR.length && !withR.includes(st.cls)) st.cls = withR[0]; }
   const v = (r.variants || []).find((x) => x.class_id === st.cls && x.electricity_product === el) || (r.variants || [])[0];
   if (!v) return { statement: 'No climate result available.', sections: [], actions: [], facts: {} };
   const b1 = v.block1 || {};
@@ -3373,7 +3415,10 @@ function renderB7(r) {
     h('section', { class: 'rsec' }, h('h2', null, 'New EV or new combustion car?'),
       h('div', { class: 'ctrls' },
         h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Size'), seg((r.controls?.sizes || ['S', 'M', 'L']).map((z) => [z, SZ[z]]), st.size, setSize, true)),
-        h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Range'), seg((byClass[st.size] || []).map((c) => [c, `${fmt.n(median(c))} km`]), st.cls, (c) => { st.cls = c; render(); }, true)),
+        (() => { const rs = (byClass[st.size] || []).filter((c) => median(c) != null);   // never a "– km" button
+          return h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Range'),
+            rs.length > 1 ? seg(rs.map((c) => [c, `${fmt.n(median(c))} km`]), st.cls, (c) => { st.cls = c; render(); }, true)
+              : h('span', { class: 'ctrlv' }, rs.length ? `${fmt.n(median(rs[0]))} km` : 'Range data unavailable')); })(),
         h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Electricity'), seg([['consumer_mix', 'Swiss mix'], ['renewable_product', 'Renewable']], el, (x) => x !== el && setField('electricity_product', x), true))),
       bar(`New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`, 100, b1.ref_stages_pct_of_ref, 100),
       bar(`${SZ[v.size]} electric car, ${fmt.n(v.wltp_range_median_km)} km range`, b1.ev_share_pct, b1.ev_stages_pct_of_ref, b1.ev_share_pct),
@@ -3454,7 +3499,7 @@ const Results = {
     const all = b.sections.filter(Boolean);
     let top, deep;
     if (code === 'B1') { top = [b6Card('soh')]; deep = [...all, b6Chart('soh')]; }
-    else if (code === 'B3') { top = [b6Card('resale')]; deep = [...all, b6Chart('resale')]; }
+    else if (code === 'B3') { top = all.slice(0, 1); deep = [...all.slice(1), b6Card('resale'), b6Chart('resale')]; }
     else if (code === 'B6' && rec.response.result?.mode !== 'assessment') {   // same cards as under Range and Costs, charts in the full analysis
       const ys = rec.response.result?.years || []; const y8 = ys[ys.length - 1];
       if (y8) { b.statement = `After ${y8.year} years the battery keeps about ${fmt.n(y8.soh_pct)} % of its capacity.`; b.detail = null; }

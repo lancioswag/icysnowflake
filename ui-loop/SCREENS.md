@@ -1,9 +1,12 @@
 # Text of every screen (390 px, saved n8n answers)
 
+Start, Assistant, Summary and reset copy reflects V8.4. Other screen text is from the V8.3 snapshot; use the live app for current details.
+
 Screenshots: https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/ · ids as in the map. First line = title in the top bar.
 
 ## home-empty
 ```
+BEV Navigator
 What's holding you back?
 What factors, if any, are making you hesitate to switch to an electric car?
 Range & battery life
@@ -12,31 +15,31 @@ Costs & resale value
 Climate impact
 Which electric car fits me
 Check all topics
-Or tell us about you in your own words
+Tell us in your own words
 ```
 
 ## home-picked
 ```
+BEV Navigator
 What's holding you back?
 What factors, if any, are making you hesitate to switch to an electric car?
-Charging access
 Range & battery life
+Charging access
 Costs & resale value
 Climate impact
 Which electric car fits me
 Continue
-Or tell us about you in your own words
+Tell us in your own words
+Start fresh
 ```
 
 ## assistant
 ```
 Assistant
 I’m here to help
-About: Start page
-Hi! I can explain the question you are on, your result and its sources. I do not change your answers unless you confirm it.
+Ask me about this page or your results.
 What can the Navigator tell me?
 Which topic should I start with?
-Answers use the figures and sources of this page.
 ```
 
 ## q1
@@ -527,7 +530,7 @@ Full analysis
 Edit your inputs
 What can you do next?
 Check the battery of a used EV
-Add or change a trip
+Edit your trips
 Save as PDF
 Email me this result
 Continue with Costs & resale value
@@ -575,7 +578,7 @@ Sources & our assumptions
 Edit your inputs
 What can you do next?
 Check the battery of a used EV
-Add or change a trip
+Edit your trips
 Save as PDF
 Email me this result
 Continue with Costs & resale value
@@ -1149,9 +1152,6 @@ Summary
 Topics 6/6
 Takeaway
 An electric car covers your trips, but costs about CHF 42.100 more over 6 years in this comparison.
-2 work for you
-3 with a limitation
-1 still open
 Simple
 With the numbers
 Your topics
@@ -1194,9 +1194,6 @@ Summary
 Topics 6/6
 Takeaway
 An electric car covers your trips, but costs about CHF 42.100 more over 6 years in this comparison.
-2 work for you
-3 with a limitation
-1 still open
 Simple
 With the numbers
 Your topics
@@ -1235,16 +1232,18 @@ Sources (3)
 
 ## home-results
 ```
+BEV Navigator
 What's holding you back?
 What factors, if any, are making you hesitate to switch to an electric car?
-Charging access
 Range & battery life
+Charging access
 Costs & resale value
 Climate impact
 Which electric car fits me
 Recalculate
 Your results
-Or tell us about you in your own words
+Tell us in your own words
+Start fresh
 ```
 
 ## answers
@@ -1280,6 +1279,7 @@ Done
 Which car fits me
 Done
 ›
+Start fresh
 ```
 
 ## answer-edit
@@ -1345,10 +1345,10 @@ Save
 ## reset
 ```
 Your data
-Delete your answers?
-This removes your answers, your topics and your results from this browser. It cannot be undone.
+Start fresh?
+This clears the answers, topics and results saved in this browser. It cannot be undone.
 Keep my data
-Delete my data
+Start fresh
 ```
 
 ## orient

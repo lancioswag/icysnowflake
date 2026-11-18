@@ -1,6 +1,6 @@
 # State – updated by Claude after every round
 
-Version: **V8.4** (18 Nov 2026, Codex direct UI updates: f03862e and d222b05; V8.3 = answers review 002)
+Version: **V8.4** (18 Nov 2026, Codex direct UI updates through 34fc583; V8.3 = answers review 002)
 Live app: https://icy-snowflake-1754.ricordatilamail18.workers.dev
 Screen map (45 screens, wires = taps): https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/
 Text of every screen: `ui-loop/SCREENS.md`
@@ -8,7 +8,7 @@ Last response: `outbox/response-002.md` (review 002)
 Loop: the scheduled Claude run is stopped. Codex implements and deploys directly while Simone reviews the map.
 
 ## Changed in V8.4
-Start actions are separated from five topic keys; pressed keys are softer. The top badge counts selected topics; Start and Your answers link to Start fresh. Summary loses its three counters; the car-fit range loses its underline. Assistant is available on every screen with shorter copy and a send icon. Range and Charging expose the trip editor from their results. The map shows the five topic results in one row and the Start fresh links. Map screenshots still show V8.3 and need a refresh after the UI review.
+Start actions are separated from five topic keys; pressed keys are softer. The top badge counts selected topics; Start and Your answers link to Start fresh. Summary loses its three counters; the car-fit range loses its underline. Assistant is available in the top bar with shorter copy and a send icon. Full-width action icons align on the left. Range and Charging expose the trip editor from their results; changing kilometres on a distance-only trip keeps its country. The map has a clickable overview and the five topic results in one row. Start, Assistant, reset, Summary, answers, Range, Charging and Car fit screenshots are current; other screenshots still show V8.3.
 
 ## How to see a screen yourself
 Open the live app on a phone-size window. Answers stay in the browser (localStorage `bevnav.v1`). Results come from n8n live, 5–40 s per topic.

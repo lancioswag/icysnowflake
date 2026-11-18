@@ -272,7 +272,8 @@ ol.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column;
 .rhead-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .keycard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
 .keystat { font-size: clamp(20px, 3.2vw, 27px); font-weight: 650; letter-spacing: -0.015em; line-height: 1.28; text-wrap: balance; }
-.keystat mark, .takeaway .tk mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.keystat mark, .takeaway .tk mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; }
+.takeaway .tk mark { text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 .keydetail { color: var(--ink-2); font-size: 15px; }
 .aislot { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .aislot .ailabel { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -1243,6 +1244,13 @@ input, select, textarea, .input { font-size: 16px !important; }
 .batchlist li.now span { animation: lfade 900ms var(--ease) infinite alternate; background: var(--accent-soft); color: var(--accent); }
 .lbar { width: min(260px, 80%); height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin: 6px auto 0; }
 .lbar i { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 600ms var(--ease); }
+.home .cta { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.home .cta .btn.block, .home .cta .talk { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 14px; text-align: left; padding-inline: 18px; min-height: 54px; }
+.home .cta .btn.block svg, .home .cta .talk svg { width: 21px; height: 21px; }
+.home .cta .talk { width: 100%; border: 1px solid var(--line-2); border-radius: 16px; background: var(--surface); color: var(--ink); font-size: 16px; font-weight: 600; box-shadow: 0 2px 5px rgba(16, 41, 75, .08); }
+.home .cta .start-fresh { align-self: center; }
+.topicbtn[aria-pressed="true"] { background: linear-gradient(180deg, #f5f8ff, #e6efff) !important; border-color: #9dbbf2 !important; color: #174891 !important; box-shadow: inset 0 2px 3px rgba(23, 72, 145, .14), 0 2px 5px rgba(16, 41, 75, .08) !important; transform: translateY(1px); }
+.topicbtn[aria-pressed="true"] svg { color: #2564df !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
 </style>
 </head>
@@ -1321,7 +1329,7 @@ const ICONS = {
   edit: 'M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4',
   info: 'M12 8h.01M11 12h1v5h1M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z',
   close: 'M6 6l12 12M18 6L6 18',
-  send: 'M4 12l16-8-6 16-2-7-8-1z',
+  send: 'M3 3l19 9-19 9 3-9-3-9zM6 12h16',
   car: 'M19 10l-1.5-3.4A2 2 0 0 0 15.7 5.5H8.3a2 2 0 0 0-1.8 1.1L5 10M5 10h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zM7 14h.01M17 14h.01M5 18v2M19 18v2',
   check: 'M5 12l5 5 9-10',
   route: 'M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 17h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
@@ -1484,6 +1492,9 @@ function resetAll() {
   inflight?.abort();
   store.profile = emptyProfile(); store.queue = []; store.visited = []; store.results = {}; store.session = {}; store.carLabels = {};
   store.settings.demo = false;
+  ui.topicSel = null; ui.draft = null; ui.flow = null; ui.editOpen = null; ui.assistantOpen = false;
+  Nav.stack = []; Nav.last = null;
+  Summary.cache = {}; Assistant.msgs = []; Assistant.prefill = ''; Account.form = null;
   try { localStorage.removeItem(CONFIG.storageKey); localStorage.removeItem(RESULTS_KEY()); } catch { }
   saveStore();
 }
@@ -1745,11 +1756,12 @@ function navTitle() {
 function navBack() { appBack(); }
 function renderTopbar() {
   const atHome = (ui.view === 'home' || ui.view === 'topics') && !ui.assistantOpen;
+  const topicCount = (ui.topicSel ?? store.queue).filter((c) => ORDER.includes(c)).length;
   return h('header', { class: 'nav' }, h('div', { class: 'nav-in' },
     atHome ? h('span') : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back')),
     h('span', { class: 'navt' }, atHome ? '' : navTitle()),
     h('span', { class: 'navr' },
-      !ui.assistantOpen && ui.view !== 'answers' && profileLines(store.profile).length ? h('button', { class: 'iconbtn ans', type: 'button', onclick: () => go('answers'), 'aria-label': `Your answers (${profileLines(store.profile).length})` }, icon('list'), h('span', { class: 'badge' }, String(profileLines(store.profile).length))) : null,
+      !ui.assistantOpen && ui.view !== 'answers' && (profileLines(store.profile).length || topicCount) ? h('button', { class: 'iconbtn ans', type: 'button', onclick: () => go('answers'), 'aria-label': `Your answers, ${topicCount} topics selected` }, icon('list'), topicCount ? h('span', { class: 'badge' }, String(topicCount)) : null) : null,
       Account.on() ? h('button', { class: 'iconbtn', type: 'button', onclick: () => go('account'), 'aria-label': Account.user ? 'Your account' : 'Log in' }, icon('user')) : null,
       atHome ? null : h('button', { class: 'iconbtn wash', onclick: () => { ui.assistantOpen = false; go('home'); }, 'aria-label': 'Back to all barriers' }, icon('home')))));
 }
@@ -1803,9 +1815,10 @@ function viewTopics() {
       h('div', { class: 'topiclist' }, ORDER.filter((c) => !sel.includes(c)).map((c) => btn(c, false)))),
     h('div', { class: 'cta' },
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
-        !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue', icon(allDone ? 'refresh' : 'arrow')),
-      anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), 'Your results') : null,
-      h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), 'Or tell us about you in your own words')));
+        icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue')),
+      anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
+      h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
+      (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Start fresh') : null));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
@@ -2054,12 +2067,10 @@ function viewSummary() {
   const done = sm?.based_on?.done ?? codes.length;
   const todo = ORDER.filter((c) => !store.results[c]);
   const rows = ok ? sm.topics : codes.map((code) => ({ code }));
-  const n = (x) => String(x ?? 0);
   return h('div', { class: 'col wide summary3' },
     h('div', { class: 'shead' }, h('h1', null, 'Summary'), h('span', { class: 'frac' }, `Topics ${done}/${QUICK_CODES.length}`)),
     loading ? h('div', { class: 'takeaway', role: 'status', 'aria-label': 'Writing your summary' }, h('span', { class: 'flabel' }, 'Takeaway'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
-    ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(takeaway(sm))),
-      h('div', { class: 'cline' }, h('span', { class: 'c ok' }, h('b', null, n(sm.counts?.works)), ' work for you'), h('span', { class: 'c lim' }, h('b', null, n(sm.counts?.limitation)), ' with a limitation'), h('span', { class: 'c open' }, h('b', null, n(sm.counts?.open)), ' still open'))) : null,
+    ok ? h('div', { class: 'takeaway' }, h('span', { class: 'flabel' }, 'Takeaway'), h('p', { class: 'tk' }, ...highlight(takeaway(sm)))) : null,
     ok ? h('div', { class: 'pillswitch', role: 'group', 'aria-label': 'How to show the summary' }, [['simple', 'Simple'], ['numbers', 'With the numbers']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st === v), onclick: () => { if (Summary.style !== v) { Summary.style = v; render(); } } }, l))) : null,
     h('section', { class: 'sumtopics' }, h('h2', null, 'Your topics'),
       rows.map((t) => { const lines = topicLines(t.code); const status = t.status;
@@ -2108,7 +2119,8 @@ function viewAnswers() {
     h('section', { class: 'anstopics' }, h('h2', null, 'Your topics'),
       h('div', { class: 'sumlist' }, ORDER.map((c) => { const on = !!store.results[c];
         return h('button', { class: 'trow2 ' + (on ? 'done' : 'todo'), type: 'button', onclick: () => (on ? showResult(c) : startBarrier(c)) },
-          h('span', { class: 'dot' }, on ? icon('check') : null), h('b', null, BARRIERS[c].title), h('span', { class: 'stt' }, on ? 'Done' : 'Not checked yet'), h('span', { class: 'go' }, '›')); }))));
+          h('span', { class: 'dot' }, on ? icon('check') : null), h('b', null, BARRIERS[c].title), h('span', { class: 'stt' }, on ? 'Done' : 'Not checked yet'), h('span', { class: 'go' }, '›')); }))),
+    h('button', { class: 'linkbtn', type: 'button', onclick: () => go('reset') }, 'Start fresh'));
 }
 
 /* ---------- account (Supabase Auth, dev project; Zurich next: small login at the start, account at the end) ---------- */
@@ -2189,11 +2201,24 @@ function viewSettings() {
       h('button', { class: 'btn primary', onclick: () => { store.settings.apiBase = inp.value.trim() || CONFIG.apiBase; saveStore(); toast('Saved'); go('home'); } }, 'Save'))));
 }
 function viewReset() {
+  const signedIn = !!Account.user;
   return h('div', { class: 'col' }, h('div', { class: 'qcard' },
-    h('div', { class: 'qtitle' }, 'Delete your answers?'),
-    h('p', { class: 'muted' }, 'This removes your answers, your topics and your results from this browser. It cannot be undone.'),
+    h('div', { class: 'qtitle' }, 'Start fresh?'),
+    h('p', { class: 'muted' }, signedIn
+      ? 'This signs you out and clears the answers, topics and results in this browser. Answers saved in your account remain.'
+      : 'This clears the answers, topics and results saved in this browser. It cannot be undone.'),
     h('div', { class: 'qnav' }, h('button', { class: 'btn ghost', onclick: () => go('home') }, 'Keep my data'),
-      h('button', { class: 'btn primary', onclick: () => { resetAll(); ui.flow = null; toast('Your data was deleted'); go('home'); } }, 'Delete my data'))));
+      h('button', { class: 'btn primary', onclick: async () => {
+        if (Account.user) {
+          clearTimeout(Account.t);
+          try {
+            const { error } = await Account.sb.auth.signOut();
+            if (error) throw error;
+          } catch { toast('Could not sign out. Your data was not cleared.'); return; }
+          Account.user = null;
+        }
+        resetAll(); toast('Started fresh'); go('home');
+      } }, 'Start fresh'))));
 }
 
 
@@ -3731,15 +3756,13 @@ const Assistant = {
     Assistant.prefill = '';
     ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); Assistant.send(ta.value); } });
     const msgs = h('div', { class: 'as-msgs', id: 'as-msgs', 'aria-live': 'polite' },
-      Assistant.msgs.length ? null : h('div', { class: 'msg bot' }, 'Hi! I can explain the question you are on, your result and its sources. I do not change your answers unless you confirm it.'),
+      Assistant.msgs.length ? null : h('div', { class: 'msg bot' }, 'Ask me about this page or your results.'),
       Assistant.msgs.map(Assistant.msgNode), Assistant.busy ? h('div', { class: 'msg bot' }, h('span', { class: 'typing' }, h('i'), h('i'), h('i'))) : null);
     return h('aside', { class: 'assistant', 'aria-label': 'Assistant' },
       h('div', { class: 'as-head' }, h('b', null, 'Assistant'), h('button', { class: 'btn ghost small', onclick: () => Assistant.toggle(), 'aria-label': 'Close assistant' }, icon('close'), 'Close')),
-      h('div', { class: 'as-ctx' }, h('span', null, 'About: ', h('b', null, Assistant.where()))),
       msgs,
       h('div', { class: 'as-sugg' }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.send(t) }, t))),
-      h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'btn primary', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))),
-      h('p', { class: 'as-foot' }, 'Answers use the figures and sources of this page.'));
+      h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'btn primary', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))));
   },
   afterRender() { if (!Assistant.msgs.length) return; const m = document.getElementById('as-msgs'); const last = m && m.lastElementChild; if (last) requestAnimationFrame(() => last.scrollIntoView({ block: 'nearest' })); },
   msgNode(m) {

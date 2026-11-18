@@ -521,7 +521,6 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 @media (max-width: 380px) { main.main { padding-left: 16px; padding-right: 16px; } }
 .col, .col.wide, .flow { max-width: none; }
 .bubble { right: max(calc(20px + env(safe-area-inset-right, 0px)), calc((100vw - 440px) / 2 + 22px)); bottom: calc(28px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 8px 22px rgba(40, 100, 200, .17); }
-.app.has-tabs .bubble { display: none; }
 .foot { padding: 0 22px 28px; font-size: 11.5px; }
 .foot-in { flex-direction: column; gap: 6px; }
 .foot-in > span:first-child { display: none; }
@@ -1766,7 +1765,9 @@ function renderTopbar() {
       atHome ? null : h('button', { class: 'iconbtn wash', onclick: () => { ui.assistantOpen = false; go('home'); }, 'aria-label': 'Back to all barriers' }, icon('home')))));
 }
 /** No floating assistant button: it covered fields and buttons at 390 px. The assistant opens from Start ("in your own words"). */
-function renderBubble() { return null; }
+function renderBubble() {
+  return ui.assistantOpen ? null : h('button', { class: 'bubble', type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'));
+}
 function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
@@ -2711,7 +2712,7 @@ const Questions = {
     const ss = store.session;
     switch (code) {
       case 'B1': return [1, 2, 4];
-      case 'B2': return ss.charging_interest?.includes('everyday') ? [6, 1, 5, 2] : [6];
+      case 'B2': return [...(ss.charging_interest?.includes('abroad') ? [4] : []), ...(ss.charging_interest?.includes('everyday') ? [6, 1, 5, 2] : [6])];
       case 'B3': return [3, 1, 7, 8, 9, 10].filter((b) => b !== 8 || (store.profile.current_car.targa_id && store.profile.current_car.targa_id !== 'skipped'));
       case 'B4': return [3, 1, 7, 9, 10, 13];
       case 'B6': return ss.battery_entry === 'used_car' ? [12] : [3];
@@ -2933,7 +2934,7 @@ function renderB1(r) {
       { icon: 'car', title: 'Find the car class for these trips', desc: 'Choosing the car turns this range into a class you can ask a dealer for.', to: 'B4', run: () => startBarrier('B4') },
       { icon: 'plug', title: 'See where you could charge', desc: 'At home, at work and the public chargers near you.', to: 'B2', run: () => startBarrier('B2') },
       { icon: 'car', title: 'Check the battery of a used EV', run: () => startB6('used_car') },
-      { icon: 'edit', title: 'Add or change a trip', desc: 'Your range need changes with every trip.', run: () => Questions.openEdit('B1', 'add') },
+      { icon: 'edit', title: 'Add or change a trip', desc: 'Your range need changes with every trip.', run: () => Questions.openEdit('B1') },
     ],
     facts: { r80_km: cov.r80_km, r90_km: cov.r90_km, r100_km: cov.r100_km, total_driving_days: cov.total_driving_days, trips: trips.map((t) => ({ label: t.label, one_way_km: t.one_way_km, frequency: t.frequency, range_need_km: t.range_need_km, charge_at_dest: t.charge_at_dest })) },
   };
@@ -3090,7 +3091,7 @@ function renderB2(r) {
     h('div', { class: 'tlist' },
       r.info_b.hpc_sites != null ? h('div', { class: 'trow' }, h('b', null, `${fmt.n(r.info_b.hpc_sites)} high-power sites in Switzerland`), h('span', null, `${fmt.n(r.info_b.hpc_points)} points, up to ${fmt.n(r.info_b.max_power_kw)} kW`)) : null,
       ...(r.info_b.tips || []).filter((x) => !/sites in Switzerland/i.test(x)).slice(0, 2).map((x) => h('div', { class: 'trow' }, h('span', null, normNum(x)))))));
-  if (r.info_c) sections.push(rsec('Abroad', null,
+  if (r.info_c) sections.push(rsec('Abroad', h('button', { class: 'btn small', type: 'button', onclick: () => Questions.openEdit('B2') }, icon('edit'), 'Edit trips'),
     h('div', { class: 'tlist' }, (r.info_c.countries || []).map((c) => h('div', { class: 'trow' }, h('b', null, c.country), h('span', null, normNum(c.coverage_statement)))),
       ...(r.info_c.general_tips || []).slice(0, 2).map((x) => h('div', { class: 'trow' }, h('span', null, normNum(x)))))));
 

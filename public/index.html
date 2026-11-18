@@ -35,6 +35,10 @@ window.TAS_MODELS = [["ABARTH","500E (electric)","1AU208"],["ABARTH","600E (elec
   --line: #dfe9f4;
   --line-2: #c9d8ea;
   --accent: #2564df;
+  --accent-2: #3876ee;
+  --glow: #78a8ff;
+  --press: #1d4fc0;
+  --mark: var(--accent-line);
   --accent-hover: #1253c3;
   --accent-ink: #ffffff;
   --accent-soft: #edf4ff;
@@ -49,7 +53,7 @@ window.TAS_MODELS = [["ABARTH","500E (electric)","1AU208"],["ABARTH","600E (elec
   --s2: #d0701c;
   --s3: #1d8a5a;
   --neutral-mark: #8a9bb0;
-  --band1: rgba(37, 100, 223, .13);
+  --band1: color-mix(in srgb, var(--accent) 13%, transparent);
   --band2: rgba(208, 112, 28, .13);
   --band3: rgba(29, 138, 90, .13);
   --shadow: 0 20px 70px rgba(21, 61, 120, .07), 0 2px 7px rgba(21, 61, 120, .02);
@@ -274,7 +278,7 @@ ol.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column;
 .keycard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
 .keystat { font-size: clamp(20px, 3.2vw, 27px); font-weight: 650; letter-spacing: -0.015em; line-height: 1.28; text-wrap: balance; }
 .keystat mark, .takeaway .tk mark { background: none; color: inherit; font-weight: 750; white-space: nowrap; }
-.takeaway .tk mark { text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.takeaway .tk mark { text-decoration: underline; text-decoration-color: var(--mark); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 .keydetail { color: var(--ink-2); font-size: 15px; }
 .aislot { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .aislot .ailabel { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -509,7 +513,7 @@ body { background: var(--page); }
 body::before { background: var(--page); }
 .app, .app.with-assistant { display: block; width: min(100% - 32px, 440px); margin: 32px auto; min-height: calc(100dvh - 64px); position: relative; overflow: clip;
   border: 1px solid #e2ebf7; border-radius: 32px; box-shadow: var(--shadow);
-  background: radial-gradient(120% 60% at 100% 0%, #eaf2ff 0%, rgba(234, 242, 255, 0) 55%), radial-gradient(90% 50% at 0% 100%, #f1f6ff 0%, rgba(241, 246, 255, 0) 60%), var(--bg); }
+  background: radial-gradient(120% 60% at 100% 0%, color-mix(in srgb, var(--glow) 16%, white) 0%, transparent 55%), radial-gradient(90% 50% at 0% 100%, color-mix(in srgb, var(--glow) 10%, white) 0%, transparent 60%), var(--bg); }
 @media (max-width: 520px) { .app, .app.with-assistant { width: 100%; margin: 0; border: 0; border-radius: 0; box-shadow: none; min-height: 100dvh; } }
 .page { min-height: inherit; }
 .nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; position: relative; padding: 0 7px; }
@@ -564,17 +568,17 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 
 /* ================= Iteration 4: depth, alignment, clearer inputs ================= */
 .app, .app.with-assistant { background:
-  radial-gradient(70% 38% at 88% -4%, rgba(120, 168, 255, .30) 0%, rgba(120, 168, 255, 0) 70%),
-  radial-gradient(60% 30% at -10% 22%, rgba(158, 196, 255, .22) 0%, rgba(158, 196, 255, 0) 70%),
-  radial-gradient(80% 40% at 50% 112%, rgba(110, 160, 250, .20) 0%, rgba(110, 160, 250, 0) 70%), var(--bg); }
-.btn.primary { background: linear-gradient(180deg, #3876ee 0%, #2459d6 100%); border-color: #2459d6; box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 8px 18px rgba(37, 100, 223, .28); }
+  radial-gradient(70% 38% at 88% -4%, color-mix(in srgb, var(--glow) 30%, transparent) 0%, transparent 70%),
+  radial-gradient(60% 30% at -10% 22%, color-mix(in srgb, var(--glow) 22%, transparent) 0%, transparent 70%),
+  radial-gradient(80% 40% at 50% 112%, color-mix(in srgb, var(--glow) 20%, transparent) 0%, transparent 70%), var(--bg); }
+.btn.primary { background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%); border-color: var(--accent); box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent); }
 .btn.primary:hover { background: linear-gradient(180deg, #2f6ae6 0%, #1c4fc6 100%); }
 .btn.primary[disabled] { opacity: 1; background: #c9d8f2; border-color: #c9d8f2; box-shadow: none; color: #fff; }
 .btn { box-shadow: 0 2px 6px rgba(21, 61, 120, .06); }
 .btn.ghost { box-shadow: none; }
 .tile-opt, .choice, .set { box-shadow: 0 1px 2px rgba(21, 61, 120, .04), 0 6px 16px rgba(21, 61, 120, .05); background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%); }
 .tile-opt[aria-pressed="true"], .choice[aria-pressed="true"] { background: linear-gradient(180deg, #f3f7ff 0%, #e6efff 100%); }
-.chip[aria-pressed="true"] { background: linear-gradient(180deg, #3876ee 0%, #2459d6 100%); border-color: #2459d6; }
+.chip[aria-pressed="true"] { background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%); border-color: var(--accent); }
 /* fields: one column, labels and inputs aligned to the same left edge */
 .qcard .field { width: 100%; }
 .field label, .flabel { font-size: 13px; font-weight: 600; color: var(--ink-2); }
@@ -603,7 +607,7 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 .setlist { padding-left: 54px; }
 /* result: next steps band, readout, clean rows */
 .nextband { border-radius: 24px; padding: 20px 18px; display: flex; flex-direction: column; gap: 14px; color: #fff;
-  background: linear-gradient(150deg, #2f6ff0 0%, #1d4fc4 100%); box-shadow: 0 14px 30px rgba(37, 100, 223, .25); }
+  background: linear-gradient(150deg, var(--accent-2) 0%, var(--press) 100%); box-shadow: 0 14px 30px color-mix(in srgb, var(--accent) 25%, transparent); }
 .nextband h2 { color: #fff; font-size: 19px; }
 .nextband .actions { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .nextband .action { background: rgba(255, 255, 255, .97); border-color: transparent; box-shadow: 0 4px 12px rgba(10, 40, 100, .12); align-items: center; }
@@ -636,7 +640,7 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 .note { font-size: 12.5px; }
 .nav-in { grid-template-columns: 96px minmax(0, 1fr) 96px; }
 .navr { display: flex; justify-content: flex-end; gap: 6px; }
-.iconbtn.ai { background: linear-gradient(180deg, #3876ee 0%, #2459d6 100%); color: #fff; box-shadow: 0 6px 14px rgba(37, 100, 223, .25); }
+.iconbtn.ai { background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%); color: #fff; box-shadow: 0 6px 14px color-mix(in srgb, var(--accent) 25%, transparent); }
 .iconbtn.ai:hover { background: linear-gradient(180deg, #2f6ae6 0%, #1c4fc6 100%); }
 .yearchips { display: grid; grid-template-columns: auto repeat(8, minmax(0, 1fr)); gap: 5px; align-items: center; }
 .yearchips .chip { padding: 0; justify-content: center; min-height: 34px; }
@@ -1056,13 +1060,13 @@ button.tip { display: inline; padding: 0; border: 0; background: none; font: inh
 .stepbar .lab { justify-content: flex-end; }
 
 /* ===== V8.1 – Simone 18.11: one result template, real back, schematic summary, quieter buttons ===== */
-:root { --t: 220ms; --ease: cubic-bezier(.25,.8,.25,1); --press: #1d4fc0; }
+:root { --t: 220ms; --ease: cubic-bezier(.25,.8,.25,1); }
 /* top bar stays when scrolling */
 .nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 /* one key design: Next, pressed topics, chips and choices share color, radius and depth */
 .btn { transition: background var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease); }
 .btn.primary, .btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 0 var(--press); }
-.btn.primary:hover { background: #2259cf; }
+.btn.primary:hover { background: var(--accent-hover); }
 .btn.primary:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--press); }
 .btn.primary[disabled] { background: #c9d8f2; border-color: #c9d8f2; box-shadow: none; transform: none; }
 .topicbtn, .choice, .chip, .tile-opt { transition: background var(--t) var(--ease), color var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease) !important; }
@@ -1130,7 +1134,7 @@ details.editp > summary { font-size: 15.5px; }
 .noprice { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: none; align-self: flex-start; }
 .noprice svg { width: 14px; height: 14px; }
 .leaflet-marker-icon.mk { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important; cursor: pointer; transition: transform var(--t) var(--ease); }
-.leaflet-marker-icon.mk.on { transform-origin: center; outline: 3px solid rgba(37, 100, 223, .45); }
+.leaflet-marker-icon.mk.on { transform-origin: center; outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); }
 /* next steps: compact rows */
 .action { align-items: center !important; }
 .action .go { margin-left: auto; color: var(--accent); display: grid; place-items: center; }
@@ -1244,18 +1248,34 @@ input, select, textarea, .input { font-size: 16px !important; }
 .home .cta .start-fresh { align-self: center; }
 .btn.block.with-icon { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 14px; text-align: left; padding-inline: 18px; }
 .brand-word { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
-.brand-word img { width: 20px; height: 20px; border-radius: 5px; }
+.brand-word img, .brand-word svg { width: 20px; height: 20px; border-radius: 5px; flex: none; }
 .nav-in { grid-template-columns: 96px minmax(0, 1fr) 140px; }
 .nav.at-home .nav-in { grid-template-columns: 96px minmax(0, 1fr) 96px; }
 .navr { gap: 4px; }
 .navr .iconbtn { flex: 0 0 44px; }
 .navl { display: flex; align-items: center; gap: 6px; }
-.iconbtn.assist-launch { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(180deg, #3876ee, #2459d6); color: #fff; box-shadow: 0 3px 8px rgba(37, 100, 223, .18); }
-.iconbtn.assist-launch:hover { background: #2459d6; }
-.topicbtn[aria-pressed="true"] { background: linear-gradient(180deg, #f5f8ff, #e6efff) !important; border-color: #9dbbf2 !important; color: #174891 !important; box-shadow: inset 0 2px 3px rgba(23, 72, 145, .14), 0 2px 5px rgba(16, 41, 75, .08) !important; transform: translateY(1px); }
-.topicbtn[aria-pressed="true"] svg { color: #2564df !important; }
+.iconbtn.assist-launch { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(180deg, var(--accent-2), var(--accent)); color: #fff; box-shadow: 0 3px 8px color-mix(in srgb, var(--accent) 18%, transparent); }
+.iconbtn.assist-launch:hover { background: var(--accent); }
+.topicbtn[aria-pressed="true"] { background: linear-gradient(180deg, var(--surface), var(--accent-soft)) !important; border-color: var(--accent-line) !important; color: var(--press) !important; box-shadow: inset 0 2px 3px rgba(23, 72, 145, .14), 0 2px 5px rgba(16, 41, 75, .08) !important; transform: translateY(1px); }
+.topicbtn[aria-pressed="true"] svg { color: var(--accent) !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+
+
+/* big figure first (DriEV, MonVE) */
+.bigfig { display: flex; flex-direction: column; gap: 0; margin-bottom: 6px; }
+.bigfig b { font-size: clamp(38px, 11vw, 48px); line-height: 1.02; font-weight: 750; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.bigfig.warn b { color: var(--warn); } .bigfig.good b { color: var(--good); }
+.bigfig span { font-size: 15px; font-weight: 650; color: var(--ink); margin-top: 2px; }
+.bigfig small { font-size: 13.5px; color: var(--muted); }
+.keystat.sm { font-size: 16.5px !important; line-height: 1.45 !important; font-weight: 500 !important; color: var(--ink-2) !important; }
+.keystat.sm mark { font-weight: 650; }
+/* ===== Accent themes (V8.4): ?theme=pine | ink | petrol | blue, remembered in this browser ===== */
+html[data-accent="pine"] { --glow: #7fcfa9; --wash: #eef7f2; --surface-2: #f5f9f7; --accent: #0d6e52; --accent-2: #15886a; --accent-hover: #0a5c44; --press: #084a37; --accent-soft: #e7f3ee; --accent-line: #b4dac9; --s1: #0d6e52; --ink: #13261f; --ink-2: #3b5148; --good: #1f8a4c; --mark: #b4dac9; }
+html[data-accent="ink"] { --glow: #e8d8a8; --wash: #f6f4ef; --surface-2: #f7f6f2; --accent: #1d1d1f; --accent-2: #3a3a3d; --accent-hover: #000; --press: #000; --accent-soft: #f0eee8; --accent-line: #d6d2c8; --s1: #1d1d1f; --ink: #1d1d1f; --ink-2: #45464b; --mark: #ffd23f; }
+html[data-accent="petrol"] { --glow: #86c6cf; --wash: #eef6f7; --surface-2: #f5f9fa; --accent: #0f6b7a; --accent-2: #178597; --accent-hover: #0c5966; --press: #09474f; --accent-soft: #e6f2f4; --accent-line: #b0d6dc; --s1: #0f6b7a; --ink: #102a33; --ink-2: #3a5560; --mark: #b0d6dc; }
 </style>
+<script>/* accent theme before first paint: ?theme=pine|ink|petrol|blue */
+(function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme', q); var t = localStorage.getItem('bevnav.theme'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -1757,13 +1777,20 @@ function navTitle() {
   return ({ home: 'BEV Navigator', topics: 'BEV Navigator', orient: "I'm not sure", question: t, edit: t, result: t, loading: t, error: t, summary: 'Summary', batch: 'Your results', answers: 'Your answers', account: 'Your account', settings: 'Connection & data', reset: 'Your data' })[ui.view] || 'BEV Navigator';
 }
 function navBack() { appBack(); }
+/** The logo in the app colour (the file icon.svg stays for the browser tab). */
+function brandMark() {
+  const NS = 'http://www.w3.org/2000/svg', el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svg = el('svg', { viewBox: '0 0 64 64', width: '20', height: '20', 'aria-hidden': 'true', class: 'brandmark' });
+  svg.append(el('rect', { width: '64', height: '64', rx: '15', fill: 'var(--accent)' }), el('path', { d: 'M14 48c13 0 9-20 22-20 6 0 8 7 13 7', fill: 'none', stroke: '#fff', 'stroke-width': '5', 'stroke-linecap': 'round' }), el('circle', { cx: '14', cy: '48', r: '4', fill: '#fff' }), el('path', { d: 'M45 12v11m8-11v11m-8 0h8v10h-8z', fill: 'none', stroke: '#fff', 'stroke-width': '4', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+  return svg;
+}
 function renderTopbar() {
   const atHome = (ui.view === 'home' || ui.view === 'topics') && !ui.assistantOpen;
   const topicCount = (ui.topicSel ?? store.queue).filter((c) => ORDER.includes(c)).length;
   return h('header', { class: 'nav' + (atHome ? ' at-home' : '') }, h('div', { class: 'nav-in' },
     h('span', { class: 'navl' }, atHome ? null : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back')),
       ui.assistantOpen ? null : h('button', { class: 'iconbtn assist-launch', type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'))),
-    h('span', { class: 'navt' }, atHome ? h('span', { class: 'brand-word' }, h('img', { src: '/icon.svg', alt: '' }), 'BEV Navigator') : navTitle()),
+    h('span', { class: 'navt' }, atHome ? h('span', { class: 'brand-word' }, brandMark(), 'BEV Navigator') : navTitle()),
     h('span', { class: 'navr' },
       !ui.assistantOpen && ui.view !== 'answers' && (profileLines(store.profile).length || topicCount) ? h('button', { class: 'iconbtn ans', type: 'button', onclick: () => go('answers'), 'aria-label': `Your answers, ${topicCount} topics selected` }, icon('list'), topicCount ? h('span', { class: 'badge' }, String(topicCount)) : null) : null,
       Account.on() ? h('button', { class: 'iconbtn', type: 'button', onclick: () => go('account'), 'aria-label': Account.user ? 'Your account' : 'Log in' }, icon('user')) : null,
@@ -2353,8 +2380,17 @@ function parsePlace(text) {
 }
 
 /* ---------- small UI builders ---------- */
+/** One tap is enough when the question has only one list of single answers and nothing else to fill in. */
+function autoAdvance() {
+  setTimeout(() => {
+    const m = document.getElementById('main'), nx = document.getElementById('qnext');
+    if (ui.view !== 'question' || ui.flow?.single || !m || !nx || nx.disabled) return;
+    if (m.querySelectorAll('.choice-list').length !== 1 || m.querySelector('.choice.multi, input, select, textarea, .chips')) return;
+    nx.click();
+  }, 260);
+}
 function choice(label, sub, pressed, onclick, multi, ico) {
-  return h('button', { class: 'choice' + (multi ? ' multi' : ''), 'aria-pressed': String(!!pressed), onclick, type: 'button' }, ico ? icon(ico) : h('span', { class: 'mark' }), h('span', { class: 'ct' }, h('b', null, label), sub ? h('span', null, sub) : null));
+  return h('button', { class: 'choice' + (multi ? ' multi' : ''), 'aria-pressed': String(!!pressed), onclick: (e) => { onclick(e); if (!multi) autoAdvance(); }, type: 'button' }, ico ? icon(ico) : h('span', { class: 'mark' }), h('span', { class: 'ct' }, h('b', null, label), sub ? h('span', null, sub) : null));
 }
 function chip(label, pressed, onclick, sm) { return h('button', { class: 'chip' + (sm ? ' sm' : ''), 'aria-pressed': String(!!pressed), onclick, type: 'button' }, label); }
 function seg(options, value, onpick, sm) { return h('div', { class: 'seg' + (sm ? ' sm' : ''), role: 'group' }, options.map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(value === v), onclick: () => onpick(v) }, l))); }
@@ -2934,6 +2970,7 @@ function renderB1(r) {
   ];
   if (r.country_hints?.length) sections.push(rsec('Charging abroad', null, h('ul', { class: 'clean' }, r.country_hints.map((c) => h('li', null, h('b', null, `${c.country} (${c.label}): `), c.text)))));
   return {
+    big: r100 != null ? { value: `${fmt.n(rare ? r90 : r100)} km`, label: rare ? 'real range for 9 of 10 driving days' : 'real range for all your trips' } : null,
     statement: r100 == null ? r.key_statement : rare ? `A real range of ${fmt.n(r90)} km covers 9 out of 10 of your driving days, ${fmt.n(r100)} km covers all of them.` : `A real range of ${fmt.n(r100)} km covers all your trips.`,
     info: 'Real range: what a car does in everyday driving.', sections,
     actions: [
@@ -3006,7 +3043,8 @@ function siteMap(place) {
     const lat = sites.reduce((a, x) => a + x.latitude, 0) / sites.length, lon = sites.reduce((a, x) => a + x.longitude, 0) / sites.length;
     const rad = Math.max(150, ...sites.map((x) => Math.hypot((x.latitude - lat) * 111000, (x.longitude - lon) * 75000))) + 120;
     map.setView([lat, lon], 15);
-    const circle = L.circle([lat, lon], { radius: rad, color: '#2459d6', weight: 1.5, fillColor: '#2459d6', fillOpacity: 0.07 }).addTo(map);
+    const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2564df';
+    const circle = L.circle([lat, lon], { radius: rad, color: ac, weight: 1.5, fillColor: ac, fillOpacity: 0.07 }).addTo(map);
     let sel = null;
     sites.forEach((x) => {
       const m = L.marker([x.latitude, x.longitude], { icon: L.divIcon({ className: 'mk ' + x.k, html: '', iconSize: [18, 18] }), title: x.name, keyboard: true }).addTo(map);
@@ -3199,6 +3237,9 @@ function renderB3(r) {
     statement = `Kept for ${yrs}, a ${clsLong(best.class_id)} costs about ${fmt.band(yr(best).total_over_n)} in total.`;
     detail = `That is about ${fmt.band(yr(best).total_per_year)} a year.`;
   }
+  let big = null;
+  if (best && !noRef) { const v = sv(best); if (v != null && !isNaN(v)) big = { value: fmt.chf100(Math.abs(v)), label: v >= 0 ? `saved over ${yrs}` : `more over ${yrs}`, sub: `about ${fmt.chf(Math.abs(v) / (N * 12))} a month`, tone: v >= 0 ? 'good' : 'warn' }; }
+  else if (best) big = { value: fmt.band(yr(best).total_per_year), label: 'a year, all costs' };
   if (gaps.length) detail = (detail ? detail + ' ' : '') + `Missing for your area: ${gaps.join(' and ')} – counted as 0, so the electric car looks cheaper than it is.`;
 
   const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), [1, 2, 3, 4, 5, 6, 7, 8].map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
@@ -3260,7 +3301,7 @@ function renderB3(r) {
       h('button', { class: 'ibox link', type: 'button', onclick: () => (store.results.B1 ? showResult('B1') : startBarrier('B1')) }, h('b', null, 'Battery and resale'), h('span', null, 'How the battery ages and what the car is worth later. Open Battery & resale.')))),
   ];
   return {
-    statement, detail, sections,
+    statement, detail, sections, big,
     actions: [
       { icon: 'link', title: 'Compare insurance quotes', desc: 'We count liability insurance only. comparis.ch shows real offers.', href: 'https://www.comparis.ch/autoversicherung/berechnen' },
       { icon: 'down', title: 'Download the cost table', desc: `All cost items for ${yrs} (CSV).`, run: () => Actions.costCSV(r, N) },
@@ -3354,6 +3395,7 @@ function renderB4(r) {
   ];
   const dealer = sel ? `Electric car, ${sel.size_label.toLowerCase()}\n- Range: at least ${fmt.n(sel.min_wltp_km)} km (WLTP)\n- Seats: ${sel.seats}\n- Towbar: ${TOW[sel.towbar] || 'not needed'}\n- Typical new price: ${fmt.band(sel.price_band_chf)}\n(From the BEV Navigator – a class, not a specific model.)` : '';
   return {
+    big: sel ? { value: `${fmt.n(sel.ev_days)} / ${fmt.n(sel.total_days)}`, label: 'driving days covered' } : null,
     statement: r.no_option ? 'No electric car class covers all your must trips yet.' : sel ? `A ${clsLong(sel.class_id)} does ${fmt.n(sel.ev_days)} of your ${fmt.n(sel.total_days)} driving days.` : 'Your EV options',
     detail: sel ? (sel.ev_days === sel.total_days ? 'No other car is needed for your trips.' : `For the rest: ${Object.entries(sel.bridging_days || {}).filter(([, v]) => v).map(([k, v]) => `${fmt.n(v)} day${v === 1 ? '' : 's'} ${MODE_TXT[k]?.toLowerCase()}`).join(', ')}.`) : null,
     sections,
@@ -3538,6 +3580,7 @@ function renderB7(r) {
       h('p', { class: 'note keep' }, 'Assumes the EV drives all your trips. Trips you would do by rental, second car or train stay combustion km, so the saving is somewhat lower.')),
   ];
   return {
+    big: b1.ev_share_pct != null ? { value: `${fmt.n(b1.ev_share_pct)} %`, label: "of a petrol car's greenhouse gases", tone: 'good' } : null,
     statement: b1.headline, detail: b2?.verdict === 'switch_pays_off' ? b2.statement : (b2?.statement || null), sections,
     actions: [
       el !== 'renewable_product' ? { icon: 'plug', title: 'See the effect of renewable electricity', desc: 'Recalculates with a renewable electricity product for charging.', run: () => setField('electricity_product', 'renewable_product') } : null,
@@ -3616,7 +3659,8 @@ const Results = {
         h('h1', null, BARRIERS[code].question),
         h('button', { class: 'iconbtn chg', type: 'button', onclick: () => Questions.openEdit(code), 'aria-label': 'Change your answers', title: 'Change your answers' }, icon('edit'))),
       h('section', { class: 'keycard', 'aria-live': 'polite' },
-        h('p', { class: 'keystat', id: 'keystat' }, highlight(b.statement)),
+        b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') }, h('b', null, b.big.value), h('span', null, b.big.label), b.big.sub ? h('small', null, b.big.sub) : null) : null,
+        h('p', { class: 'keystat' + (b.big ? ' sm' : ''), id: 'keystat' }, highlight(b.statement)),
         b.detail ? h('p', { class: 'keydetail' }, ...gloss(String(b.detail))) : null,
         b.info ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, b.info)) : null,
         CONFIG.aiSummary ? h('div', { class: 'aislot', id: 'aislot' }, aiSlot(ai)) : null),
@@ -3859,7 +3903,7 @@ function loadPdfLib() {
 }
 
 const Report = {
-  C: { ink: '#10294b', ink2: '#3d5677', muted: '#6b7f99', accent: '#2564df', line: '#e3ebf5', wash: '#f2f6fd', zebra: '#f8fafd', good: '#1d7a4f', warn: '#b4531b' },
+  C: { ink: '#10294b', ink2: '#3d5677', muted: '#6b7f99', get accent() { return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2564df'; }, line: '#e3ebf5', wash: '#f2f6fd', zebra: '#f8fafd', good: '#1d7a4f', warn: '#b4531b' },
 
   /* ---------- small builders ---------- */
   t(x) { return x == null || x === '' ? '–' : String(x); },

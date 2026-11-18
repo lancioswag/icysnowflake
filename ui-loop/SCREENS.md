@@ -1,7 +1,5 @@
 # Text of every screen (390 px, saved n8n answers)
 
-Start, Assistant, Summary and reset copy reflects V8.4. Other screen text is from the V8.3 snapshot; use the live app for current details.
-
 Screenshots: https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/ · ids as in the map. First line = title in the top bar.
 
 ## home-empty
@@ -16,6 +14,7 @@ Climate impact
 Which electric car fits me
 Check all topics
 Tell us in your own words
+Start fresh
 ```
 
 ## home-picked
@@ -23,8 +22,8 @@ Tell us in your own words
 BEV Navigator
 What's holding you back?
 What factors, if any, are making you hesitate to switch to an electric car?
-Range & battery life
 Charging access
+Range & battery life
 Costs & resale value
 Climate impact
 Which electric car fits me
@@ -495,6 +494,7 @@ Long trips
 The operators with the most high-power points are Energie 360 Grad AG, Tesla, Shell Recharge.
 Use a charging card or app that works across several networks (roaming) and check its coverage and prices for these operators before you travel.
 Abroad
+Edit your trips
 Austria
 Dense public charging (336 points per 100k inhabitants, 30.886 points in total); balanced AC/DC mix (DC share 29%).
 France
@@ -518,6 +518,8 @@ Continue with Range & battery life
 ```
 Range & battery life
 How much range do you need?
+270 km
+real range for all your trips
 A real range of 270 km covers all your trips.
 Real range: what a car does in everyday driving.
 Battery
@@ -540,6 +542,8 @@ Continue with Costs & resale value
 ```
 Range & battery life
 How much range do you need?
+270 km
+real range for all your trips
 A real range of 270 km covers all your trips.
 Real range: what a car does in everyday driving.
 Battery
@@ -588,6 +592,9 @@ Continue with Costs & resale value
 ```
 Costs & resale value
 What does it cost you?
+CHF 42.100
+more over 6 years
+about CHF 585 a month
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 None of the electric options pays off within 8 years.
 Cost at a glance
@@ -619,6 +626,9 @@ Email me this result
 ```
 Costs & resale value
 What does it cost you?
+CHF 42.100
+more over 6 years
+about CHF 585 a month
 Kept for 6 years, an electric car costs about CHF 42.100 more than keeping your VW Golf 7 1.0 TSI.
 None of the electric options pays off within 8 years.
 Cost at a glance
@@ -763,6 +773,8 @@ Email me this result
 ```
 Climate impact
 Is it better for the climate?
+38 %
+of a petrol car's greenhouse gases
 Over its whole life, a medium electric car causes about 38 % of the greenhouse gases of a comparable new petrol car.
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
 New EV or new combustion car?
@@ -792,6 +804,8 @@ Email me this result
 ```
 Climate impact
 Is it better for the climate?
+38 %
+of a petrol car's greenhouse gases
 Over its whole life, a medium electric car causes about 38 % of the greenhouse gases of a comparable new petrol car.
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
 New EV or new combustion car?
@@ -856,6 +870,8 @@ Email me this result
 ```
 Which car fits me
 Which electric car fits you?
+230 / 230
+driving days covered
 A medium electric car with at least 450 km range does 230 of your 230 driving days.
 No other car is needed for your trips.
 Your car option
@@ -879,6 +895,8 @@ Email me this result
 ```
 Which car fits me
 Which electric car fits you?
+230 / 230
+driving days covered
 A medium electric car with at least 450 km range does 230 of your 230 driving days.
 No other car is needed for your trips.
 Your car option
@@ -994,6 +1012,7 @@ Long trips
 The operators with the most high-power points are Energie 360 Grad AG, Tesla, Shell Recharge.
 Use a charging card or app that works across several networks (roaming) and check its coverage and prices for these operators before you travel.
 Abroad
+Edit your trips
 Austria
 Dense public charging (336 points per 100k inhabitants, 30.886 points in total); balanced AC/DC mix (DC share 29%).
 France
@@ -1034,6 +1053,16 @@ Per 100 km, average electric car (17 kWh), no subscription.
 Full analysis
 Edit your inputs
 Change as much as you like. Nothing is recalculated until you press "Recalculate".
+Your other regular trips
+Tap every trip you make. Change distance or frequency with "Edit".
+Shopping
+Sport or hobby
+Kids' activities
+Visiting family or friends
+Day trip (mountains, lake)
+Weekend away
+Holiday abroad by car
++ Add a trip
 What would you like to know?
 Everyday charging
 At home, at work and nearby
@@ -1235,8 +1264,8 @@ Sources (3)
 BEV Navigator
 What's holding you back?
 What factors, if any, are making you hesitate to switch to an electric car?
-Range & battery life
 Charging access
+Range & battery life
 Costs & resale value
 Climate impact
 Which electric car fits me

@@ -1,6 +1,6 @@
 # State – updated by Claude after every round
 
-Version: **V8.4** (18 Nov 2026, Codex direct UI updates through 34fc583; V8.3 = answers review 002)
+Version: **V8.4** (18 Nov 2026, Claude: research of 12 other navigators, tap = next, big figure in the key card, accent themes; before: Codex review 003, Claude V8.3)
 Live app: https://icy-snowflake-1754.ricordatilamail18.workers.dev
 Screen map (45 screens, wires = taps): https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/
 Text of every screen: `ui-loop/SCREENS.md`
@@ -12,6 +12,9 @@ Start actions are separated from five topic keys; pressed keys are softer. The t
 
 ## How to see a screen yourself
 Open the live app on a phone-size window. Answers stay in the browser (localStorage `bevnav.v1`). Results come from n8n live, 5–40 s per topic.
+
+## Changed in V8.4
+See `RESEARCH.md`. Single-answer questions go on with one tap; key card starts with one big figure (Range, Costs, Climate, Which car); accent themes `?theme=pine|ink|petrol|blue` (default still blue until Simone picks), background glow and logo follow the theme.
 
 ## Changed in V8.3 (review 002)
 Continue with next picked topic (also when done); no topic strip; What can you do next = flat rows; Summary topics one line each (status / figure); Climate bars in Full analysis; Your answers flat rows; no price bars; fields 16 px (no iPhone zoom), no horizontal overflow at 360–390 px; one button system; one motion speed 220 ms; waiting screen with progress bar and changing sentence.

@@ -25,7 +25,7 @@ Live: https://bev-navigator.ricordatilamail18.workers.dev · Code: `public/index
 - **Keep the current blue** (#2564df) and Inter.
 
 ## Page notes already decided
-- Start: title "What's holding you back?", topic keys, blue button "Continue", "Recalculate" when all picked topics have results, "Your results" when any exist.
+- Start: title "Ready to make the switch to electric?", topic keys, blue button "Continue", "Recalculate" when all picked topics have results, "Your results" when any exist.
 - Charging: "Possible" + one line; "Write email" with the template under it (no numbered steps); subsidy in its own small box; public charging = points within 500 m + nearest fast charger + map with one circle, tap a point for details; sites grouped and named once; "No price data" with arrow to the operator; charging times one line each.
 - Range: "A real range of N km covers all your trips." + grey info line; battery card after 5 / 8 years; chart only in Full analysis; warranty in one line.
 - Summary: "Summary" · "Topics n/6" · Takeaway (one sentence) · "x work for you · y with a limitation · z still open" · Simple / With the numbers · Your topics (schematic lines) · next steps in rows · save/share grid.

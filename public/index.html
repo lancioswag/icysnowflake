@@ -484,6 +484,7 @@ main.main { padding-block: 12px 110px; }
 /* question screens: no card, centred title, button at the bottom */
 .qcard { background: transparent; border: 0; box-shadow: none; padding: 0; gap: 18px; }
 .qtitle { font-size: clamp(27px, 7.4vw, 32px); font-weight: 550; letter-spacing: -0.035em; line-height: 1.15; text-align: center; text-wrap: balance; }
+.qsub { margin: -6px 0 14px; font-size: 17px; font-weight: 600; color: var(--muted); line-height: 1.4; }
 .why { justify-content: center; text-align: center; font-size: 14px; line-height: 1.55; max-width: 42ch; margin: -4px auto 4px; }
 .why svg { display: none; }
 .qpart + .qpart, .qpart { border-top: 0; padding-top: 4px; }
@@ -1652,7 +1653,7 @@ const TOPIC_ICON = { B1: 'route', B2: 'plug', B4: 'car', B3: 'wallet', B6: 'batt
 const BARRIERS = {
   B1: { short: 'The range your trips need', name: 'B1 Range', title: 'Range & battery life', tile: 'Range & battery life', hint: 'Will it get me where I go – and for how many years?', question: 'How much range do you need?', blurb: 'See which real range covers the trips you actually make, and how the battery ages.', next: ['B4', 'B2', 'B3'] },
   B2: { short: 'Home, work and nearby', name: 'B2 Charging', title: 'Charging access', tile: 'Charging access', hint: 'Where could I charge – at home, at work, nearby?', question: 'Where can you charge?', blurb: 'Your options at home, at work and nearby – with the next step and the cost.', next: ['B3', 'B1'] },
-  B4: { short: 'The class that fits you', name: 'B4 Choosing the car', title: 'Which car fits me', tile: 'Which electric car fits me', hint: 'The car size for your trips and budget – best done last.', question: 'Which electric car fits you?', blurb: 'The smallest car class that does your trips, plus a plan for the rest.', next: ['B3', 'B2'] },
+  B4: { short: 'The class that fits you', name: 'B4 Choosing the car', title: 'Lifestyle match', tile: 'Lifestyle match', hint: 'The car size for your trips and budget – best done last.', question: 'Which electric car fits you?', blurb: 'The smallest car class that does your trips, plus a plan for the rest.', next: ['B3', 'B2'] },
   B3: { short: 'Compared with your car', name: 'B3 Costs', title: 'Costs & resale value', tile: 'Costs & resale value', hint: 'Buying and running it compared with my car – and what it is worth later.', question: 'What does it cost you?', blurb: 'Cost per year and over the years you keep the car, compared with your car, and the resale value.', next: ['B2', 'B4', 'B7'] },
   B6: { short: 'Health and value over time', name: 'B6 Battery & resale', title: 'Battery details', tile: 'Battery life & resale value', hint: 'How long the battery lasts and what the car is worth later.', question: 'Battery life', blurb: 'Battery health and resale value over 8 years – or a check of a used EV.', next: ['B3', 'B4', 'B2'] },
   B7: { short: 'Life cycle and switching now', name: 'B7 Ecology', title: 'Climate impact', tile: 'Climate impact', hint: 'Is it really better for the climate?', question: 'Is it better for the climate?', blurb: 'Life-cycle emissions, and whether switching now pays off for the climate.', next: ['B3', 'B4'] },
@@ -2078,7 +2079,7 @@ function viewTopics() {
   dragSort(picked, sel, set);
   return h('div', { class: 'flow home' },
     h('section', { class: 'hook' },
-      h('h1', { class: 'bigtitle' }, "What's holding you back?"),
+      h('h1', { class: 'bigtitle' }, 'Ready to make the switch to electric?'),
       h('p', { class: 'lead strong' }, 'What factors, if any, are making you hesitate to switch to an electric car?')),
     h('section', { class: 'pick', 'aria-label': 'Topics' },
       sel.length ? picked : null,
@@ -2347,7 +2348,7 @@ function askFeedback(force) {
     h('div', { class: 'fbkeys', role: 'group' }, [['yes', 'Yes'], ['not_really', 'Not really']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st.helpful === v), onclick: () => { st.helpful = v; draw(); d.querySelector('textarea')?.focus(); } }, l))),
     st.helpful ? h('textarea', { class: 'input', rows: 3, placeholder: st.helpful === 'yes' ? 'What helped most? (optional)' : 'What was missing? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { st.text = e.target.value; } }, st.text) : null,
     st.helpful ? h('button', { class: 'btn primary block', type: 'button', onclick: async (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Sending…';
-      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.9', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
+      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.10', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
       catch { toast('Could not send, please try again'); draw(); } } }, 'Send') : null);
   draw(); d.addEventListener('close', () => d.remove()); d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
   document.body.append(d); d.showModal();
@@ -2922,7 +2923,7 @@ const BLOCKS = {
       return parts;
     },
     valid: (d) => answered(5, d) },
-  6: { title: 'What would you like to know?', why: 'You can pick more than one.',
+  6: { title: 'Let’s talk charging', sub: 'Which situation is on your mind?', why: 'You can pick more than one.',
     render: () => { const ci = ui.flow.interest = ui.flow.interest || (store.session.charging_interest || store.results.B2?.session?.charging_interest || ['everyday']).slice();
       const t = (k) => { const i = ci.indexOf(k); i >= 0 ? ci.splice(i, 1) : ci.push(k); render(); };
       return [h('div', { class: 'choice-list' },
@@ -3068,6 +3069,7 @@ const Questions = {
       ui.flow.forced && !ui.flow.single ? h('div', { class: 'banner' }, h('b', null, 'One more thing.'), ' The calculation needs this answer.') : null,
       h('form', { class: 'qcard', onsubmit: (e) => { e.preventDefault(); Questions.next(); } },
         h('h1', { class: 'qtitle' }, B.heading ? B.heading(d) : B.title),
+        B.sub ? h('p', { class: 'qsub' }, B.sub) : null,
         ...B.render(d, 'ask'),
         h('div', { class: 'qnav' },
           h('button', { class: 'btn primary block with-icon', id: 'qnext', type: 'submit', disabled: !B.valid(d, 'ask') }, icon('arrow'), h('span', null, ui.flow.single ? 'Save' : isLast ? lastLabel : 'Next')),
@@ -3418,28 +3420,37 @@ function chargeTimes(ct) {
   if (ct.public_dc) rows.push(['Fast charging (DC)', `${m(ct.public_dc, /(\d+\s*-\s*\d+) minutes/) || '20–30'} minutes`]);
   return rows.length ? rsec('How long does charging take?', null, h('div', { class: 'tlist' }, rows.map(([a, b]) => h('div', { class: 'trow' }, h('b', null, a), h('span', null, b))))) : null;
 }
+/** B2 key sentence, worded positively (Christian 19.11). */
+function b2Statement(r, rk) {
+  const pubNear = rk.some((x) => String(x.option).startsWith('public') && x.available_now === true);
+  if (r.home?.node === 'HX') return pubNear ? 'No fixed parking space? No problem. Public charging is close by.' : 'No fixed parking space? Here is where you can charge nearby.';
+  if (r.home?.what) return `${r.home.what}${pubNear ? ' Public charging is close by.' : ''}`;
+  return r.info_c ? 'Here is what to know about charging on trips.' : 'Your charging options.';
+}
 function renderB2(r) {
-  const sections = [];
+  const sections = [], later = [];
   const rk = r.ranking || [];
   if (rk.length) {
     const maxC = Math.max(...rk.map((x) => x.cost_per_100km_chf || 0), 0.01);
     const target = { home: 'b2-home', work: 'b2-work', public_ac: 'b2-public', public_dc: 'b2-public' };
-    sections.push(rsec('Your charging options', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => { const fa = document.getElementById('fullan'); if (fa && !fa.open) fa.open = true; document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
+    const rankSec = (rsec('Cost per 100 km', null, h('div', { class: 'rank' }, rk.map((x) => { const [tone, txt] = rankStatus(x); return h('button', { class: 'rank-row', type: 'button', onclick: () => { const fa = document.getElementById('fullan'); if (fa && !fa.open) fa.open = true; document.getElementById(target[x.option])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
       h('div', { class: 'lab' }, h('b', null, RANK_LABEL[x.option] || x.option), h('span', { class: 'pill ' + tone }, txt)),
       h('div', { class: 'cost' }, x.cost_per_100km_chf != null ? [h('b', null, `CHF ${x.cost_per_100km_chf.toFixed(2)}`), h('span', null, '/ 100 km')]
         : [h('span', { class: 'noprice' }, x.option === 'work' ? 'Employer price' : 'Price not known')]),
       x.cost_per_100km_chf != null ? h('div', { class: 'cbar', 'aria-hidden': 'true' }, h('span', { style: { width: Math.max(4, (x.cost_per_100km_chf / maxC) * 100) + '%' } })) : null); })),
       h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Per 100 km, average electric car (${r.cost_basis?.kwh_per_100km ?? 17} kWh), no subscription.`))));
+    later.push(rankSec);
   }
+  // Christian 19.11: the map is the first thing you see; ranking, home and work go into the dropdown
   const hb = chargeBlock('home', r.home), wb = chargeBlock('work', r.work);
   if (hb) hb.id = 'b2-home'; if (wb) wb.id = 'b2-work';
-  sections.push(hb, wb);
+  later.push(hb, wb);
   const pub = r.public;
   if (pub) {
-    if (pub.status === 'unavailable') sections.push(rsec('Public charging', null, h('p', { class: 'muted' }, 'Station data not available right now.')));
+    if (pub.status === 'unavailable') sections.push(rsec('Your charging options', null, h('p', { class: 'muted' }, 'Station data not available right now.')));
     else {
       // switching near home / near work redraws only this block: the full analysis stays open
-      const sec = rsec('Public charging', null); sec.id = 'b2-public';
+      const sec = rsec('Your charging options', null); sec.id = 'b2-public';
       const head = sec.firstChild;
       const fill = (tab) => {
         ui.b2tab = tab;
@@ -3467,6 +3478,7 @@ function renderB2(r) {
   if (r.info_c) sections.push(rsec('Abroad', h('button', { class: 'btn small', type: 'button', onclick: () => Questions.openEdit('B2') }, icon('edit'), 'Edit your trips'),
     h('div', { class: 'tlist' }, (r.info_c.countries || []).map((c) => h('div', { class: 'trow' }, h('b', null, c.country), h('span', null, normNum(c.coverage_statement)))),
       ...(r.info_c.general_tips || []).slice(0, 2).map((x) => h('div', { class: 'trow' }, h('span', null, normNum(x)))))));
+  sections.push(...later);
 
   const actions = [];
   if (r.home?.email) actions.push({ icon: 'mail', title: { H3: 'Email your landlord' }[r.home.node] || 'Email your property management', run: () => openMail(r.home.email) });
@@ -3476,7 +3488,7 @@ function renderB2(r) {
   actions.push({ icon: 'calc', title: 'What would charging cost me per year?', desc: 'Costs uses these tariffs for your trips.', to: 'B3', run: () => startBarrier('B3') });
   const st = (o) => rk.find((x) => x.option === o);
   return {
-    statement: r.home?.what ? `${r.home.what}${r.ranking && rk.some((x) => String(x.option).startsWith('public') && x.available_now === true) ? ' Public charging is available nearby.' : ''}` : (r.info_c ? 'Here is what to know about charging on trips.' : 'Your charging options.'),
+    statement: b2Statement(r, rk),
     detail: null, sections, actions,
     facts: { home: r.home ? { node: r.home.node, what: r.home.what, next_step: r.home.next_step, running_rp_per_kwh: r.home.costs?.running?.rp_per_kwh, monthly_extra: r.home.costs?.monthly_extra } : null, work: r.work ? { node: r.work.node, what: r.work.what } : null,
       ranking: rk.map((x) => ({ option: x.option, available_now: x.available_now, cost_per_100km_chf: x.cost_per_100km_chf })), public_ac_within_500m: r.public?.home?.ac?.count_within_500m ?? null,

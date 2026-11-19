@@ -5,14 +5,14 @@ def lane(x0,cols,rows):
         for c,item in enumerate(row):
             if item: N[item[0]]=dict(x=x0+c*230,y=150+r*520,label=item[1],note=item[2] if len(item)>2 else '')
 lane(40,1,[[('home-empty','Start, nothing picked')],[('home-picked','Start, topics picked','Pressed keys, drag handle to reorder')],[('home-results','Start, results exist','Blue button turns into Recalculate')],[('assistant','Assistant','Open from any screen')],[('assistant-check','Check in the chat','Same questions inside the chat; free text is turned into answers')],[('assistant-done','Results in the chat','Summary in the chat, then open the full summary')]])
-lane(330,3,[[('q6','Q · What would you like to know?','Only when Charging is picked'),('q1','Q · Where do you live?'),('q3','Q · Which trips?')],
+lane(330,3,[[('q6','Q · Let’s talk charging','Only when Charging is picked'),('q1','Q · Where do you live?'),('q3','Q · Which trips?')],
             [('q2','Q · Drive to work?'),('q4','Q · Other regular trips','Range only, or own trips'),('q5','Q · Charge at home today?')],
             [('q7','Q · Which car today?'),('q8','Q · Your car (age, km)'),('q9','Q · Second car?')],
-            [('q10','Q · Who travels with you?'),('q13','Q · Budget','Which car fits me only'),('q-missing','Q · One more thing','n8n says an answer is missing')],
+            [('q10','Q · Who travels with you?'),('q13','Q · Budget','Lifestyle match only'),('q-missing','Q · One more thing','n8n says an answer is missing')],
             [('q11','Q · Battery: what to know?','Battery topic opened on its own'),('q12','Q · About the used car','Used EV check')]])
 lane(1070,1,[[('batch','Calculating your results','2+ topics')],[('loading','Calculating one topic')],[('error','Something went wrong')]])
 lane(1350,1,[[('summary-loading','Summary, AI still writing')],[('summary','Summary · Simple')],[('summary-numbers','Summary · With the numbers')]])
-lane(1640,5,[[('r-B1','Range & battery life'),('r-B2','Charging access'),('r-B3','Costs & resale value'),('r-B7','Climate impact'),('r-B4','Which car fits me')],
+lane(1640,5,[[('r-B1','Range & battery life'),('r-B2','Charging access'),('r-B3','Costs & resale value'),('r-B7','Climate impact'),('r-B4','Lifestyle match')],
              [('r-B1-full','Range · Full analysis open'),('r-B2-full','Charging · Full analysis open'),('r-B3-full','Costs · Full analysis open'),('r-B7-full','Climate · Full analysis open'),('r-B4-full','Which car · Full analysis open')],
              [('r-B2-email-site','Charging · map point open'),('r-B2-edit','Edit your inputs (own screen)')],
              [('r-B6','Battery details','Only if Range and Costs are not done'),('r-B6-used','Used EV battery check')]])

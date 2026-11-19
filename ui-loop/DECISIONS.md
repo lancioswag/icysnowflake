@@ -40,3 +40,9 @@
 - Frontend: the chat asks the same questions as the Navigator (same blocks, same validation), applies the patch (checked in the page), runs the same /navigator calls and shows the summary in the chat with links to each topic. Town names → postal code from the local list.
 - Full report (PDF): cover with the AI takeaway and one line per topic (big figure), "In short" box per topic, fewer columns, max 5 charging sites, formula for "to pay today", sources as "Source ↗ / Our assumption", CO2 without "eq", no long tip lists.
 - Sasha: Costs say "Two options: buy a new electric car, or keep your car (no new petrol car here)"; Climate says the bars compare two new cars and the keep-vs-switch part is a different question.
+
+## 19.11 – V8.10 (Christian's feedback)
+- Start title "Ready to make the switch to electric?"; topic "Which electric car fits me" → "Lifestyle match" (punchier, same style as the other topics).
+- Charging question: "Let's talk charging" + subline "Which situation is on your mind?".
+- Charging key sentence worded positively: no fixed parking → "No fixed parking space? No problem. Public charging is close by."
+- Charging result: the map ("Your charging options") is the only block on the page; cost ranking, home and work blocks, charging times, long trips and abroad are in the Full analysis dropdown. Next steps (emails, BFE map) stay.

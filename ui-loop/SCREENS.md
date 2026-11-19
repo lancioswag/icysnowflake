@@ -5,13 +5,13 @@ Screenshots: https://bev-navigator.ricordatilamail18.workers.dev/map/ · ids as 
 ## home-empty
 ```
 BEV Navigator
-What's holding you back?
+Ready to make the switch to electric?
 What factors, if any, are making you hesitate to switch to an electric car?
 Range & battery life
 Charging access
 Costs & resale value
 Climate impact
-Which electric car fits me
+Lifestyle match
 Check all topics
 Tell us in your own words
 Delete my answers
@@ -20,13 +20,13 @@ Delete my answers
 ## home-picked
 ```
 BEV Navigator
-What's holding you back?
+Ready to make the switch to electric?
 What factors, if any, are making you hesitate to switch to an electric car?
 Charging access
 Range & battery life
 Costs & resale value
 Climate impact
-Which electric car fits me
+Lifestyle match
 Continue
 Tell us in your own words
 Delete my answers
@@ -37,11 +37,11 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-13:33
+17:57
 Can I charge at work?
-13:33
+17:57
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-13:33
+17:57
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -51,13 +51,13 @@ What can the Navigator tell me?
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-13:33
+17:57
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-13:33
+17:57
 I'll ask a few short questions here in the chat.
-13:33
+17:57
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
-Checking: Which car fits me
+Checking: Lifestyle match
 Which car do you drive today?
 Brand
 Model
@@ -65,7 +65,7 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-13:33
+17:57
 Stop the check
 ```
 
@@ -74,19 +74,19 @@ Stop the check
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-13:33
+17:57
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-13:33
+17:57
 I'll ask a few short questions here in the chat.
-13:33
+17:57
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
-Checking: Which car fits me
+Checking: Lifestyle match
 Which car do you drive today? ✓
-13:33
+17:57
 Your results are ready.
-13:33
+17:57
 Open your summary
-13:33
+17:57
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -187,7 +187,8 @@ Show my result
 ```
 Charging access
 Question 1 of 1
-What would you like to know?
+Let’s talk charging
+Which situation is on your mind?
 Everyday charging
 At home, at work and nearby
 Longer trips in Switzerland
@@ -354,7 +355,7 @@ Show my result
 
 ## q13
 ```
-Which car fits me
+Lifestyle match
 Question 1 of 1
 What is your budget to buy the car?
 Up to CHF 30’000
@@ -462,20 +463,22 @@ Back
 Charging access
 Where can you charge?
 IN SHORT
-You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
+You own a flat: charging needs a decision of the owners' community. Public charging is close by.
 Your charging options
-At home
-Needs approval
-CHF 5.37
-/ 100 km
-Public, normal
-Within 500 m
-Price not known
-Public, fast
-Within 5 km
-CHF 8.16
-/ 100 km
-Per 100 km, average electric car (17 kWh), no subscription.
+Near home
+Near work
+14 normal charging points
+within 500 m of home
+Fast charging 1.1 km away
+St. Gallen - Shopping Silberturm
++
+−
+ Leaflet | © OpenStreetMap contributors © CARTO
+You (about)
+Normal (AC)
+Fast (DC)
+500 m
+Tap a point on the map.
 Full analysis
 Edit your inputs
 ›
@@ -493,36 +496,8 @@ Your answers are kept.
 Charging access
 Where can you charge?
 IN SHORT
-You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
+You own a flat: charging needs a decision of the owners' community. Public charging is close by.
 Your charging options
-At home
-Needs approval
-CHF 5.37
-/ 100 km
-Public, normal
-Within 500 m
-Price not known
-Public, fast
-Within 5 km
-CHF 8.16
-/ 100 km
-Per 100 km, average electric car (17 kWh), no subscription.
-Full analysis
-At home
-Possible
-You own a flat: charging needs a decision of the owners' community.
-Write email
-Email template to send to your property management to propose the charging infrastructure
-Installation, once
-about CHF 2’750
-per parking space
-Electricity if installed
-CHF 5.37 / 100 km
-31.6 Rp/kWh
-Subsidy for your postal code
-Charging stations
-Stadt St. Gallen
-Public charging
 Near home
 Near work
 14 normal charging points
@@ -537,6 +512,7 @@ Normal (AC)
 Fast (DC)
 500 m
 Tap a point on the map.
+Full analysis
 How long does charging take?
 Home wallbox, 11 kW
 1–2 times a week, overnight
@@ -559,6 +535,33 @@ Germany
 Dense public charging (265 points per 100k inhabitants, 221’646 points in total); balanced AC/DC mix (DC share 26%).
 Check that your charging app or card works at the planned stations.
 Check the current price and any extra fees before charging.
+Cost per 100 km
+At home
+Needs approval
+CHF 5.37
+/ 100 km
+Public, normal
+Within 500 m
+Price not known
+Public, fast
+Within 5 km
+CHF 8.16
+/ 100 km
+Per 100 km, average electric car (17 kWh), no subscription.
+At home
+Possible
+You own a flat: charging needs a decision of the owners' community.
+Write email
+Email template to send to your property management to propose the charging infrastructure
+Installation, once
+about CHF 2’750
+per parking space
+Electricity if installed
+CHF 5.37 / 100 km
+31.6 Rp/kWh
+Subsidy for your postal code
+Charging stations
+Stadt St. Gallen
 Sources & our assumptions
 Edit your inputs
 ›
@@ -947,7 +950,7 @@ Your answers are kept.
 
 ## r-B4
 ```
-Which car fits me
+Lifestyle match
 Which electric car fits you?
 IN SHORT
 Medium
@@ -970,7 +973,7 @@ Your answers are kept.
 
 ## r-B4-full
 ```
-Which car fits me
+Lifestyle match
 Which electric car fits you?
 IN SHORT
 Medium
@@ -1006,36 +1009,8 @@ Your answers are kept.
 Charging access
 Where can you charge?
 IN SHORT
-You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
+You own a flat: charging needs a decision of the owners' community. Public charging is close by.
 Your charging options
-At home
-Needs approval
-CHF 5.37
-/ 100 km
-Public, normal
-Within 500 m
-Price not known
-Public, fast
-Within 5 km
-CHF 8.16
-/ 100 km
-Per 100 km, average electric car (17 kWh), no subscription.
-Full analysis
-At home
-Possible
-You own a flat: charging needs a decision of the owners' community.
-Write email
-Email template to send to your property management to propose the charging infrastructure
-Installation, once
-about CHF 2’750
-per parking space
-Electricity if installed
-CHF 5.37 / 100 km
-31.6 Rp/kWh
-Subsidy for your postal code
-Charging stations
-Stadt St. Gallen
-Public charging
 Near home
 Near work
 14 normal charging points
@@ -1054,6 +1029,7 @@ St. Gallen - Shopping Silberturm
 Rorschacher Str. 152, Electra
 Fast, 200 kW, 4 points
 No price data
+Full analysis
 How long does charging take?
 Home wallbox, 11 kW
 1–2 times a week, overnight
@@ -1076,6 +1052,33 @@ Germany
 Dense public charging (265 points per 100k inhabitants, 221’646 points in total); balanced AC/DC mix (DC share 26%).
 Check that your charging app or card works at the planned stations.
 Check the current price and any extra fees before charging.
+Cost per 100 km
+At home
+Needs approval
+CHF 5.37
+/ 100 km
+Public, normal
+Within 500 m
+Price not known
+Public, fast
+Within 5 km
+CHF 8.16
+/ 100 km
+Per 100 km, average electric car (17 kWh), no subscription.
+At home
+Possible
+You own a flat: charging needs a decision of the owners' community.
+Write email
+Email template to send to your property management to propose the charging infrastructure
+Installation, once
+about CHF 2’750
+per parking space
+Electricity if installed
+CHF 5.37 / 100 km
+31.6 Rp/kWh
+Subsidy for your postal code
+Charging stations
+Stadt St. Gallen
 Sources & our assumptions
 Edit your inputs
 ›
@@ -1101,7 +1104,7 @@ Day trip (mountains, lake)
 Weekend away
 Holiday abroad by car
 + Add a trip
-What would you like to know?
+Let’s talk charging
 Everyday charging
 At home, at work and nearby
 Longer trips in Switzerland
@@ -1245,7 +1248,7 @@ Battery after 8 years: 87 %
 Climate impact
 ›
 −62 % greenhouse gases vs. petrol
-Which car fits me
+Lifestyle match
 ›
 Medium, 450+ km range
 Your next steps
@@ -1285,7 +1288,7 @@ Battery after 8 years: 87 %
 Climate impact
 ›
 −62 % greenhouse gases vs. petrol
-Which car fits me
+Lifestyle match
 ›
 Medium, 450+ km range
 Your next steps
@@ -1306,13 +1309,13 @@ Sources (3)
 ## home-results
 ```
 BEV Navigator
-What's holding you back?
+Ready to make the switch to electric?
 What factors, if any, are making you hesitate to switch to an electric car?
 Charging access
 Range & battery life
 Costs & resale value
 Climate impact
-Which electric car fits me
+Lifestyle match
 Recalculate
 Your results
 Tell us in your own words
@@ -1349,7 +1352,7 @@ Done
 Climate impact
 Done
 ›
-Which car fits me
+Lifestyle match
 Done
 ›
 Delete my answers

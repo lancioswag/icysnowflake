@@ -47,3 +47,4 @@
 - Charging key sentence worded positively: no fixed parking → "No fixed parking space? No problem. Public charging is close by."
 - Charging result: the map ("Your charging options") is the only block on the page; cost ranking, home and work blocks, charging times, long trips and abroad are in the Full analysis dropdown. Next steps (emails, BFE map) stay.
 - While calculating (one topic or all): a green box with a leaf and one positive line, changing every ~4 s ("Thanks for helping build a greener future." / "Every EV on the road makes the air a little cleaner." / "Great that you're thinking green!"). Christian's lead-ins ("Almost done…" etc.) are left out: the status is already above, and "Almost done" would appear too early. Replaces the grey placeholder bars.
+- Charging map: CARTO tiles now show "API key required" → official Swiss map swisstopo (wmts.geo.admin.ch, free, no key, "© swisstopo"); OpenStreetMap tiles if swisstopo fails to load.

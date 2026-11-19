@@ -3383,7 +3383,11 @@ function siteMap(place) {
     if (el._done || !el.clientWidth) return; el._done = true;
     if (!window.L) { el.remove(); info.replaceChildren(...sites.map(siteInfo)); return; }
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap contributors © CARTO' }).addTo(map);
+    // 19.11: CARTO tiles now ask for an API key → official Swiss map (swisstopo, free, no key); OpenStreetMap if swisstopo does not load
+    const base = L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 19, maxNativeZoom: 18, attribution: '© swisstopo' }).addTo(map);
+    let okTiles = 0, badTiles = 0;
+    base.on('tileload', () => { okTiles++; });
+    base.on('tileerror', () => { if (++badTiles >= 3 && !okTiles && map.hasLayer(base)) { map.removeLayer(base); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map); } });
     // where you are: the point whose distances to the sites match the distances n8n measured (least squares)
     let lat = sites.reduce((a, x) => a + x.latitude, 0) / sites.length, lon = sites.reduce((a, x) => a + x.longitude, 0) / sites.length;
     const ds = sites.filter((x) => x.distance_m != null);

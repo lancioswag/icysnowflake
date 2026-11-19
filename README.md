@@ -1,6 +1,6 @@
 # BEV Navigator (HSG × Zurich) – web front end
 
-Static site served by the Cloudflare Worker `icy-snowflake-1754` (https://icy-snowflake-1754.ricordatilamail18.workers.dev).
+Static site served by the Cloudflare Worker `bev-navigator` (https://bev-navigator.ricordatilamail18.workers.dev).
 Every push to `main` is deployed by Cloudflare Workers Builds (`npx wrangler deploy`, config in `wrangler.jsonc`).
 
 - `public/index.html` – the whole app (HTML, CSS, JS inline)

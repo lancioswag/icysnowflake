@@ -1337,6 +1337,55 @@ table.b4t { border-collapse: collapse; width: 100%; min-width: 340px; font-size:
 .fbkeys button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 .fbthanks { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 600; color: var(--good); }
 .fbthanks svg { width: 18px; height: 18px; }
+/* ===== V8.7 (Simone 19.11): chat bubble bottom right, messenger-style assistant, tinted top bar, centred footer, equal start buttons ===== */
+.bubble { position: fixed; z-index: 24; right: max(calc(18px + env(safe-area-inset-right, 0px)), calc((100vw - 440px) / 2 + 18px)); bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; display: grid; place-items: center; cursor: pointer;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 34%, transparent); transition: transform 200ms var(--ease); }
+.bubble:active { transform: scale(.94); }
+.bubble svg { width: 26px; height: 26px; }
+.bubble.up { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.navl { display: flex; align-items: center; gap: 6px; }
+/* top bar: same colour wash as the page background */
+.nav, .nav.at-home { background: linear-gradient(180deg, color-mix(in srgb, var(--glow) 24%, #fff) 0%, color-mix(in srgb, var(--glow) 9%, #fff) 100%); backdrop-filter: none; -webkit-backdrop-filter: none; }
+body::before { background: color-mix(in srgb, var(--glow) 24%, #fff); }
+/* title always in the middle */
+.nav-in, .nav.at-home .nav-in { grid-template-columns: minmax(min-content, 1fr) minmax(0, max-content) minmax(min-content, 1fr); }
+.navl { justify-self: start; } .navr { justify-self: end; }
+/* footer */
+.sitefoot { text-align: center; align-items: center; color: var(--muted); font-size: 12px; border-top: 0; }
+.sitefoot p { color: var(--muted); font-weight: 400; }
+/* start page: every button the same size */
+.home .topiclist, .home .pick { display: flex; flex-direction: column; gap: 10px; }
+.home .topicbtn, .home .cta .btn.block, .home .cta .talk { min-height: 58px; height: 58px; border-radius: 16px; font-size: 16px; padding-inline: 16px; gap: 14px; }
+.home .cta .btn.block, .home .cta .talk { display: flex; justify-content: flex-start; }
+.home .cta .btn.block svg, .home .cta .talk svg, .home .topicbtn > svg { width: 22px; height: 22px; flex: none; }
+.home .topicbtn .grip { height: 58px; }
+/* assistant = messenger */
+.page.chatmode main.main { padding: 0; display: flex; flex-direction: column; }
+.page.chatmode { min-height: 100dvh; }
+.page.chatmode .assistant { flex: 1; gap: 0; background:
+  radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--glow) 10%, transparent) 0 2px, transparent 3px) 0 0 / 28px 28px,
+  color-mix(in srgb, var(--glow) 9%, #f6f8fb); }
+.page.chatmode .as-msgs { flex: 1; padding: 14px 12px 10px; gap: 6px; min-height: 0; }
+.daychip { align-self: center; font-size: 12px; font-weight: 600; color: var(--muted); background: #fff; border-radius: 8px; padding: 3px 10px; margin: 2px 0 8px; box-shadow: 0 1px 1px rgba(16, 41, 75, .08); }
+.page.chatmode .msg { position: relative; max-width: 82%; padding: 7px 10px 6px 11px; border-radius: 12px; border: 0; font-size: 15px; line-height: 1.42; box-shadow: 0 1px 1px rgba(16, 41, 75, .10); }
+.page.chatmode .msg.bot { align-self: flex-start; background: #fff; color: var(--ink); border-top-left-radius: 3px; }
+.page.chatmode .msg.user { align-self: flex-end; background: color-mix(in srgb, var(--accent) 16%, #fff); color: var(--ink); border-top-right-radius: 3px; }
+.page.chatmode .msg.bot::before, .page.chatmode .msg.user::before { content: ""; position: absolute; top: 0; width: 9px; height: 12px; }
+.page.chatmode .msg.bot::before { left: -7px; background: #fff; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.page.chatmode .msg.user::before { right: -7px; background: color-mix(in srgb, var(--accent) 16%, #fff); clip-path: polygon(0 0, 100% 0, 0 100%); }
+.page.chatmode .msg.user + .msg.user, .page.chatmode .msg.bot + .msg.bot { margin-top: -2px; }
+.msg .tm { float: right; margin: 6px 0 -4px 10px; font-size: 11px; line-height: 1; color: var(--muted); white-space: nowrap; }
+.page.chatmode .msg.sys { box-shadow: none; background: #fff8; font-size: 12.5px; border-radius: 8px; }
+.page.chatmode .msg .srcs { clear: both; border-top: 1px solid var(--line); padding-top: 6px; }
+.page.chatmode .as-sugg { padding: 4px 12px 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 8px; }
+.page.chatmode .as-sugg::-webkit-scrollbar { display: none; }
+.page.chatmode .as-sugg button { flex: none; background: #fff; border: 1px solid var(--accent-line); color: var(--accent); font-weight: 600; font-size: 13.5px; padding: 8px 13px; border-radius: 999px; box-shadow: 0 1px 1px rgba(16, 41, 75, .06); }
+.page.chatmode .as-input { position: sticky; bottom: 0; margin: 0; border: 0; border-radius: 0; background: color-mix(in srgb, var(--glow) 9%, #f6f8fb); padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 6px; align-items: flex-end; }
+.page.chatmode .as-input textarea { flex: 1; min-height: 46px; border-radius: 23px; border: 0; background: #fff; padding: 12px 16px; font-size: 16px; box-shadow: 0 1px 1px rgba(16, 41, 75, .10) !important; }
+.sendbtn { flex: none; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; display: grid; place-items: center; cursor: pointer; box-shadow: 0 4px 10px color-mix(in srgb, var(--accent) 30%, transparent); }
+.sendbtn[disabled] { opacity: .55; }
+.sendbtn svg { width: 20px; height: 20px; }
 /* ===== Accent themes (V8.4): ?theme=pine | ink | petrol | blue, remembered in this browser ===== */
 html[data-accent="zurich"] { --accent: #2167ae; --accent-2: #2f78c0; --accent-hover: #1c5a99; --press: #23366f; --accent-soft: #eaf1f9; --accent-line: #b6c6e8; --s1: #2167ae; --ink: #23366f; --ink-2: #3f5285; --muted: #5d6b8c; --glow: #91a9dd; --mark: #f69c00; --good: #008f86; }
 html[data-accent="mbp"] { --accent: #2b69b4; --accent-2: #3f81cf; --accent-hover: #245c9f; --press: #026298; --accent-soft: #ebf2fb; --accent-line: #b9d2ef; --s1: #2b69b4; --ink: #2a2f36; --ink-2: #4a4f57; --muted: #6a6f77; --glow: #8fb8e6; --mark: #9bc0ea; --good: #627d47; --good-soft: #eef3e8; }
@@ -1838,7 +1887,7 @@ function render() {
   const app = document.getElementById('app');
   app.className = 'app';
   const main = ui.assistantOpen ? Assistant.screen() : renderView();
-  app.replaceChildren(h('div', { class: 'page' }, renderTopbar(), h('main', { class: 'main', id: 'main' }, main), renderFoot()));
+  app.replaceChildren(...[h('div', { class: 'page' + (ui.assistantOpen ? ' chatmode' : '') }, renderTopbar(), h('main', { class: 'main', id: 'main' }, main), renderFoot()), renderBubble()].filter(Boolean));
   if (ui.assistantOpen) Assistant.afterRender();
   queueMicrotask(() => document.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
   const kind = ui.anim; ui.anim = null;
@@ -1863,18 +1912,22 @@ function renderTopbar() {
   const atHome = (ui.view === 'home' || ui.view === 'topics') && !ui.assistantOpen;
   const topicCount = (ui.topicSel ?? store.queue).filter((c) => ORDER.includes(c)).length;
   return h('header', { class: 'nav' + (atHome ? ' at-home' : '') }, h('div', { class: 'nav-in' },
-    h('span', { class: 'navl' }, atHome ? null : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back')),
-      ui.assistantOpen ? null : h('button', { class: 'iconbtn assist-launch', type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'))),
+    h('span', { class: 'navl' }, atHome ? null : h('button', { class: 'iconbtn', onclick: navBack, 'aria-label': 'Go back to where you were' }, icon('back'))),
     h('span', { class: 'navt' }, atHome ? h('span', { class: 'brand-word' }, brandMark(), 'BEV Navigator') : navTitle()),
     h('span', { class: 'navr' },
       !ui.assistantOpen && ui.view !== 'answers' && (profileLines(store.profile).length || topicCount) ? h('button', { class: 'iconbtn ans', type: 'button', onclick: () => go('answers'), 'aria-label': `Your answers, ${topicCount} topics selected` }, icon('list'), topicCount ? h('span', { class: 'badge' }, String(topicCount)) : null) : null,
       Account.on() ? h('button', { class: 'iconbtn', type: 'button', onclick: () => go('account'), 'aria-label': Account.user ? 'Your account' : 'Log in' }, icon('user')) : null,
       atHome ? null : h('button', { class: 'iconbtn wash', onclick: () => { ui.assistantOpen = false; go('home'); }, 'aria-label': 'Back to all barriers' }, icon('home')))));
 }
+/** Floating chat button, bottom right (Simone 19.11); sits above the sticky button bar on question pages. */
+function renderBubble() {
+  if (ui.assistantOpen || ['loading', 'batch', 'error', 'mail'].includes(ui.view)) return null;
+  return h('button', { class: 'bubble' + (['question', 'edit'].includes(ui.view) ? ' up' : ''), type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'));
+}
 function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
-    h('p', null, h('b', null, 'Independent tool, developed at the University of St. Gallen (HSG).')),
+    h('p', null, 'Independent tool, developed at the University of St. Gallen (HSG).'),
     null);
 }
 function renderView() {
@@ -2172,7 +2225,7 @@ function feedbackBox() {
   const ta = h('textarea', { class: 'input', rows: 3, placeholder: 'What should we change? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { f.text = e.target.value; } }, f.text);
   const send = async () => {
     f.busy = true; render();
-    try { await postJSON('feedback', { kind: 'app', helpful: f.helpful, comment: f.text.slice(0, 2000), version: 'V8.6', topics: Summary.codes().join(','), theme: (() => { try { return localStorage.getItem('bevnav.theme86') || 'v86'; } catch { return ''; } })() }); f.done = true; try { localStorage.setItem('bevnav.feedback', '1'); } catch { } }
+    try { await postJSON('feedback', { kind: 'app', helpful: f.helpful, comment: f.text.slice(0, 2000), version: 'V8.7', topics: Summary.codes().join(','), theme: (() => { try { return localStorage.getItem('bevnav.theme86') || 'v86'; } catch { return ''; } })() }); f.done = true; try { localStorage.setItem('bevnav.feedback', '1'); } catch { } }
     catch { toast('Could not send, please try again'); }
     f.busy = false; render();
   };
@@ -3892,9 +3945,7 @@ const Assistant = {
   toggle() { ui.assistantOpen = !ui.assistantOpen; render(); window.scrollTo({ top: 0 }); },
   open(prefill) { ui.assistantOpen = true; Assistant.prefill = prefill || ''; render(); window.scrollTo({ top: 0 }); },
   screen() {
-    return h('div', { class: 'flow' },
-      h('div', { class: 'chat-title' }, h('span', { class: 'av' }, icon('spark')), h('h1', { class: 'qtitle' }, 'I’m here to help')),
-      Assistant.panel());
+    return Assistant.panel();
   },
   suggestions() {
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
@@ -3913,19 +3964,21 @@ const Assistant = {
     Assistant.prefill = '';
     ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); Assistant.send(ta.value); } });
     const msgs = h('div', { class: 'as-msgs', id: 'as-msgs', 'aria-live': 'polite' },
-      Assistant.msgs.length ? null : h('div', { class: 'msg bot' }, 'Ask me about this page or your results.'),
+      h('div', { class: 'daychip' }, 'Today'),
+      Assistant.msgNode(Assistant.hello || (Assistant.hello = { role: 'bot', text: 'Hi! Ask me anything about this page or your results.' })),
       Assistant.msgs.map(Assistant.msgNode), Assistant.busy ? h('div', { class: 'msg bot' }, h('span', { class: 'typing' }, h('i'), h('i'), h('i'))) : null);
     return h('aside', { class: 'assistant', 'aria-label': 'Assistant' },
-      h('div', { class: 'as-head' }, h('b', null, 'Assistant'), h('button', { class: 'btn ghost small', onclick: () => Assistant.toggle(), 'aria-label': 'Close assistant' }, icon('close'), 'Close')),
       msgs,
       h('div', { class: 'as-sugg' }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.send(t) }, t))),
-      h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'btn primary', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))));
+      h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'sendbtn', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))));
   },
-  afterRender() { if (!Assistant.msgs.length) return; const m = document.getElementById('as-msgs'); const last = m && m.lastElementChild; if (last) requestAnimationFrame(() => last.scrollIntoView({ block: 'nearest' })); },
+  afterRender() { if (!Assistant.msgs.length) return; requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight })); },
   msgNode(m) {
-    if (m.role === 'user') return h('div', { class: 'msg user' }, m.text);
+    m.at = m.at || Date.now();
+    const tm = h('span', { class: 'tm' }, new Date(m.at).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }));
+    if (m.role === 'user') return h('div', { class: 'msg user' }, m.text, tm);
     if (m.role === 'sys') return h('div', { class: 'msg sys' }, m.text);
-    const node = h('div', { class: 'msg bot' }, m.text);
+    const node = h('div', { class: 'msg bot' }, m.text, tm);
     if (m.sources?.length) node.append(h('div', { class: 'srcs' }, h('span', null, 'Sources'), m.sources.map((s) => safeUrl(s.url) ? h('a', { href: safeUrl(s.url), target: '_blank', rel: 'noopener noreferrer' }, s.label || s.url) : h('span', null, s.label))));
     if (m.proposal && !m.proposal.done) {
       const p = m.proposal;

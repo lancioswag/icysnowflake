@@ -1,8 +1,8 @@
 # State – updated by Claude after every round
 
 Version: **V8.5** (18 Nov 2026 night, Claude: Simone's voice notes on every screen, feedback box, A/B gallery /gallery/)
-Live app: https://icy-snowflake-1754.ricordatilamail18.workers.dev
-Screen map (45 screens, wires = taps): https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/
+Live app: https://bev-navigator.ricordatilamail18.workers.dev
+Screen map (45 screens, wires = taps): https://bev-navigator.ricordatilamail18.workers.dev/map/
 Text of every screen: `ui-loop/SCREENS.md`
 Last response: `outbox/response-002.md` (review 002)
 Loop: the scheduled Claude run is stopped. Codex implements and deploys directly while Simone reviews the map.

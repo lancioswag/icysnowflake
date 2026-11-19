@@ -3,7 +3,7 @@
 ## Product
 Neutral web check for private people in Switzerland who hesitate to switch to an electric car (HSG consultancy project for Zurich Insurance). Six topics ("barriers"): Range & battery life, Charging access, Costs & resale value, Battery (shown inside Range and Costs), Climate impact, Which car fits me. Results are calculated by n8n from Swiss data (BFE, ASTRA, ElCom, swisstopo). The UI never invents numbers.
 
-Live: https://icy-snowflake-1754.ricordatilamail18.workers.dev · Code: `public/index.html` (single file, vanilla JS) · Language of the app: English.
+Live: https://bev-navigator.ricordatilamail18.workers.dev · Code: `public/index.html` (single file, vanilla JS) · Language of the app: English.
 
 ## Whose feedback weighs most
 1. Simone (owner, `DECISIONS.md`) 2. Christian (Zurich, weighs most among stakeholders) 3. Philipp, team (Martin, Daniel, …).

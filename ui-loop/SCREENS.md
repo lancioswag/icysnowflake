@@ -1,6 +1,6 @@
 # Text of every screen (390 px, saved n8n answers)
 
-Screenshots: https://icy-snowflake-1754.ricordatilamail18.workers.dev/map/ · ids as in the map. First line = title in the top bar.
+Screenshots: https://bev-navigator.ricordatilamail18.workers.dev/map/ · ids as in the map. First line = title in the top bar.
 
 ## home-empty
 ```
@@ -35,8 +35,13 @@ Start fresh
 ## assistant
 ```
 Assistant
-I’m here to help
-Ask me about this page or your results.
+Today
+Hi! Ask me anything about this page or your results.
+12:05
+Can I charge at work?
+12:05
+Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
+12:05
 What can the Navigator tell me?
 Which topic should I start with?
 ```

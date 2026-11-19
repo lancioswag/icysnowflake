@@ -18,12 +18,12 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   // ---- start
   await ev(() => { store.queue = []; ui.topicSel = []; go('home'); }); await cap('home-empty');
   await ev(() => { ui.topicSel = ['B2', 'B1', 'B3']; render(); }); await cap('home-picked');
-  await ev(() => Assistant.open()); await cap('assistant', 900); await ev(() => { ui.assistantOpen = false; render(); });
+  await ev(() => { Assistant.msgs = [{ role: 'user', text: 'Can I charge at work?' }, { role: 'bot', text: 'Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.' }]; Assistant.open(); }); await cap('assistant'); await ev(() => { Assistant.msgs = []; ui.assistantOpen = false; render(); });
   // ---- questions (each block as asked)
   const Q = { 1: 'B1', 2: 'B1', 3: 'B3', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B3', 8: 'B3', 9: 'B3', 10: 'B3', 11: 'B6', 12: 'B6', 13: 'B4' };
   for (const [b, code] of Object.entries(Q)) {
     await ev(([b, code]) => { ui.barrier = code; store.session = { barrier: BARRIERS[code].name, ...(+b === 12 ? { battery_entry: 'used_car' } : {}) }; ui.flow = { history: [], ownTrips: false, forced: null, current: null, entry: +b === 12 ? 'used_car' : null }; gotoBlock(+b); }, [b, code]);
-    await cap('q' + b, 400);
+    await cap('q' + b);
   }
   await ev(() => { ui.barrier = 'B3'; store.session = { barrier: BARRIERS.B3.name }; ui.flow = { history: [], ownTrips: false, forced: [8], current: null, afterMissing: true }; gotoBlock(8); }); await cap('q-missing');
   // ---- loading / batch / error

@@ -1142,6 +1142,12 @@ details.editp > summary { font-size: 15.5px; }
 .action .go { margin-left: auto; color: var(--accent); display: grid; place-items: center; }
 .action .go svg { width: 16px; height: 16px; }
 /* loading */
+.greennote { display: flex; gap: 12px; align-items: center; margin: 8px auto 0; max-width: 460px; padding: 14px 16px; border-radius: 16px; background: color-mix(in srgb, #2e9d5b 9%, var(--card, #fff)); border: 1px solid color-mix(in srgb, #2e9d5b 28%, transparent); }
+.greennote .gi { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, #2e9d5b 16%, transparent); color: #2e8a52; }
+.greennote .gi svg { width: 18px; height: 18px; }
+.greennote p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink); font-weight: 550; text-align: left; transition: opacity .26s ease; }
+.greennote p b { color: var(--ink); font-weight: 650; }
+.greennote p.out { opacity: 0; }
 .loading .lcount { margin: 0; font-weight: 650; color: var(--accent); font-variant-numeric: tabular-nums; }
 .loading .lphrase { margin: 0; color: var(--ink-2); min-height: 1.4em; animation: lfade 2.4s var(--ease) infinite alternate; }
 @keyframes lfade { from { opacity: .55; } to { opacity: 1; } }
@@ -2205,6 +2211,16 @@ const QUICK_SESSION = { B2: { charging_interest: ['everyday'] }, B6: { battery_e
 const LOAD_MORE = ['Calculating your result…', 'Still on it, this one takes a few seconds…', 'Almost there…'];
 /** While a topic is calculated the sentence under the title changes every few seconds (no re-render). */
 const Waiting = { t: null, i: 0, start(el) { clearInterval(Waiting.t); Waiting.i = 0; Waiting.t = setInterval(() => { const p = document.querySelector('.lphrase'); if (!p || !['loading', 'batch'].includes(ui.view)) return clearInterval(Waiting.t); p.textContent = LOAD_MORE[Math.min(Waiting.i++, LOAD_MORE.length - 1)]; }, 4500); } };
+/** Christian 19.11: something positive while it calculates – leaf note, changes every few seconds. */
+// the status stays above (spinner, topic, step); the box carries only the positive line, so it never says "almost done" too early
+const GREEN_NOTES = ['Thanks for helping build a greener future.', 'Every EV on the road makes the air a little cleaner.', 'Great that you’re thinking green!'];
+const GreenNote = { i: 0, t: null,
+  el() { const n = GREEN_NOTES[GreenNote.i % GREEN_NOTES.length]; queueMicrotask(GreenNote.start);
+    return h('div', { class: 'greennote', id: 'greennote', 'aria-live': 'polite' }, h('span', { class: 'gi' }, icon('leaf')), h('p', null, n)); },
+  start() { if (GreenNote.t) return; GreenNote.t = setInterval(() => {
+    const box = document.getElementById('greennote'); if (!box || !['loading', 'batch'].includes(ui.view)) { clearInterval(GreenNote.t); GreenNote.t = null; return; }
+    GreenNote.i++; const n = GREEN_NOTES[GreenNote.i % GREEN_NOTES.length]; const p = box.querySelector('p');
+    p.classList.add('out'); setTimeout(() => { p.textContent = n; p.classList.remove('out'); }, 260); }, 4200); } };
 const LOAD_PHRASE = { B1: 'Measuring the range your trips need…', B2: 'Looking for charging stations near you…', B3: 'Adding up what the car costs you…', B4: 'Matching car sizes to your trips…', B6: 'Forecasting how the battery ages…', B7: 'Counting the CO2 over the whole life of the car…' };
 async function runAll(codes, opts = {}) {
   const myRev = ++store.rev;
@@ -2240,7 +2256,7 @@ function viewBatch() {
     b.writing ? h('p', { class: 'lphrase' }, 'Writing your summary…') : cur ? h('p', { class: 'lphrase' }, LOAD_PHRASE[cur] || 'One moment…') : null),
     h('ul', { class: 'batchlist' }, b.codes.map((c) => h('li', { class: b.done.includes(c) ? (b.need.includes(c) ? 'need' : 'on') : c === cur ? 'now' : '' },
       h('span', null, b.done.includes(c) ? (b.need.includes(c) ? '!' : '✓') : '·'), topicTitle(c)))),
-    null);
+    GreenNote.el());
 }
 
 /* ---------- loading / error ---------- */
@@ -2256,7 +2272,7 @@ function viewLoading() {
   return h('div', { class: 'col' }, h('div', { class: 'loading', role: 'status', 'aria-live': 'polite' },
     h('div', { class: 'spinner' }), h('h2', null, 'Calculating ' + (b ? b.title.toLowerCase() : 'your result')),
     h('p', { class: 'lphrase', id: 'load-msg' }, LOAD_PHRASE[ui.barrier] || 'One moment…')),
-    h('div', { class: 'card flat' }, h('div', { class: 'skel', style: { width: '70%' } }), h('div', { class: 'skel', style: { width: '90%' } }), h('div', { class: 'skel', style: { width: '55%' } })));
+    GreenNote.el());
 }
 function viewError() {
   const e = ui.error || {};

@@ -37,11 +37,11 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-17:57
+18:11
 Can I charge at work?
-17:57
+18:11
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-17:57
+18:11
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -51,11 +51,11 @@ What can the Navigator tell me?
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-17:57
+18:11
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-17:57
+18:11
 I'll ask a few short questions here in the chat.
-17:57
+18:11
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today?
@@ -65,7 +65,7 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-17:57
+18:11
 Stop the check
 ```
 
@@ -74,19 +74,19 @@ Stop the check
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-17:57
+18:11
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-17:57
+18:11
 I'll ask a few short questions here in the chat.
-17:57
+18:11
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today? ✓
-17:57
+18:11
 Your results are ready.
-17:57
+18:11
 Open your summary
-17:57
+18:11
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -432,6 +432,7 @@ Show my result
 Charging access
 Calculating charging access
 Looking for charging stations near you…
+Thanks for helping build a greener future.
 ```
 
 ## batch
@@ -448,6 +449,7 @@ Range & battery life
 Costs & resale value
 ·
 Battery & resale
+Thanks for helping build a greener future.
 ```
 
 ## error

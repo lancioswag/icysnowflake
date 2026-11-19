@@ -461,7 +461,7 @@ You own a flat: charging needs a decision of the owners' community.
 Write email
 Email template to send to your property management to propose the charging infrastructure
 Installation, once
-CHF 2’000 – 3’500
+about CHF 2’750
 per parking space
 Electricity if installed
 CHF 5.37 / 100 km
@@ -589,8 +589,8 @@ Your answers are kept.
 Costs & resale value
 What does it cost you?
 CHF 42’100
-more in 6 years than keeping your VW Golf 7 1.0 TSI
 about CHF 585 a month
+more in 6 years than keeping your VW Golf 7 1.0 TSI
 None of the electric options pays off within 8 years.
 Cost at a glance
 Years you keep it
@@ -603,9 +603,9 @@ Years you keep it
 7
 8
 To pay today
-CHF 35’600 – 51’000
+about CHF 43’300
 Average total cost per year
-CHF 14’300 – 16’900
+about CHF 15’600
 Difference versus keeping your car over 6 years
 CHF 42’100 more
 Full analysis
@@ -622,8 +622,8 @@ Your answers are kept.
 Costs & resale value
 What does it cost you?
 CHF 42’100
-more in 6 years than keeping your VW Golf 7 1.0 TSI
 about CHF 585 a month
+more in 6 years than keeping your VW Golf 7 1.0 TSI
 None of the electric options pays off within 8 years.
 Cost at a glance
 Years you keep it
@@ -636,9 +636,9 @@ Years you keep it
 7
 8
 To pay today
-CHF 35’600 – 51’000
+about CHF 43’300
 Average total cost per year
-CHF 14’300 – 16’900
+about CHF 15’600
 Difference versus keeping your car over 6 years
 CHF 42’100 more
 Full analysis
@@ -648,9 +648,9 @@ Selected
 Compared with your VW Golf 7 1.0 TSI
 CHF 42’100 more
 Per year
-CHF 14’300 – 16’900
+about CHF 15’600
 To pay today
-CHF 35’600 – 51’000
+about CHF 43’300
 Keep your VW Golf 7 1.0 TSI
 Total in 6 years
 CHF 51’600
@@ -707,13 +707,13 @@ Other transport
 0
 0
 Total per year
-14’300 –​ 16’900
+about 15’600
 8’600
 Total in 6 years
-85’800 –​ 101’600
+about 93’700
 51’600
 To pay today
-35’600 –​ 51’000
+about 43’300
 –
 Saving vs. your car in 6 years
 −42’100
@@ -769,8 +769,8 @@ Your answers are kept.
 Climate impact
 Is it better for the climate?
 −62 %
-greenhouse gases than a new petrol car
 Medium electric car, over its whole life
+greenhouse gases than a new petrol car
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
 Compare
 Size
@@ -801,8 +801,8 @@ Your answers are kept.
 Climate impact
 Is it better for the climate?
 −62 %
-greenhouse gases than a new petrol car
 Medium electric car, over its whole life
+greenhouse gases than a new petrol car
 Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
 Compare
 Size
@@ -868,8 +868,8 @@ Your answers are kept.
 Which car fits me
 Which electric car fits you?
 Medium
-450+ km range
 covers all your driving days
+450+ km range
 No other car is needed for your trips.
 Your car
 Class
@@ -877,7 +877,7 @@ Medium (450+ km)
 Seats
 5
 New price
-CHF 42’000 – 57’400
+about CHF 49’700
 Full analysis
 Edit your inputs
 ›
@@ -890,8 +890,8 @@ Your answers are kept.
 Which car fits me
 Which electric car fits you?
 Medium
-450+ km range
 covers all your driving days
+450+ km range
 No other car is needed for your trips.
 Your car
 Class
@@ -899,14 +899,14 @@ Medium (450+ km)
 Seats
 5
 New price
-CHF 42’000 – 57’400
+about CHF 49’700
 Full analysis
 All classes
 	
 Medium
 Yours
 Range	450+ km
-New price	CHF 42’000 – 57’400
+New price	about CHF 49’700
 Seats	5
 Driving days	All
 Commute	Electric
@@ -942,7 +942,7 @@ You own a flat: charging needs a decision of the owners' community.
 Write email
 Email template to send to your property management to propose the charging infrastructure
 Installation, once
-CHF 2’000 – 3’500
+about CHF 2’750
 per parking space
 Electricity if installed
 CHF 5.37 / 100 km

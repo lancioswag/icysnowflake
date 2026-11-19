@@ -34,22 +34,23 @@ window.TAS_MODELS = [["ABARTH","500E (electric)","1AU208"],["ABARTH","600E (elec
   --muted: #586d85;
   --line: #dfe9f4;
   --line-2: #c9d8ea;
-  --accent: #2564df;
-  --accent-2: #3876ee;
+  --accent: #2b69b4;         /* V8.6 gallery: buttons myblueplanet blue, background and text stay */
+  --accent-2: #3f81cf;
   --glow: #78a8ff;
-  --press: #1d4fc0;
+  --press: #026298;
   --mark: var(--accent-line);
-  --accent-hover: #1253c3;
+  --accent-hover: #245c9f;
   --accent-ink: #ffffff;
-  --accent-soft: #edf4ff;
-  --accent-line: #b7d1f8;
+  --accent-soft: #ebf2fb;
+  --accent-line: #b9d2ef;
+  --logo: #2564df;
   --warn: #a8501a;
   --warn-soft: #fcefe4;
   --good: #17734f;
   --good-soft: #e4f3ea;
   --bad: #a3322a;
   --bad-soft: #f9e4e1;
-  --s1: #2564df;
+  --s1: #2b69b4;
   --s2: #d0701c;
   --s3: #1d8a5a;
   --neutral-mark: #8a9bb0;
@@ -807,7 +808,7 @@ main.main { padding-left: 22px; padding-right: 22px; padding-block: 8px 120px; }
 .pickrow { display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; }
 .pickrow select[hidden] { display: none; }
 .pickrow:has(select[hidden]) { grid-template-columns: 1fr; }
-select.input.select { appearance: none; -webkit-appearance: none; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%232564df' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; cursor: pointer; font-size: 16px; }
+select.input.select { appearance: none; -webkit-appearance: none; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%232b69b4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; cursor: pointer; font-size: 16px; }
 .estline { margin: 0; font-size: 13.5px; color: var(--accent); min-height: 1em; }
 .estline.warn { color: var(--warn); }
 .yearchips:has(.ylab) { grid-template-columns: repeat(8, minmax(0, 1fr)); }
@@ -1065,9 +1066,9 @@ button.tip { display: inline; padding: 0; border: 0; background: none; font: inh
 .nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 /* one key design: Next, pressed topics, chips and choices share color, radius and depth */
 .btn { transition: background var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease); }
-.btn.primary, .btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 0 var(--press); }
+.btn.primary, .btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 30%, transparent); }
 .btn.primary:hover { background: var(--accent-hover); }
-.btn.primary:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--press); }
+.btn.primary:active { transform: translateY(1px); box-shadow: 0 3px 8px color-mix(in srgb, var(--accent) 30%, transparent); }
 .btn.primary[disabled] { background: #c9d8f2; border-color: #c9d8f2; box-shadow: none; transform: none; }
 .topicbtn, .choice, .chip, .tile-opt { transition: background var(--t) var(--ease), color var(--t) var(--ease), box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t) var(--ease) !important; }
 .topicbtn[aria-pressed="true"], .choice[aria-pressed="true"], .chip[aria-pressed="true"], .tile-opt[aria-pressed="true"] {
@@ -1263,10 +1264,11 @@ input, select, textarea, .input { font-size: 16px !important; }
 
 /* big figure first (DriEV, MonVE) */
 .bigfig { display: flex; flex-direction: column; gap: 0; margin-bottom: 6px; }
-.bigfig b { font-size: clamp(38px, 11vw, 48px); line-height: 1.02; font-weight: 750; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.bigfig b { white-space: nowrap; font-size: clamp(34px, 10.5vw, 48px); line-height: 1.02; font-weight: 750; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
 .bigfig.warn b { color: var(--warn); } .bigfig.good b { color: var(--good); }
 .bigfig span { font-size: 15px; font-weight: 650; color: var(--ink); margin-top: 2px; }
-.bigfig small { font-size: 13.5px; color: var(--muted); }
+.bigfig small { display: block; font-size: 15px; font-weight: 600; color: var(--ink-2); margin: 2px 0 4px; }
+.bigfig span { margin-top: 0; }
 .keystat.sm { font-size: 16.5px !important; line-height: 1.45 !important; font-weight: 500 !important; color: var(--ink-2) !important; }
 .keystat.sm mark { font-weight: 650; }
 .qtitle.sm { font-size: 20px !important; }
@@ -1344,7 +1346,7 @@ html[data-accent="ink"] { --glow: #e8d8a8; --wash: #f6f4ef; --surface-2: #f7f6f2
 html[data-accent="petrol"] { --glow: #86c6cf; --wash: #eef6f7; --surface-2: #f5f9fa; --accent: #0f6b7a; --accent-2: #178597; --accent-hover: #0c5966; --press: #09474f; --accent-soft: #e6f2f4; --accent-line: #b0d6dc; --s1: #0f6b7a; --ink: #102a33; --ink-2: #3a5560; --mark: #b0d6dc; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
-(function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme', q); var t = localStorage.getItem('bevnav.theme'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
+(function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -1451,7 +1453,7 @@ const fmt = {
   band: (b, round100 = true) => {
     if (!b || b.min == null) return '–';
     const r = (v) => grp(round100 ? Math.round(v / 100) * 100 : Math.round(v));
-    return r(b.min) === r(b.max ?? b.min) ? 'CHF ' + r(b.min) : `CHF ${r(b.min)} – ${r(b.max)}`;
+    return r(b.min) === r(b.max ?? b.min) ? 'CHF ' + r(b.min) : 'about CHF ' + r((b.min + b.max) / 2);
   },
   range: (a, b) => (a == null ? '–' : grp(a) === grp(b ?? a) ? grp(a) : `${grp(a)} – ${grp(b)}`),
   hm: (h) => { if (h == null) return '–'; const t = Math.round(h * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')} h`; },
@@ -1854,7 +1856,7 @@ function navBack() { appBack(); }
 function brandMark() {
   const NS = 'http://www.w3.org/2000/svg', el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
   const svg = el('svg', { viewBox: '0 0 64 64', width: '20', height: '20', 'aria-hidden': 'true', class: 'brandmark' });
-  svg.append(el('rect', { width: '64', height: '64', rx: '15', fill: 'var(--accent)' }), el('path', { d: 'M14 48c13 0 9-20 22-20 6 0 8 7 13 7', fill: 'none', stroke: '#fff', 'stroke-width': '5', 'stroke-linecap': 'round' }), el('circle', { cx: '14', cy: '48', r: '4', fill: '#fff' }), el('path', { d: 'M45 12v11m8-11v11m-8 0h8v10h-8z', fill: 'none', stroke: '#fff', 'stroke-width': '4', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+  svg.append(el('path', { d: 'M32 4C20 4 11 13 11 25c0 16 21 35 21 35s21-19 21-35C53 13 44 4 32 4z', fill: 'var(--logo, #2564df)' }), el('path', { d: 'M35 14 24 30h8l-3 14 11-17h-8z', fill: '#fff' }));
   return svg;
 }
 function renderTopbar() {
@@ -2170,7 +2172,7 @@ function feedbackBox() {
   const ta = h('textarea', { class: 'input', rows: 3, placeholder: 'What should we change? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { f.text = e.target.value; } }, f.text);
   const send = async () => {
     f.busy = true; render();
-    try { await postJSON('feedback', { kind: 'app', helpful: f.helpful, comment: f.text.slice(0, 2000), version: 'V8.5', topics: Summary.codes().join(','), theme: (() => { try { return localStorage.getItem('bevnav.theme') || 'blue'; } catch { return ''; } })() }); f.done = true; try { localStorage.setItem('bevnav.feedback', '1'); } catch { } }
+    try { await postJSON('feedback', { kind: 'app', helpful: f.helpful, comment: f.text.slice(0, 2000), version: 'V8.6', topics: Summary.codes().join(','), theme: (() => { try { return localStorage.getItem('bevnav.theme86') || 'v86'; } catch { return ''; } })() }); f.done = true; try { localStorage.setItem('bevnav.feedback', '1'); } catch { } }
     catch { toast('Could not send, please try again'); }
     f.busy = false; render();
   };
@@ -2344,20 +2346,20 @@ function viewReset() {
 /* ---------- motion (Mobility selection: A01 + A04 first open, B03 + A06 question change, A14 progress, B08 summary) ---------- */
 const Motion = {
   off: () => !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches,
-  D: 220, ease: 'cubic-bezier(.25,.8,.25,1)',
-  rise(el, delay = 0) { if (el) el.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' }); },
+  D: 650, out: 200, stag: 110, ease: 'cubic-bezier(.25,.8,.25,1)',
+  rise(el, delay = 0) { if (el) el.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' }); },
   fog(el, o = {}) { Motion.rise(el, o.delay || 0); },
   enter(kind) {
     if (Motion.off()) return;
     const main = document.getElementById('main'); if (!main) return;
     const sel = { home: '.hook > *, .topicbtn, .cta > *', question: '.qtitle, .qcard > *:not(.qnav)', result: '.rhead, .keycard, .rsec, .banner', summary: '.flow > *' }[kind];
     const els = sel ? [...main.querySelectorAll(sel)].slice(0, 8) : [main.firstElementChild];
-    els.forEach((el, i) => Motion.rise(el, i * 40));
+    els.forEach((el, i) => Motion.rise(el, i * Motion.stag));
   },
   leave(done) {
     const el = document.querySelector('#main .qcard');
     if (Motion.off() || !el) return done();
-    const a = el.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(-10px)' }], { duration: Motion.D * 0.6, easing: Motion.ease, fill: 'forwards' });
+    const a = el.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(-10px)' }], { duration: Motion.out, easing: Motion.ease, fill: 'forwards' });
     a.finished.then(done, done);
   },
 };
@@ -2947,7 +2949,9 @@ function gloss(str) {
   return [str];
 }
 /** Numbers written by n8n or the AI ("37,306") in the app's style ("37.306"). */
-const normNum = (t) => String(t ?? '').replace(/(\d)[,.'](?=\d{3}(?!\d))/g, '$1’').replace(/(\d)–(\d)/g, '$1 – $2');
+const midRound = (v) => (v >= 1000 ? Math.round(v / 100) * 100 : v >= 100 ? Math.round(v / 10) * 10 : Math.round(v));
+const normNum = (t) => String(t ?? '').replace(/(\d)[,.'](?=\d{3}(?!\d))/g, '$1’').replace(/(\d)–(\d)/g, '$1 – $2')
+  .replace(/(about |around |roughly |approximately |ca\. )?CHF\s?(\d[\d’]*)\s?(?:–|-|to)\s?(?:CHF\s?)?(\d[\d’]*)/gi, (m, pre, a, b) => { const x = +a.replace(/’/g, ''), y = +b.replace(/’/g, ''); return y > x ? 'about CHF ' + grp(midRound((x + y) / 2)) : m; });
 function highlight(text) {
   const out = [];
   const re = /(CHF\s?[\d,'’.]+(?:\s?–\s?[\d,'’.]+)?|[\d][\d,'’.]*\+?\s?(?:km\+?|%|t CO2eq|t)(?![\w]))/g;
@@ -3152,8 +3156,8 @@ function siteMap(place) {
 function costTiles(costs, node) {
   if (!costs) return null;
   const t = [];
-  if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'Installation, once'), h('b', null, `CHF ${fmt.range(costs.one_off.min, costs.one_off.max)}`), h('small', null, 'per parking space')));
-  if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, `CHF ${fmt.range(costs.monthly_extra.min, costs.monthly_extra.max)}`)));
+  if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'Installation, once'), h('b', null, fmt.band(costs.one_off, false)), h('small', null, 'per parking space')));
+  if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, fmt.band(costs.monthly_extra, false))));
   if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, node === 'H0' ? 'Electricity at home' : 'Electricity if installed'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`)));
   return t.length ? h('div', { class: 'tiles' }, t) : null;
 }
@@ -3325,12 +3329,12 @@ function renderB3(r) {
     const pb = payback(best);
     detail = pb ? `It pays off after about ${pb} year${pb > 1 ? 's' : ''}.` : 'None of the electric options pays off within 8 years.';
   } else if (best) {
-    statement = `Kept for ${yrs}, a ${clsLong(best.class_id)} costs about ${fmt.band(yr(best).total_over_n)} in total.`;
-    detail = `That is about ${fmt.band(yr(best).total_per_year)} a year.`;
+    statement = `Kept for ${yrs}, a ${clsLong(best.class_id)} costs ${fmt.band(yr(best).total_over_n)} in total.`;
+    detail = `That is ${fmt.band(yr(best).total_per_year)} a year.`;
   }
   let big = null;
   if (best && !noRef) { const v = sv(best); if (v != null && !isNaN(v)) big = { value: fmt.chf100(Math.abs(v)), label: v >= 0 ? `saved in ${yrs} vs. keeping your ${refName}` : `more in ${yrs} than keeping your ${refName}`, sub: `about ${fmt.chf(Math.abs(v) / (N * 12))} a month`, tone: v >= 0 ? 'good' : 'warn' }; }
-  else if (best) big = { value: fmt.band(yr(best).total_per_year), label: 'a year, all costs' };
+  else if (best) { const y = yr(best).total_per_year; big = { value: fmt.band(y).replace(/^about /, ''), sub: `about ${fmt.chf(mid(y) / 12)} a month`, label: 'a year, all costs' }; }
   if (gaps.length) detail = (detail ? detail + ' ' : '') + `Missing for your area: ${gaps.join(' and ')} – counted as 0, so the electric car looks cheaper than it is.`;
 
   const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), [1, 2, 3, 4, 5, 6, 7, 8].map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
@@ -3377,7 +3381,7 @@ function renderB3(r) {
           return ids.map((id) => { const any = lines.flatMap((l) => l.bridging || []).find((b) => b.trip_id === id);
             return [h('span', { class: 'cl sub' }, any.label), lines.map((l) => { const b = (l.bridging || []).find((x) => x.trip_id === id);
               return h('span', { class: 'cv sub' }, b ? [fmt.n(b.cost_per_year_chf), h('small', null, `${(MODE_TXT[b.key] || b.key).toLowerCase()} · ${fmt.n(b.days)} d`)] : '–'); })]; }); })(),
-        [['Total per year', (l) => yr(l).total_per_year, true], [`Total in ${yrs}`, (l) => yr(l).total_over_n, true], ['To pay today', (l) => l.cash_need_today_chf, false]].map(([lab, f, strong]) => [h('span', { class: 'cl' + (strong ? ' st' : '') }, lab), lines.map((l) => h('span', { class: 'cv' + (strong ? ' st' : '') }, f(l) ? String(fmt.band(f(l))).replace(/^CHF\s?/, '').replace('–', '–\u200b') : '–'))]),
+        [['Total per year', (l) => yr(l).total_per_year, true], [`Total in ${yrs}`, (l) => yr(l).total_over_n, true], ['To pay today', (l) => l.cash_need_today_chf, false]].map(([lab, f, strong]) => [h('span', { class: 'cl' + (strong ? ' st' : '') }, lab), lines.map((l) => h('span', { class: 'cv' + (strong ? ' st' : '') }, f(l) ? String(fmt.band(f(l))).replace(/CHF\s?/, '').replace('–', '–\u200b') : '–'))]),
         noRef ? null : [h('span', { class: 'cl st' }, `Saving vs. your car in ${yrs}`), lines.map((l) => { const v = l.kind === 'option' ? mid(yr(l).saving_vs_current) : null; return h('span', { class: 'cv st ' + (v == null ? '' : v >= 0 ? 'good' : 'warn') }, v == null ? '–' : (v >= 0 ? '+' : '−') + fmt.n(Math.round(Math.abs(v) / 100) * 100)); })]),
       ), h('p', { class: 'note keep' }, 'To pay today: the price of the electric car minus any subsidy, plus the charging installation, minus what your current car is worth today.')),
     rsec('Everyday charging', r.everyday_charging?.source === 'user' ? h('span', { class: 'yours' }, 'your choice') : 'from your charging answers',
@@ -3758,7 +3762,7 @@ const Results = {
         h('h1', null, BARRIERS[code].question),
         h('button', { class: 'iconbtn chg', type: 'button', onclick: () => Questions.openEdit(code), 'aria-label': 'Change your answers', title: 'Change your answers' }, icon('edit'))),
       h('section', { class: 'keycard', 'aria-live': 'polite' },
-        b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') }, h('b', null, b.big.value), h('span', null, b.big.label), b.big.sub ? h('small', null, b.big.sub) : null) : null,
+        b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') }, h('b', null, b.big.value), b.big.sub ? h('small', null, b.big.sub) : null, h('span', null, b.big.label)) : null,
         b.big ? null : h('p', { class: 'keystat', id: 'keystat' }, highlight(b.statement)),
         b.detail ? h('p', { class: 'keydetail' }, normNum(String(b.detail))) : null,
         b.info ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, b.info)) : null,
@@ -4061,7 +4065,7 @@ const Report = {
       if (b.next_step) out.push({ text: 'Next step: ' + b.next_step, margin: [0, 0, 0, 4] });
       if ((b.steps || []).length) out.push({ ol: b.steps, margin: [0, 0, 0, 6], fontSize: 9 });
       const co = b.costs || {};
-      out.push(R.kv([['One-off cost', co.one_off ? `${fmt.chf(co.one_off.min)} – ${fmt.n(co.one_off.max)}` : null], ['Extra per month', co.monthly_extra ? `${fmt.chf(co.monthly_extra.min)} – ${fmt.n(co.monthly_extra.max)}` : null],
+      out.push(R.kv([['One-off cost', co.one_off ? fmt.band(co.one_off, false) : null], ['Extra per month', co.monthly_extra ? fmt.band(co.monthly_extra, false) : null],
         ['Electricity at home', co.running?.rp_per_kwh != null ? `${fmt.n(co.running.rp_per_kwh, 1)} Rp/kWh (CHF ${fmt.n(co.running.chf_per_100km, 2)} per 100 km)` : null]]));
       if ((b.subsidies || []).length) out.push({ text: 'Subsidies for your postal code', bold: true, fontSize: 9 }, R.list(b.subsidies.map((x) => `${x.name_en || x.name} – ${x.contributor}${x.url ? ' · ' + x.url : ''}`)));
       if (b.city_programme) out.push(R.list([`${b.city_programme.city}: ${b.city_programme.programme_type}${b.city_programme.url ? ' · ' + b.city_programme.url : ''}`]));

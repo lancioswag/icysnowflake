@@ -10,3 +10,11 @@
 - 2026-11-18 16:30: Christian asked for one-off vs. running costs: do it. n8n will deliver a separate yearly running cost and the rental assumptions (later); the UI shows the split.
 
 - 2026-11-18: Loop started. Claude builds, ChatGPT reviews, UI only, deploy to main is fine.
+
+## 19.11 – Gallery result (Simone)
+- Colour: background and text stay as the old blue (A); buttons and accent myblueplanet blue #2b69b4 (C).
+- Buttons: raised shape with the soft shadow of option C.
+- Motion: rise, one element after another (110 ms apart), 650 ms each; leaving a question 200 ms.
+- Logo: map pin + bolt in the old blue #2564df (app bar and browser icon).
+- Text: big figure on one line, monthly amount right under it, explanation below; every CHF range shown as one average, "about CHF …".
+- Wording: stays as decided by Christian. Gallery closed (/gallery/ shows "Voting is closed").

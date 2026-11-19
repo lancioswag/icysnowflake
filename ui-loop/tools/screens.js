@@ -4,7 +4,7 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
 (async () => {
   const { browser, page } = await open({ delay: 200 });
   const log = []; const overflow = [];
-  const cap = async (id, wait = 500) => { await page.waitForTimeout(wait); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(150);
+  const cap = async (id, wait = 1700) => { await page.waitForTimeout(wait); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(150);
     await page.screenshot({ path: OUT + id + '.v.png' }); await page.screenshot({ path: OUT + id + '.f.png', fullPage: true }); fs.writeFileSync(OUT + id + '.txt', await page.evaluate(() => (document.querySelector('.nav .navt')?.innerText || '') + '\n' + (document.querySelector('main')?.innerText || ''))); log.push(id);
     const ov = await page.evaluate(() => { const W = document.documentElement.clientWidth; const clipped = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p); if (/(hidden|clip|auto|scroll)/.test(o.overflowX)) return true; } return false; };
       return [...document.querySelectorAll('body *')].filter((e) => { const r = e.getBoundingClientRect(); return r.width && (r.right > W + 1 || r.left < -1) && getComputedStyle(e).position !== 'fixed' && !clipped(e); }).slice(0, 4).map((e) => e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0] + ' ' + Math.round(e.getBoundingClientRect().right)); });

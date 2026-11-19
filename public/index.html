@@ -1400,11 +1400,11 @@ body::before { background: color-mix(in srgb, var(--bg) 70%, transparent); backd
 .page.chatmode .as-input textarea { border: 1px solid var(--line-2); }
 .daychip { background: var(--surface-2); }
 /* why a button cannot be pressed */
-#qnext[disabled], #recalc[disabled] { pointer-events: none; }
+#qnext[disabled], #recalc[disabled], #chatnext[disabled] { pointer-events: none; }
 .whynot { margin: 8px 0 0; color: var(--bad); font-size: 13.5px; font-weight: 600; text-align: center; }
 .qnav .whynot { width: 100%; }
 /* searchable lists look like the other dropdowns */
-.comboWrap .input.search { text-align: left; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%232b69b4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+.comboWrap .input.search { text-align: left !important; padding-left: 14px !important; padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%232b69b4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
 .suggest.combo { max-height: 44vh; }
 /* results: same template, title with air, new key box */
 .res .rhead { margin-top: 10px; }
@@ -1481,6 +1481,22 @@ dialog.fbsheet .fbx svg { width: 16px; height: 16px; }
 .summary3 { gap: 30px !important; }
 .summary3 .keycard .keystat.sumk { font-size: 18px !important; }
 .summary3 .sumtopics, .summary3 .nsteps2, .summary3 .sumshare { display: flex; flex-direction: column; gap: 12px; }
+/* ===== V8.9 – the Navigator inside the chat ===== */
+.page.chatmode .msg.chatq, .page.chatmode .msg.chatsum { max-width: 94%; width: 94%; display: flex; flex-direction: column; gap: 12px; white-space: normal; padding: 12px 12px 8px; }
+.chatq .cq-t { margin: 0; font-weight: 700; font-size: 16px; line-height: 1.3; }
+.chatq .qsub { margin: -6px 0 0; }
+.chatq .choice-list { gap: 8px; }
+.chatq .choice { min-height: 46px; padding: 10px 12px; }
+.chatq .btn.primary { min-height: 46px; }
+.chatq .cq-hint { margin: -4px 0 0; font-size: 12px; color: var(--muted); text-align: center; }
+.chatq .cq-topics { display: flex; flex-wrap: wrap; gap: 8px; }
+.cq-ok { color: var(--good); font-weight: 700; }
+.chatq .tm, .chatsum .tm { align-self: flex-end; float: none; margin: 0; }
+.cq-prog { color: var(--muted); font-size: 13px; }
+.chatsum .cs-k { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.45; }
+.chatsum .cs-rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.chatsum .cs-row { display: grid; grid-template-columns: minmax(0, 1fr) 14px; gap: 2px 8px; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 10px 2px; cursor: pointer; font: inherit; color: var(--ink); }
+.chatsum .cs-row b { color: var(--accent); font-size: 14.5px; } .chatsum .cs-row span { grid-column: 1; font-size: 13.5px; color: var(--ink-2); } .chatsum .cs-row i { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-style: normal; color: var(--accent); }
 /* ===== Accent themes (V8.4): ?theme=pine | ink | petrol | blue, remembered in this browser ===== */
 html[data-accent="zurich"] { --accent: #2167ae; --accent-2: #2f78c0; --accent-hover: #1c5a99; --press: #23366f; --accent-soft: #eaf1f9; --accent-line: #b6c6e8; --s1: #2167ae; --ink: #23366f; --ink-2: #3f5285; --muted: #5d6b8c; --glow: #91a9dd; --mark: #f69c00; --good: #008f86; }
 html[data-accent="mbp"] { --accent: #2b69b4; --accent-2: #3f81cf; --accent-hover: #245c9f; --press: #026298; --accent-soft: #ebf2fb; --accent-line: #b9d2ef; --s1: #2b69b4; --ink: #2a2f36; --ink-2: #4a4f57; --muted: #6a6f77; --glow: #8fb8e6; --mark: #9bc0ea; --good: #627d47; --good-soft: #eef3e8; }
@@ -1509,10 +1525,11 @@ const CONFIG = {
   apiBase: 'https://hsg-consultancy-project.app.n8n.cloud/webhook',   // n8n production webhooks
   // navigator: original "API Navigator" (POST /webhook/navigator → … → Respond to Webhook returns contract v2 on the same call).
   // Add ?api=test to the page URL to call "API Navigator copy" in folder Test Claude instead.
-  paths: { navigator: '/navigator', assist: '/assist', action: '/action', summary: '/summary', feedback: '/feedback' },
+  paths: { navigator: '/navigator', assist: '/assist-v2', action: '/action', summary: '/summary', feedback: '/feedback' },
   timeoutMs: { navigator: 90000, assist: 25000, action: 20000, summary: 60000, feedback: 15000 },
   contract: '2.',            // accepted contract_version prefix
-  assistLive: true,          // chat: n8n workflow "Assist – Navigator chat" (POST /webhook/assist)
+  assistLive: true,          // V8.9: /assist-v2 (n8n "Assist v2 – Navigator in chat", model selector; old /assist untouched)
+  aiModel: (() => { try { const q = new URLSearchParams(location.search).get('model'); if (q) localStorage.setItem('bevnav.model', q); return localStorage.getItem('bevnav.model') || ''; } catch { return ''; } })(),          // chat: n8n workflow "Assist – Navigator chat" (POST /webhook/assist)
   aiSummary: false,          // AI summary per result: not wired (team draft "AI summary v3" is not connected)
   supabase: { url: 'https://ccftsgtvyvjtmonfbwyt.supabase.co', key: 'sb_publishable_Rtsuhbq7zerGvIZQzFOs8g_Tbz6tajk' },   // publishable key of the dev project; empty = login hidden
   storageKey: 'bevnav.v1',
@@ -2188,9 +2205,9 @@ const LOAD_MORE = ['Calculating your result…', 'Still on it, this one takes a 
 /** While a topic is calculated the sentence under the title changes every few seconds (no re-render). */
 const Waiting = { t: null, i: 0, start(el) { clearInterval(Waiting.t); Waiting.i = 0; Waiting.t = setInterval(() => { const p = document.querySelector('.lphrase'); if (!p || !['loading', 'batch'].includes(ui.view)) return clearInterval(Waiting.t); p.textContent = LOAD_MORE[Math.min(Waiting.i++, LOAD_MORE.length - 1)]; }, 4500); } };
 const LOAD_PHRASE = { B1: 'Measuring the range your trips need…', B2: 'Looking for charging stations near you…', B3: 'Adding up what the car costs you…', B4: 'Matching car sizes to your trips…', B6: 'Forecasting how the battery ages…', B7: 'Counting the CO2 over the whole life of the car…' };
-async function runAll(codes) {
+async function runAll(codes, opts = {}) {
   const myRev = ++store.rev;
-  ui.batch = { codes, done: [], need: [] }; ui.view = 'batch'; render(); window.scrollTo({ top: 0 });
+  ui.batch = { codes, done: [], need: [] }; if (!opts.quiet) { ui.view = 'batch'; render(); window.scrollTo({ top: 0 }); }
   for (const code of codes) {
     const session = { barrier: BARRIERS[code].name, ...(QUICK_SESSION[code] || {}), ...(code === 'B2' && store.session.charging_interest ? { charging_interest: store.session.charging_interest.slice() } : {}) };
     let resp = null;
@@ -2203,10 +2220,12 @@ async function runAll(codes) {
     } else ui.batch.need.push(code);
     ui.batch.done.push(code);
     if (ui.view === 'batch') render();
+    opts.onStep && opts.onStep(ui.batch);
   }
   saveStore(); saveResults();
   // results can change the wording: the summary opens only when its text is ready too
-  if (!store.settings.demo && codes.length > 1) { ui.batch.writing = true; if (ui.view === 'batch') render(); await Promise.race([Summary.load('simple'), new Promise((r) => setTimeout(r, 25000))]); if (myRev !== store.rev) return; }
+  if (!store.settings.demo && (codes.length > 1 || opts.quiet)) { ui.batch.writing = true; if (ui.view === 'batch') render(); opts.onStep && opts.onStep(ui.batch); await Promise.race([Summary.load('simple'), new Promise((r) => setTimeout(r, 25000))]); if (myRev !== store.rev && !opts.quiet) return; }
+  if (opts.quiet) return ui.batch;
   go('summary');
 }
 function viewBatch() {
@@ -2328,7 +2347,7 @@ function askFeedback(force) {
     h('div', { class: 'fbkeys', role: 'group' }, [['yes', 'Yes'], ['not_really', 'Not really']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st.helpful === v), onclick: () => { st.helpful = v; draw(); d.querySelector('textarea')?.focus(); } }, l))),
     st.helpful ? h('textarea', { class: 'input', rows: 3, placeholder: st.helpful === 'yes' ? 'What helped most? (optional)' : 'What was missing? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { st.text = e.target.value; } }, st.text) : null,
     st.helpful ? h('button', { class: 'btn primary block', type: 'button', onclick: async (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Sending…';
-      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.8', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
+      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.9', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
       catch { toast('Could not send, please try again'); draw(); } } }, 'Send') : null);
   draw(); d.addEventListener('close', () => d.remove()); d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
   document.body.append(d); d.showModal();
@@ -2983,16 +3002,18 @@ function whyNot(blocks, d, mode = 'edit') {
 const WHY = { shown: {} };
 function whyLine(id, blocks, d, mode) { const t = whyNot(blocks, d, mode); const p = h('p', { class: 'whynot', id, 'aria-live': 'polite' }, t); p.hidden = !t || !WHY.shown[id]; return p; }
 /** Tapping a button that cannot be pressed yet shows the red reason under it. */
-document.addEventListener('pointerdown', (e) => { const w = e.target.closest?.('.qnav, .btn-row.split'); if (!w) return; const b = w.querySelector('#qnext[disabled], #recalc[disabled]'); if (!b) return; const r = b.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
-  const id = b.id === 'qnext' ? 'why-next' : 'why-recalc'; WHY.shown[id] = true; refreshWhy(); }, true);
+document.addEventListener('pointerdown', (e) => { const w = e.target.closest?.('.qnav, .btn-row.split, .chatq'); if (!w) return; const b = w.querySelector('#qnext[disabled], #recalc[disabled], #chatnext[disabled]'); if (!b) return; const r = b.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+  const id = { qnext: 'why-next', recalc: 'why-recalc', chatnext: 'why-chat' }[b.id]; WHY.shown[id] = true; refreshWhy(); }, true);
 function refreshWhy() {
   const q = document.getElementById('why-next'); if (q && ui.view === 'question' && ui.flow?.current) { const t = whyNot([ui.flow.current], ui.draft, 'ask'); q.textContent = t; q.hidden = !t || !WHY.shown['why-next']; }
+  const c = document.getElementById('why-chat'); if (c && ChatNav.on && ui.flow?.current) { const t = whyNot([ui.flow.current], ui.draft, 'ask'); c.textContent = t; c.hidden = !t || !WHY.shown['why-chat']; }
   const r = document.getElementById('why-recalc'); if (r && ui.draft) { const t = whyNot(Questions.editBlocks(ui.barrier), ui.draft); r.textContent = t; r.hidden = !t || !WHY.shown['why-recalc']; }
 }
 function refreshNav() {
   queueMicrotask(refreshWhy);
   const b = document.getElementById('qnext');
   if (b && ui.view === 'question') b.disabled = !BLOCKS[ui.flow.current].valid(ui.draft, 'ask');
+  const cn = document.getElementById('chatnext'); if (cn && ChatNav.on && ui.flow?.current) cn.disabled = !BLOCKS[ui.flow.current].valid(ui.draft, 'ask');
   const wh = document.getElementById('work-hint'); if (wh && ui.draft) wh.hidden = workPlaceOk(ui.draft);
   const r = document.getElementById('recalc');
   if (r && ui.draft && (ui.view === 'edit' || ui.editOpen)) r.disabled = !Questions.editValid();
@@ -3579,7 +3600,7 @@ function renderB3(r) {
   const sections = [
     glance,
     h('section', { class: 'rsec' }, h('h2', null, 'Your options'),
-      noRef ? null : h('p', { class: 'small muted' }, `Buying an electric car compared with keeping your ${refName}. Tap an option to choose it.`),
+      noRef ? null : h('p', { class: 'small muted' }, `Two options: buy a new electric car, or keep your ${refName}. A new petrol car is not part of this comparison. Tap an option to choose it.`),
       gapNote,
       noRef ? h('p', { class: 'infoline' }, r.no_reference === 'out_of_scope' ? 'Your car is not petrol or diesel, so there is no comparison with it.' : 'Without a current car there is no comparison.') : null,
       h('div', { class: 'ocards' }, opts.map(optCard), refCard), legend),
@@ -3862,7 +3883,7 @@ function renderB7(r) {
   const cmp = v.comparison;
   const car0 = r.calculated_for?.current_car;
   const SZ0 = { S: 'Small', M: 'Medium', L: 'Large' };
-  const noEq = (t) => String(t || '').replace(/CO2eq/g, 'CO2').replace(/\s*\((?=[^)]*\d{4})[^)]*\)/g, '');
+  const noEq = (t) => String(t || '').replace(/CO2/g, 'CO2').replace(/\s*\((?=[^)]*\d{4})[^)]*\)/g, '');
   const b2 = v.block2 ? { ...v.block2, statement: (() => { const x = v.block2; const t = fmt.n(x.saving_t_per_year, 1);
     if (x.type === '2a') return x.verdict === 'switch_pays_off' ? `Compared with keeping your ${car0?.name || 'current car'}: switching now saves about ${t} t CO2 a year.` : `Compared with keeping your ${car0?.name || 'current car'} until it is worn out, switching now does not save greenhouse gases yet – building a new car causes emissions too.`;
     return (x.saving_t_per_year || 0) > 0 ? `A new ${(SZ0[v.size] || '').toLowerCase()} electric car instead of a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car saves about ${t} t CO2 a year.` : `For your use, a new electric car does not save greenhouse gases compared with a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car.`; })() } : null;
@@ -3882,7 +3903,7 @@ function renderB7(r) {
               : h('span', { class: 'ctrlv' }, rs.length ? `${fmt.n(median(rs[0]))} km` : 'Range data unavailable')); })(),
         h('div', { class: 'ctrl' }, h('span', { class: 'flabel' }, 'Charged with'), seg([['consumer_mix', 'Swiss electricity mix'], ['renewable_product', '100 % renewable']], el, (x) => x !== el && setField('electricity_product', x), true))),
       h('div', { class: 'cmpbars', role: 'img', 'aria-label': `Greenhouse gases: petrol car 100, electric car ${fmt.n(b1.ev_share_pct)}` },
-        h('span', { class: 'flabel' }, 'Greenhouse gases over the whole life'),
+        h('span', { class: 'flabel' }, 'Both cars bought new, over their whole life'),
         h('div', { class: 'cb' }, h('span', null, `${v.reference_fuel === 'diesel' ? 'Diesel' : 'Petrol'} car`), h('i', { style: { width: '100%' } }), h('b', null, '100')),
         h('div', { class: 'cb ev' }, h('span', null, 'Electric car'), h('i', { style: { width: `${Math.max(4, b1.ev_share_pct)}%` } }), h('b', null, fmt.n(b1.ev_share_pct))))),
     rsec('Where the emissions come from', null,
@@ -3891,6 +3912,7 @@ function renderB7(r) {
       h('div', { class: 'legend roomy' }, STAGES.map(([k, c]) => h('span', null, h('i', { style: { background: c } }), r.stage_labels?.[k] || k))),
       h('p', { class: 'small muted' }, `Over the whole life of the car: 16 years and 200’000 km. The new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car is 100 %.`)),
     b2 ? h('section', { class: 'rsec' }, b2.type === '2a' ? h('h2', null, ...secTitle('Keep your car or switch now?')) : null,
+      b2.type === '2a' ? h('p', { class: 'small muted' }, 'A different question from the one above: your car already exists, so only its driving still counts, while a new electric car first has to be built.') : null,
       h('p', { class: 'lead2', style: { color: good ? 'var(--ink)' : 'var(--ink-2)' } }, b2.statement),
       b2.type === '2a' ? (() => { const mx = Math.max(b2.keep_t_per_year || 0, b2.switch_t_per_year || 0, 0.01); const row = (l, val, c) => h('div', { class: 'b7row' }, h('div', { class: 'b7lab' }, h('span', null, l), h('b', null, `${fmt.n(val, 1)} t / year`)), h('div', { class: 'hbar', style: { width: Math.max(2, (val / mx) * 100) + '%', height: '18px' } }, h('span', { style: { width: '100%', background: c } })));
         return [row(`Keep your ${car?.name || 'current car'}`, b2.keep_t_per_year, 'var(--neutral-mark)'), row('Switch to an EV now', b2.switch_t_per_year, 'var(--s1)')]; })() : null,
@@ -4119,6 +4141,128 @@ function assistantContext() {
   }
   return ctx;
 }
+/* ---------- the Navigator inside the chat (V8.9): same questions, same answers, same n8n calculations ---------- */
+const CHAT_TOPICS = ['B1', 'B2', 'B3', 'B4', 'B7'];
+function plzForPlace(name) {
+  const n = String(name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(); if (n.length < 2 || !window.BEV_POSTCODES) return null;
+  const all = Object.entries(window.BEV_POSTCODES).map(([z, v]) => [z, v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')]);
+  const first = (re) => (all.find(([, v]) => re.test(v)) || [])[0] || null;
+  const esc2 = n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return first(new RegExp('^' + esc2 + '\\b')) || first(new RegExp('(^|[/(] ?)' + esc2 + '\\b')) || first(new RegExp('\\b' + esc2 + '\\b'));
+}
+const ChatNav = {
+  on: false, sel: [], busy: false,
+  pickTopics() { ChatNav.sel = []; Assistant.msgs.push({ role: 'bot', text: 'What would you like to check? Pick one or more.', topics: true }); render(); },
+  start(codes, patch) {
+    codes = dedupe((codes || []).filter((c) => CHAT_TOPICS.includes(c))); if (!codes.length) return;
+    Assistant.msgs.forEach((m) => { if (m.topics) m.done = true; });
+    store.queue = codes; { const q = store.queue, i3 = q.indexOf('B3'), i4 = q.indexOf('B4'); if (i3 >= 0 && i4 > i3) { q.splice(i4, 1); q.splice(i3, 0, 'B4'); } } saveStore();
+    ui.barrier = 'MULTI'; store.session = {}; ui.flow = { history: [], ownTrips: false, forced: null, current: null };
+    ChatNav.on = true;
+    if (patch && ChatNav.patch(patch)) { const p = store.profile, c = commuteOf(p);
+      const got = [p.postal_code ? `home ${p.postal_code} ${placeName(p.postal_code) || ''}`.trim() : null, c?.dest_km ? `commute ${fmt.n(c.dest_km)} km one way` : null, p.work_postal_code ? `work ${p.work_postal_code}` : null].filter(Boolean);
+      if (got.length) Assistant.msgs.push({ role: 'sys', text: 'Noted: ' + got.join(' · ') + '. You can change it later.' }); }
+    Assistant.msgs.push({ role: 'sys', text: 'Checking: ' + store.queue.map((c) => BARRIERS[c].title).join(', ') });
+    ChatNav.ask();
+  },
+  ask() {
+    const nb = Questions.nextBlock();
+    if (nb == null) return ChatNav.calc();
+    Object.assign(ui.flow, { current: nb, tf: null, gate: undefined, veh: null, my: null }); ui.draft = clone(store.profile); WHY.shown = {};
+    const B = BLOCKS[nb]; Assistant.msgs.push({ role: 'bot', text: B.heading ? B.heading(ui.draft) : B.title, block: nb });
+    render();
+  },
+  next() {
+    const b = ui.flow?.current, B = BLOCKS[b]; if (!B || !B.valid(ui.draft, 'ask')) return;
+    B.before && B.before(ui.draft); commitDraft(ui.draft); B.after && B.after();
+    ui.flow.history.push(b);
+    const m = [...Assistant.msgs].reverse().find((x) => x.block === b && !x.done); if (m) m.done = true;
+    ChatNav.ask();
+  },
+  /** Free text while a question is open: the model turns it into answers (n8n /assist-v2, mode intake). */
+  async free(text) {
+    const b = ui.flow?.current; Assistant.msgs.push({ role: 'user', text }); Assistant.busy = true; render();
+    try {
+      const history = Assistant.msgs.filter((m) => m.role !== 'sys' && !m.block && !m.topics).slice(-7, -1).map((m) => ({ role: m.role === 'user' ? 'user' : 'assistant', text: String(m.text).slice(0, 600) }));
+      const res = await postJSON('assist', { mode: 'intake', model: CONFIG.aiModel || undefined, request_id: uid(), message: text, history, context: assistantContext(),
+        intake: { current_question: b ? { block: b, title: BLOCKS[b].heading ? BLOCKS[b].heading(ui.draft) : BLOCKS[b].title, options: BLOCK_OPTIONS[b] } : null, answers: answersForAssistant() } });
+      if (res?.answer) Assistant.msgs.push({ role: 'bot', text: String(res.answer).replace(/<[^>]*>/g, '').slice(0, 600) });
+      if (res?.patch && b) {
+        const said = ChatNav.patch(res.patch, ui.draft);
+        if (BLOCKS[b].valid(ui.draft, 'ask')) { Assistant.busy = false; ChatNav.next(); return; }
+        if (said) { const keep = ui.draft; commitDraft(keep); ui.draft = clone(store.profile); }
+      }
+    } catch { Assistant.msgs.push({ role: 'bot', text: 'I could not read that right now. Please use the options above.' }); }
+    Assistant.busy = false; render();
+  },
+  /** Facts from the chat into the answers; every value is checked here, the model cannot write anything else. */
+  patch(p, target) {
+    const d = target || clone(store.profile); let n = 0;
+    const num = (x, lo, hi) => { const v = Number(String(x).replace(/[’'\s]/g, '')); return Number.isFinite(v) && v >= lo && v <= hi ? v : null; };
+    const plz = (z, place) => (z && V.plz(String(z)) ? String(z) : place ? plzForPlace(place) : null);
+    const hz = plz(p.postal_code, p.home_place); if (hz) { d.postal_code = hz; n++; }
+    if (CHANGEABLE.charging_at_work.includes(p.charging_at_work)) { d.charging_at_work = p.charging_at_work; n++; }
+    const wz = plz(p.work_postal_code, p.work_place);
+    const km = num(p.commute_km, 1, 300), days = num(p.commute_days, 1, 7);
+    if ((wz || km || days) && d.charging_at_work !== 'no_car_commute') {
+      if (!commuteOf(d)) d.trips.unshift({ trip_type: 'commute', label: 'Commute', dest_location: null, dest_km: null, freq_n: 5, freq_unit: 'week', charge_at_dest: null, seats_needed: null, trailer: null, coverage: null, season: null });
+      const c = commuteOf(d); if (wz) { d.work_postal_code = wz; n++; } if (km) { c.dest_km = km; n++; } if (days) { c.freq_n = days; n++; }
+    }
+    for (const t of Array.isArray(p.trips_add) ? p.trips_add.slice(0, 6) : []) {
+      const k = num(t?.km_one_way, 1, 2000), f = num(t?.times, 1, 365), u = ['week', 'month', 'year'].includes(t?.per) ? t.per : 'month';
+      if (k && f) { d.trips.push({ trip_type: 'other', charge_at_dest: null, seats_needed: null, trailer: null, coverage: null, season: null, label: String(t.label || `${k} km trip`).slice(0, 40), dest_location: null, dest_km: k, freq_n: f, freq_unit: u }); n++; }
+    }
+    for (const [k, list] of [['home_charging_status', ['yes', 'no', 'unknown']], ['fixed_parking', ['yes', 'no']], ['housing_type', ['house_owner', 'condo_owner', 'tenant']], ['budget', ['lt30', '30_45', '45_60', 'gt60', 'unsure']]]) if (list.includes(p[k])) { d[k] = p[k]; n++; }
+    if (p.no_car === true || p.no_car === 'true') { d.current_car.targa_id = 'skipped'; n++; }
+    else if (p.car_brand) {
+      const rows = listB().filter((x) => !/-/.test(x[0]) || /^(MERCEDES-BENZ|MERCEDES-AMG)$/.test(x[0])), U = (x) => String(x || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const br = rows.filter((x) => U(x[0]) === U(p.car_brand) || U(x[0]).startsWith(U(p.car_brand)));
+      const md = br.filter((x) => U(x[1].replace(/\s*\(.*$/, '')) === U(p.car_model)) .length ? br.filter((x) => U(x[1].replace(/\s*\(.*$/, '')) === U(p.car_model)) : br.filter((x) => p.car_model && U(x[1]).startsWith(U(p.car_model)));
+      const fu = md.filter((x) => !p.car_fuel || x[1].toLowerCase().includes('(' + String(p.car_fuel).toLowerCase() + ')'));
+      const row = fu.length === 1 ? fu[0] : md.length === 1 ? md[0] : null;
+      if (row) { d.current_car.targa_id = row[2]; store.carLabels[row[2]] = `${row[0]} ${row[1]}`; n++; }
+    }
+    const odo = num(p.car_mileage_km, 0, 600000); if (odo != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.odometer_km = odo; n++; }
+    const yr = num(p.car_first_registration_year, 1995, new Date().getFullYear()); if (yr) { d.current_car.first_registration = `${yr}-${yr === new Date().getFullYear() ? '01' : '06'}`; n++; }
+    if (p.second_car === 'none') { d.second_car.targa_id = 'none'; n++; }
+    const ppl = num(p.people, 1, 7); if (ppl) { d.trips.forEach((t) => setPeople(t, ppl)); n++; }
+    if (['none', 'small', 'large'].includes(p.trailer)) { d.trips.forEach((t) => { t.trailer = p.trailer; }); n++; }
+    if (Array.isArray(p.charging_interest)) { const ci = p.charging_interest.filter((x) => ['everyday', 'trips_ch', 'abroad'].includes(x)); if (ci.length && ui.flow) { ui.flow.interest = ci; n++; } }
+    if (!target && n) commitDraft(d);
+    return n;
+  },
+  async calc() {
+    ChatNav.on = false; const todo = multiTodo();
+    const m = { role: 'bot', text: 'Thanks! Calculating your results…', prog: '' }; Assistant.msgs.push(m); Assistant.busy = true; render();
+    await runAll(todo, { quiet: true, onStep: (b) => { m.prog = b.writing ? 'Writing your summary…' : `${b.done.length} of ${b.codes.length} topics`; render(); } });
+    Assistant.busy = false; m.text = 'Your results are ready.'; m.prog = '';
+    Assistant.msgs.push({ role: 'bot', text: '', summary: true }); render();
+  },
+  stop() { ChatNav.on = false; Assistant.msgs.forEach((m) => { if (m.block) m.done = true; }); Assistant.msgs.push({ role: 'sys', text: 'Check stopped. Your answers so far are kept.' }); render(); },
+  card(m, tm) {
+    if (m.topics) {
+      if (m.done) return h('div', { class: 'msg bot' }, m.text, tm);
+      return h('div', { class: 'msg bot chatq' }, h('p', { class: 'cq-t' }, m.text),
+        h('div', { class: 'cq-topics' }, CHAT_TOPICS.map((c) => chip(BARRIERS[c].title, ChatNav.sel.includes(c), () => { const i = ChatNav.sel.indexOf(c); i >= 0 ? ChatNav.sel.splice(i, 1) : ChatNav.sel.push(c); render(); })),
+          chip('All topics', ChatNav.sel.length === CHAT_TOPICS.length, () => { ChatNav.sel = ChatNav.sel.length === CHAT_TOPICS.length ? [] : CHAT_TOPICS.slice(); render(); })),
+        h('button', { class: 'btn primary block', type: 'button', disabled: !ChatNav.sel.length, onclick: () => ChatNav.start(ChatNav.sel) }, 'Start'), tm);
+    }
+    if (m.summary) {
+      const sm = Summary.get('simple'), ok = sm && !sm.failed; const codes = ORDER.filter((c) => store.results[c] && (store.queue.includes(c) || c === 'B6'));
+      const close = (f) => () => { ui.assistantOpen = false; f(); };
+      return h('div', { class: 'msg bot chatsum' },
+        ok ? h('p', { class: 'cs-k' }, ...highlight(takeaway(sm))) : null,
+        h('div', { class: 'cs-rows' }, codes.map((c) => h('button', { class: 'cs-row', type: 'button', onclick: close(() => openTopic(c)) }, h('b', null, topicTitle(c)), h('span', null, oneLine({ code: c }, 'numbers')), h('i', null, '›')))),
+        h('button', { class: 'btn primary block', type: 'button', onclick: close(() => go('summary')) }, 'Open your summary'), tm);
+    }
+    const live = ChatNav.on && !m.done && ui.flow?.current === m.block;
+    if (!live) return h('div', { class: 'msg bot' }, m.text, m.done ? h('span', { class: 'cq-ok' }, ' ✓') : null, tm);
+    const B = BLOCKS[m.block], d = ui.draft;
+    return h('div', { class: 'msg bot chatq' }, h('p', { class: 'cq-t' }, m.text), ...B.render(d, 'ask'),
+      h('button', { class: 'btn primary block', type: 'button', id: 'chatnext', disabled: !B.valid(d, 'ask'), onclick: () => ChatNav.next() }, 'Next'),
+      whyLine('why-chat', [m.block], d, 'ask'), h('p', { class: 'cq-hint' }, 'Or write your answer below.'), tm);
+  },
+};
 const Assistant = {
   msgs: [], busy: false, last: 0, count: 0,
   toggle() { ui.assistantOpen = !ui.assistantOpen; render(); window.scrollTo({ top: 0 }); },
@@ -4127,6 +4271,8 @@ const Assistant = {
     return Assistant.panel();
   },
   suggestions() {
+    if (ChatNav.on) return ['Stop the check'];
+    if (!ChatNav.on && !Object.keys(store.results).length) return ['Do the whole check here in the chat', 'What can the Navigator tell me?'];
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
     if (ui.view === 'result') return ['Explain this result in simple words.', 'What should I do next?', 'Which assumptions matter most?'];
     return ['What can the Navigator tell me?', 'Which topic should I start with?'];
@@ -4139,7 +4285,7 @@ const Assistant = {
     return { home: 'Start page', topics: 'Choosing topics', summary: 'Your results', orient: 'Choosing topics' }[ui.view] || 'The Navigator';
   },
   panel() {
-    const ta = h('textarea', { class: 'input', id: 'as-text', rows: 1, maxlength: 500, placeholder: 'Ask about this page…', 'aria-label': 'Your question' }, Assistant.prefill || '');
+    const ta = h('textarea', { class: 'input', id: 'as-text', rows: 1, maxlength: 500, placeholder: ChatNav.on ? 'Or type your answer…' : 'Ask about this page…', 'aria-label': 'Your question' }, Assistant.prefill || '');
     Assistant.prefill = '';
     ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); Assistant.send(ta.value); } });
     const msgs = h('div', { class: 'as-msgs', id: 'as-msgs', 'aria-live': 'polite' },
@@ -4148,7 +4294,7 @@ const Assistant = {
       Assistant.msgs.map(Assistant.msgNode), Assistant.busy ? h('div', { class: 'msg bot' }, h('span', { class: 'typing' }, h('i'), h('i'), h('i'))) : null);
     return h('aside', { class: 'assistant', 'aria-label': 'Assistant' },
       msgs,
-      h('div', { class: 'as-sugg' }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.send(t) }, t))),
+      h('div', { class: 'as-sugg' }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.sendSugg(t) }, t))),
       h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'sendbtn', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))));
   },
   afterRender() { if (!Assistant.msgs.length) return; requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight })); },
@@ -4157,7 +4303,8 @@ const Assistant = {
     const tm = h('span', { class: 'tm' }, new Date(m.at).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }));
     if (m.role === 'user') return h('div', { class: 'msg user' }, m.text, tm);
     if (m.role === 'sys') return h('div', { class: 'msg sys' }, m.text);
-    const node = h('div', { class: 'msg bot' }, m.text, tm);
+    if (m.block || m.topics || m.summary) return ChatNav.card(m, tm);
+    const node = h('div', { class: 'msg bot' }, m.text, m.prog ? h('span', { class: 'cq-prog' }, ' ' + m.prog) : null, tm);
     if (m.sources?.length) node.append(h('div', { class: 'srcs' }, h('span', null, 'Sources'), m.sources.map((s) => safeUrl(s.url) ? h('a', { href: safeUrl(s.url), target: '_blank', rel: 'noopener noreferrer' }, s.label || s.url) : h('span', null, s.label))));
     if (m.proposal && !m.proposal.done) {
       const p = m.proposal;
@@ -4172,7 +4319,8 @@ const Assistant = {
     if (!text || Assistant.busy) return;
     const now = Date.now();
     if (now - Assistant.last < 1500) return;
-    if (Assistant.count >= 30) { Assistant.msgs.push({ role: 'sys', text: 'You reached the limit of questions for this visit.' }); render(); return; }
+    if (ChatNav.on) return ChatNav.free(text);
+    if (Assistant.count >= 60) { Assistant.msgs.push({ role: 'sys', text: 'You reached the limit of questions for this visit.' }); render(); return; }
     Assistant.last = now; Assistant.count++;
     Assistant.msgs.push({ role: 'user', text });
     const context = assistantContext();
@@ -4180,12 +4328,15 @@ const Assistant = {
     if (store.settings.demo || !CONFIG.assistLive) { Assistant.msgs.push(localAnswer(text, context)); render(); return; }
     Assistant.busy = true; render();
     try {
-      const res = await postJSON('assist', { mode: 'chat', request_id: uid(), message: text, history, context });
+      const res = await postJSON('assist', { mode: 'chat', model: CONFIG.aiModel || undefined, request_id: uid(), message: text, history, context });
       Assistant.msgs.push(Assistant.readReply(res) || { role: 'bot', text: 'I could not answer that right now. The figures and sources on the page are complete without me.' });
+      if (res && Array.isArray(res.start_check) && res.start_check.length) { Assistant.busy = false; ChatNav.start(res.start_check, res.patch); return; }
+      if (res && res.patch) ChatNav.patch(res.patch);
     } catch (e) {
       Assistant.msgs.push({ ...localAnswer(text, context), text: 'The assistant is not reachable right now. ' + localAnswer(text, context).text });
     } finally { Assistant.busy = false; render(); }
   },
+  sendSugg(t) { if (t === 'Stop the check') return ChatNav.stop(); if (t === 'Do the whole check here in the chat') return ChatNav.pickTopics(); Assistant.send(t); },
   readReply(res) {
     if (!res || typeof res !== 'object' || typeof res.answer !== 'string') return null;
     const text = res.answer.replace(/<[^>]*>/g, '').slice(0, 1800);
@@ -4285,8 +4436,8 @@ const Report = {
   /* ---------- per topic ---------- */
   B1(r) { const R = Report, c = r.coverage || {};
     return [R.kv([['Range for 90 % of driving days', `${fmt.n(c.r90_km)} km`], ['Range for all driving days', `${fmt.n(c.r100_km)} km`], ['Driving days per year', fmt.n(c.total_driving_days)]]),
-      R.table(['Trip', 'One way', 'How often', 'Range needed', 'Charge at destination', 'Charging stops'],
-        (r.trips || []).map((t) => [t.label, `${fmt.n(t.one_way_km)} km`, t.frequency, `${fmt.n(t.range_need_km)} km`, t.charge_at_dest ? 'yes' : 'no', t.charging_stops ?? '–'])),
+      R.table(['Trip', 'One way', 'How often', 'Range needed'],
+        (r.trips || []).map((t) => [t.label, `${fmt.n(t.one_way_km)} km`, t.frequency, `${fmt.n(t.range_need_km)} km`])),
       (r.country_hints || []).length ? R.h3('Abroad') : null, R.list((r.country_hints || []).map((x) => `${x.label} (${x.country}): ${x.text}`))]; },
 
   B2(r) { const R = Report, out = [];
@@ -4295,25 +4446,24 @@ const Report = {
       const b = r[k]; if (!b || b.relevant === false) continue;
       out.push(R.h3(name), { text: b.what || '', bold: true, margin: [0, 0, 0, 3] });
       if (b.next_step) out.push({ text: 'Next step: ' + b.next_step, margin: [0, 0, 0, 4] });
-      if ((b.steps || []).length) out.push({ ol: b.steps, margin: [0, 0, 0, 6], fontSize: 9 });
+
       const co = b.costs || {};
       out.push(R.kv([['One-off cost', co.one_off ? fmt.band(co.one_off, false) : null], ['Extra per month', co.monthly_extra ? fmt.band(co.monthly_extra, false) : null],
         ['Electricity at home', co.running?.rp_per_kwh != null ? `${fmt.n(co.running.rp_per_kwh, 1)} Rp/kWh (CHF ${fmt.n(co.running.chf_per_100km, 2)} per 100 km)` : null]]));
       if ((b.subsidies || []).length) out.push({ text: 'Subsidies for your postal code', bold: true, fontSize: 9 }, R.list(b.subsidies.map((x) => `${x.name_en || x.name} – ${x.contributor}${x.url ? ' · ' + x.url : ''}`)));
       if (b.city_programme) out.push(R.list([`${b.city_programme.city}: ${b.city_programme.programme_type}${b.city_programme.url ? ' · ' + b.city_programme.url : ''}`]));
-      if (b.email?.subject) out.push({ text: `Email template: "${b.email.subject}" – write it from the result page.`, italics: true, fontSize: 8.5, color: R.C.muted, margin: [0, 0, 0, 6] });
+
     }
     const pub = r.public;
     for (const [k, where] of [['home', 'home'], ['work', 'work']]) {
       const pl = pub?.[k]; if (!pl) continue;
       out.push(R.h3(`Public charging near ${where}`), { text: `${fmt.n(pl.ac?.count_within_500m || 0)} normal charging points within 500 m.`, margin: [0, 0, 0, 4] });
-      const price = (s, dc) => { const o = (s.tariff_options || [])[0]; if (!o) return '–'; const v = dc ? (o.dc_23_99_min_chf_kwh ?? o.dc_100plus_min_chf_kwh ?? o.adhoc_dc_min_chf_kwh) : (o.ac_min_chf_kwh ?? o.adhoc_ac_min_chf_kwh); return v != null ? `from CHF ${v.toFixed(2)}/kWh` : 'station price'; };
-      const rows = [...(pl.ac?.nearest || []).map((s) => ['AC', s.location_name, fmt.dist(s.distance_m), `${fmt.n(s.max_power_kw)} kW`, price(s, false)]), ...(pl.dc?.nearest || []).map((s) => ['DC', s.location_name, fmt.dist(s.distance_m), `${fmt.n(s.max_power_kw)} kW`, price(s, true)])];
+      const price = (s, dc) => { const o = (s.tariff_options || [])[0]; if (!o) return '–'; const v = dc ? (o.dc_23_99_min_chf_kwh ?? o.dc_100plus_min_chf_kwh ?? o.adhoc_dc_min_chf_kwh) : (o.ac_min_chf_kwh ?? o.adhoc_ac_min_chf_kwh); return v != null ? `from CHF ${v.toFixed(2)}/kWh` : 'price not known'; };
+      const rows = [...groupSites(pl.ac?.nearest, 'ac').slice(0, 3).map((s) => ['Normal', s.name, fmt.dist(s.distance_m), `${fmt.n(s.max_power_kw)} kW`, price(s, false)]), ...groupSites(pl.dc?.nearest, 'dc').slice(0, 2).map((s) => ['Fast', s.name, fmt.dist(s.distance_m), `${fmt.n(s.max_power_kw)} kW`, price(s, true)])];
       out.push(R.table(['Type', 'Site', 'Distance', 'Power', 'Price'], rows, ['auto', '*', 'auto', 'auto', 'auto']));
     }
     if (r.charging_time) out.push(R.h3('How long does charging take?'), R.kv([['Home wallbox (11 kW AC)', r.charging_time.home_ac], ['Public AC', r.charging_time.public_ac], ['Fast charging (DC)', r.charging_time.public_dc]]));
-    if (r.info_b) out.push(R.h3('Fast charging on longer trips'), R.list(r.info_b.tips || []));
-    if (r.info_c?.countries?.length) out.push(R.h3('Charging abroad'), R.table(['Country', 'Coverage'], r.info_c.countries.map((c) => [c.country, c.coverage_statement]), ['auto', '*']), R.list(r.info_c.general_tips || []));
+    if (r.info_c?.countries?.length) out.push(R.h3('Charging abroad'), R.table(['Country', 'Coverage'], r.info_c.countries.map((c) => [c.country, normNum(c.coverage_statement).split(';')[0]]), ['auto', '*']));
     return out; },
 
   B3(r) { const R = Report, N = ui.b3N || r.start_years || 6, lines = r.lines || [];
@@ -4325,8 +4475,9 @@ const Report = {
         sv(l) ? (mid(sv(l)) >= 0 ? `${fmt.chf100(mid(sv(l)))} less` : `${fmt.chf100(-mid(sv(l)))} more`) : '–', l.cash_need_today_chf ? fmt.band(l.cash_need_today_chf) : '–']), ['*', 'auto', 'auto', 'auto', 'auto']),
       R.h3(`Costs per year (CHF), kept ${N} years`),
       R.table(['', ...lines.map(name)], [...ITEMS.map(([k, lab]) => [lab, ...lines.map((l) => fmt.chf(yr(l).items?.[k]))]), [{ text: 'Total per year', bold: true }, ...lines.map((l) => ({ text: fmt.band(yr(l).total_per_year), bold: true }))]]),
-      R.list(lines.flatMap((l) => (l.bridging || []).map((b) => `${name(l)} – ${b.label}: ${MODE_TXT[b.key] || b.key}, ${fmt.n(b.days)} days a year`))),
-      R.table(['Years kept', ...lines.filter((l) => l.kind === 'option').map(name)], [1, 2, 3, 4, 5, 6, 7, 8].map((n) => [`${n} year${n > 1 ? 's' : ''}`, ...lines.filter((l) => l.kind === 'option').map((l) => { const y = l.years.find((q) => q.n === n); const s = y?.saving_vs_current; return s ? (mid(s) >= 0 ? `saves ${fmt.chf100(mid(s))}` : `${fmt.chf100(-mid(s))} more`) : fmt.band(y?.total_over_n); })]))]; },
+      R.h3('To pay today'),
+      (() => { const A = (k) => r.assumptions?.find((a) => a.key === k)?.value; const o = lines.find((l) => l.selected) || lines.find((l) => l.kind === 'option'); if (!o) return null; const ref = lines.find((l) => l.kind !== 'option');
+        return R.kv([['  Price of the electric car', ' '], ['- Purchase subsidy', typeof A('ev_subsidy') === 'number' ? fmt.chf(A('ev_subsidy')) : ' '], ['+ Charging installation', typeof A('installation') === 'number' ? fmt.chf(A('installation')) : ' '], ref ? [`- What your ${ref.label} is worth today`, ' '] : null, ['= To pay today', fmt.band(o.cash_need_today_chf)]].filter(Boolean)); })()]; },
 
   B4(r) { const R = Report, opts = [...(r.class_options || []), ...(r.reference ? [{ ...r.reference, _ref: true }] : [])];
     const sel = (r.class_options || []).find((o) => o.selected) || (r.class_options || [])[0];
@@ -4350,16 +4501,17 @@ const Report = {
     const stages = Object.keys(L).map((k) => [L[k], `${fmt.n(b1.ev_stages_pct_of_ref?.[k], 1)} %`, `${fmt.n(b1.ref_stages_pct_of_ref?.[k], 1)} %`]);
     return [R.kv([['Electric car', `${clsShort(v.class_id)} (median ${fmt.n(v.wltp_range_median_km)} km)`], ['Electricity', el === 'renewable_product' ? 'renewable product' : 'Swiss consumer mix'], ['Km per year', fmt.n(r.calculated_for?.annual_km)]]),
       R.table(['Life-cycle stage', 'Electric car', `New ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car`], [...stages, [{ text: 'Total', bold: true }, { text: `${fmt.n(b1.ev_share_pct)} %`, bold: true }, { text: '100 %', bold: true }]]),
-      b2 ? R.h3(b2.title || 'Keep driving or switch now?') : null,
-      b2 ? R.kv(b2.type === '2a' ? [['Keep your car', `${fmt.n(b2.keep_t_per_year, 1)} t CO2eq a year`], ['Switch now', `${fmt.n(b2.switch_t_per_year, 1)} t CO2eq a year`], ['Difference', `${fmt.n(b2.saving_t_per_year, 1)} t CO2eq a year`]]
-        : [['New petrol car', `${fmt.n(b2.petrol_t_per_year, 1)} t CO2eq a year`], ['New electric car', `${fmt.n(b2.ev_t_per_year, 1)} t CO2eq a year`], ['Difference', `${fmt.n(b2.saving_t_per_year, 1)} t CO2eq a year`]]) : null,
+      b2 ? R.h3(b2.type === '2a' ? 'Keep your car or switch now?' : 'A new electric car instead of a new petrol car') : null,
+      b2 ? R.kv(b2.type === '2a' ? [['Keep your car', `${fmt.n(b2.keep_t_per_year, 1)} t CO2 a year`], ['Switch now', `${fmt.n(b2.switch_t_per_year, 1)} t CO2 a year`], ['Difference', `${fmt.n(b2.saving_t_per_year, 1)} t CO2 a year`]]
+        : [['New petrol car', `${fmt.n(b2.petrol_t_per_year, 1)} t CO2 a year`], ['New electric car', `${fmt.n(b2.ev_t_per_year, 1)} t CO2 a year`], ['Difference', `${fmt.n(b2.saving_t_per_year, 1)} t CO2 a year`]]) : null,
       v.comparison?.text ? { text: v.comparison.text, italics: true, margin: [0, 0, 0, 8] } : null,
-      ...['i1', 'i2'].flatMap((k) => (r.info?.[k] ? [R.h3(r.info[k].title), R.list(r.info[k].points || [])] : []))]; },
+    ]; },
 
   sources(r) {
     const a = (r.assumptions || []).filter((x) => x.label);
     if (!a.length) return [];
-    const t = Report.table(['Assumption', 'Value', 'Source'], a.map((x) => { const v = x.value == null ? '–' : `${typeof x.value === 'number' ? fmt.n(x.value, x.value % 1 ? 2 : 0) : x.value}${x.unit ? ' ' + x.unit : ''}`; return [x.label, { text: v, noWrap: v.length <= 16, alignment: v.length <= 16 ? 'right' : 'left' }, x.url ? Report.link(x.source || 'link', x.url) : x.source || '–']; }), ['*', 110, 150]);
+    const ours = (x) => (!x.url && /assumption|design decision|placeholder|not included|estimate by/i.test(String(x.source || ''))) || !x.source;
+    const t = Report.table(['Value we use', '', 'Where it comes from'], a.filter((x) => x.key !== 'all_trips_electric').map((x) => { const v = x.value == null ? '–' : `${typeof x.value === 'number' ? fmt.n(x.value, x.value % 1 ? 2 : 0) : x.value}${x.unit ? ' ' + x.unit : ''}`; return [x.label, { text: v, noWrap: v.length <= 16, alignment: v.length <= 16 ? 'right' : 'left' }, x.is_user_value ? 'Your value' : ours(x) ? { text: 'Our assumption (HSG team)', italics: true } : x.url ? Report.link(String(x.source).split(/[,;(]/)[0].trim() || 'Source', x.url) : String(x.source).split(/[,;(]/)[0].trim()]; }), ['*', 110, 150]);
     if (t) t.fontSize = 8;
     return [Report.h3('Assumptions and sources'), t];
   },
@@ -4378,20 +4530,23 @@ const Report = {
   doc(codes) {
     const R = Report, C = R.C;
     const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-    const card = (c) => ({ table: { widths: [3, '*'], body: [[{ text: '', fillColor: C.accent }, { stack: [{ text: BARRIERS[c].title.toUpperCase(), style: 'eyebrow' }, { text: Results.headline(c).statement, fontSize: 10.5, bold: true, margin: [0, 2, 0, 0] }], fillColor: C.wash, margin: [10, 8, 10, 8] }]] }, layout: 'noBorders', margin: [0, 0, 0, 8], unbreakable: true });
+    const big = (c) => { const b = Results.build(c) || {}; return b.big ? `${b.big.value}${b.big.per ? ' ' + b.big.per : ''} – ${b.big.label}` : b.statement || ''; };
+    const card = (c) => ({ table: { widths: [3, '*'], body: [[{ text: '', fillColor: C.accent }, { stack: [{ text: topicTitle(c).toUpperCase(), style: 'eyebrow' }, { text: big(c), fontSize: 11, bold: true, margin: [0, 3, 0, 0] }], margin: [10, 7, 10, 7] }]] }, layout: 'noBorders', margin: [0, 0, 0, 8], unbreakable: true });
+    const sm = Summary.get('simple'), tk = sm && !sm.failed ? takeaway(sm) : null;
     const content = [
       { canvas: [{ type: 'rect', x: -40, y: -40, w: 595, h: 118, color: C.accent }] },
       { text: 'BEV Navigator', color: 'white', fontSize: 22, bold: true, absolutePosition: { x: 40, y: 30 } },
       { text: 'Your electric car check', color: '#dce7fb', fontSize: 12, absolutePosition: { x: 40, y: 58 } },
       { text: date, color: '#dce7fb', fontSize: 9, absolutePosition: { x: 40, y: 78 } },
-      { text: 'In short', style: 'h2', margin: [0, 44, 0, 10] }, ...codes.map(card),
+      { text: 'In short', style: 'h2', margin: [0, 44, 0, 8] }, tk ? { text: tk, fontSize: 12, bold: true, lineHeight: 1.35, margin: [0, 0, 0, 14] } : null, ...codes.map(card),
       { text: 'Your answers', style: 'h2', margin: [0, 0, 0, 8], pageBreak: 'before' }, ...R.answers(),
     ];
     for (const c of codes) {
       const r = store.results[c]?.response?.result; if (!r) continue;
-      const hd = Results.headline(c);
-      content.push({ text: BARRIERS[c].title.toUpperCase(), style: 'eyebrow', pageBreak: 'before' }, { text: BARRIERS[c].question, style: 'h1' },
-        { table: { widths: ['*'], body: [[{ stack: [{ text: hd.statement, style: 'key' }, hd.detail ? { text: hd.detail, color: C.ink2, margin: [0, 5, 0, 0], lineHeight: 1.3 } : ''], fillColor: C.wash, margin: [14, 12, 14, 12] }]] }, layout: 'noBorders', margin: [0, 6, 0, 16] });
+      const b = Results.build(c) || {};
+      const key = b.big ? [{ text: `${b.big.value}${b.big.per ? '  ' + b.big.per : ''}`, fontSize: 20, bold: true, color: b.big.tone === 'warn' ? C.warn : b.big.tone === 'good' ? C.good : C.accent }, { text: b.big.label, bold: true, margin: [0, 2, 0, 0] }] : [{ text: b.statement || '', style: 'key' }];
+      content.push({ text: topicTitle(c).toUpperCase(), style: 'eyebrow', pageBreak: 'before' }, { text: BARRIERS[c].question, style: 'h1' },
+        { table: { widths: [4, '*'], body: [[{ text: '', fillColor: C.accent }, { stack: [{ text: 'IN SHORT', style: 'eyebrow', color: C.muted }, ...key, b.detail ? { text: normNum(String(b.detail)), color: C.ink2, margin: [0, 5, 0, 0], lineHeight: 1.3 } : ''], margin: [12, 10, 12, 10] }]] }, layout: 'noBorders', margin: [0, 6, 0, 16] });
       try { content.push(...(R[c] ? R[c](r) : []).filter(Boolean)); } catch (e) { content.push({ text: 'Details could not be added.', color: C.muted }); }
       content.push(...R.sources(r).filter(Boolean));
     }

@@ -32,3 +32,11 @@
 - Sources: pills "Source ↗" (link) vs "Our assumption".
 - Summary: title "What we found for you", "In short" box like the topics; "Was this helpful?" removed → short sheet after saving/sharing + "Give feedback" link in the footer (research: ask right after a finished task, never mid-flow).
 - Open for n8n: B7 block1 does not change with renewable electricity; ElCom price / motor tax gaps; AC prices; chat prompt length (frontend sends answer_style + app_facts meanwhile).
+
+## 19.11 – V8.9: Navigator inside the chat, model selector, new report
+- n8n: new workflow "Assist v2 – Navigator in chat (model selector)" (OGgnBIfA6tjZWZSk, folder Test Claude), POST /webhook/assist-v2, contract assist-2.0. Copy of "Assist – Navigator chat" (old /assist untouched).
+  - Model selector: DEFAULT_MODEL in "Build prompt" → openai (gpt-6-luna, default, ~2 s), groq (openai/gpt-oss-120b, works), gemini (gemini-3.8-flash, works, ~15–20 s), anthropic (claude-haiku-5-5: the stored credential is Bearer, Anthropic needs x-api-key → not working yet). The page can test one with ?model=groq etc.
+  - mode chat returns start_check (topics) + patch (facts the user said); mode intake turns free text into a patch for the open question.
+- Frontend: the chat asks the same questions as the Navigator (same blocks, same validation), applies the patch (checked in the page), runs the same /navigator calls and shows the summary in the chat with links to each topic. Town names → postal code from the local list.
+- Full report (PDF): cover with the AI takeaway and one line per topic (big figure), "In short" box per topic, fewer columns, max 5 charging sites, formula for "to pay today", sources as "Source ↗ / Our assumption", CO2 without "eq", no long tip lists.
+- Sasha: Costs say "Two options: buy a new electric car, or keep your car (no new petrol car here)"; Climate says the bars compare two new cars and the keep-vs-switch part is a different question.

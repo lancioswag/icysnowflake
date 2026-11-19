@@ -37,13 +37,58 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-13:07
+13:33
 Can I charge at work?
-13:07
+13:33
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-13:07
+13:33
+Do the whole check here in the chat
 What can the Navigator tell me?
-Which topic should I start with?
+```
+
+## assistant-check
+```
+Assistant
+Today
+Hi! Ask me anything about this page or your results.
+13:33
+I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
+13:33
+I'll ask a few short questions here in the chat.
+13:33
+Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
+Checking: Which car fits me
+Which car do you drive today?
+Brand
+Model
+I know the type-approval number
+I don't have a car
+Next
+Or write your answer below.
+13:33
+Stop the check
+```
+
+## assistant-done
+```
+Assistant
+Today
+Hi! Ask me anything about this page or your results.
+13:33
+I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
+13:33
+I'll ask a few short questions here in the chat.
+13:33
+Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
+Checking: Which car fits me
+Which car do you drive today? ✓
+13:33
+Your results are ready.
+13:33
+Open your summary
+13:33
+Do the whole check here in the chat
+What can the Navigator tell me?
 ```
 
 ## q1
@@ -659,7 +704,7 @@ Difference versus keeping your car over 6 years
 CHF 42’100 more
 Full analysis
 Your options
-Buying an electric car compared with keeping your VW Golf 7 1.0 TSI. Tap an option to choose it.
+Two options: buy a new electric car, or keep your VW Golf 7 1.0 TSI. A new petrol car is not part of this comparison. Tap an option to choose it.
 Medium, 450+ km
 Selected
 Compared with your VW Golf 7 1.0 TSI
@@ -812,7 +857,7 @@ Range
 Charged with
 Swiss electricity mix
 100 % renewable
-Greenhouse gases over the whole life
+Both cars bought new, over their whole life
 Petrol car
 100
 Electric car
@@ -844,7 +889,7 @@ Range
 Charged with
 Swiss electricity mix
 100 % renewable
-Greenhouse gases over the whole life
+Both cars bought new, over their whole life
 Petrol car
 100
 Electric car
@@ -863,6 +908,7 @@ Road
 Disposal
 Over the whole life of the car: 16 years and 200’000 km. The new petrol car is 100 %.
 Keep your car or switch now?
+A different question from the one above: your car already exists, so only its driving still counts, while a new electric car first has to be built.
 Compared with keeping your VW Golf 7 1.0 TSI: switching now saves about 5.8 t CO2 a year.
 Keep your VW Golf 7 1.0 TSI
 8.5 t / year

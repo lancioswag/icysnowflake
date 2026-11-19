@@ -18,7 +18,12 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   // ---- start
   await ev(() => { store.queue = []; ui.topicSel = []; go('home'); }); await cap('home-empty');
   await ev(() => { ui.topicSel = ['B2', 'B1', 'B3']; render(); }); await cap('home-picked');
-  await ev(() => { Assistant.msgs = [{ role: 'user', text: 'Can I charge at work?' }, { role: 'bot', text: 'Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.' }]; Assistant.open(); }); await cap('assistant'); await ev(() => { Assistant.msgs = []; ui.assistantOpen = false; render(); });
+  await ev(() => { Assistant.msgs = [{ role: 'user', text: 'Can I charge at work?' }, { role: 'bot', text: 'Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.' }]; Assistant.open(); }); await cap('assistant');
+  await ev(() => { Assistant.msgs = [{ role: 'user', text: 'I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.' }, { role: 'bot', text: "I'll ask a few short questions here in the chat." }]; const keep = clone(store.profile); window.__keep = keep; store.profile.current_car.targa_id = null; store.profile.second_car.targa_id = null; ChatNav.start(['B4'], { home_place: 'Tesserete', commute_km: 80 }); });
+  await cap('assistant-check');
+  await ev(() => { ChatNav.on = false; Assistant.msgs.forEach((m) => { if (m.block) m.done = true; }); Assistant.msgs.push({ role: 'bot', text: 'Your results are ready.' }, { role: 'bot', text: '', summary: true }); render(); });
+  await cap('assistant-done');
+  await ev(() => { store.profile = window.__keep; saveStore(); Assistant.msgs = []; ChatNav.on = false; ui.assistantOpen = false; render(); });
   // ---- questions (each block as asked)
   const Q = { 1: 'B1', 2: 'B1', 3: 'B3', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B3', 8: 'B3', 9: 'B3', 10: 'B3', 11: 'B6', 12: 'B6', 13: 'B4' };
   for (const [b, code] of Object.entries(Q)) {

@@ -14,7 +14,7 @@ Climate impact
 Which electric car fits me
 Check all topics
 Tell us in your own words
-Start fresh
+Delete my answers
 ```
 
 ## home-picked
@@ -29,7 +29,7 @@ Climate impact
 Which electric car fits me
 Continue
 Tell us in your own words
-Start fresh
+Delete my answers
 ```
 
 ## assistant
@@ -37,11 +37,11 @@ Start fresh
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-12:05
+13:07
 Can I charge at work?
-12:05
+13:07
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-12:05
+13:07
 What can the Navigator tell me?
 Which topic should I start with?
 ```
@@ -156,7 +156,7 @@ Costs & resale value
 Question 1 of 2
 Which car do you drive today?
 Brand
-Model and fuel
+Model
 I know the type-approval number
 Type-approval number
 ✓
@@ -171,8 +171,8 @@ Costs & resale value
 Question 1 of 2
 Your car
 Type approval 1XT988
-First registration
-Month
+First registration (optional)
+Month (optional)
 January
 February
 March
@@ -220,6 +220,7 @@ Year
 1995
 Mileage today
 km
+Not sure about the date? Leave it empty, we estimate the age from the mileage.
 Next
 ```
 
@@ -270,7 +271,7 @@ Battery details
 Question 1 of 1
 About the used car
 First registration
-Month
+Month (optional)
 January
 February
 March
@@ -310,7 +311,7 @@ Show my result
 ```
 Which car fits me
 Question 1 of 1
-What could you spend on the car?
+What is your budget to buy the car?
 Up to CHF 30’000
 CHF 30’000 – 45’000
 CHF 45’000 – 60’000
@@ -327,8 +328,8 @@ One more thing.
 The calculation needs this answer.
 Your car
 Type approval 1XT988
-First registration
-Month
+First registration (optional)
+Month (optional)
 January
 February
 March
@@ -376,6 +377,7 @@ Year
 1995
 Mileage today
 km
+Not sure about the date? Leave it empty, we estimate the age from the mileage.
 Show my result
 ```
 
@@ -400,7 +402,6 @@ Range & battery life
 Costs & resale value
 ·
 Battery & resale
-Each topic is calculated with Swiss data, a few seconds each.
 ```
 
 ## error
@@ -415,6 +416,7 @@ Back
 ```
 Charging access
 Where can you charge?
+IN SHORT
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
 At home
@@ -423,7 +425,7 @@ CHF 5.37
 / 100 km
 Public, normal
 Within 500 m
-No price
+Price not known
 Public, fast
 Within 5 km
 CHF 8.16
@@ -445,6 +447,7 @@ Your answers are kept.
 ```
 Charging access
 Where can you charge?
+IN SHORT
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
 At home
@@ -453,7 +456,7 @@ CHF 5.37
 / 100 km
 Public, normal
 Within 500 m
-No price
+Price not known
 Public, fast
 Within 5 km
 CHF 8.16
@@ -483,9 +486,11 @@ Fast charging 1.1 km away
 St. Gallen - Shopping Silberturm
 +
 −
- Leaflet | © swisstopo
+ Leaflet | © OpenStreetMap contributors © CARTO
+You (about)
 Normal (AC)
 Fast (DC)
+500 m
 Tap a point on the map.
 How long does charging take?
 Home wallbox, 11 kW
@@ -525,6 +530,7 @@ Your answers are kept.
 ```
 Range & battery life
 How much range do you need?
+IN SHORT
 270 km
 real range covers all your trips
 Real range: what a car does in everyday driving.
@@ -546,6 +552,7 @@ Your answers are kept.
 ```
 Range & battery life
 How much range do you need?
+IN SHORT
 270 km
 real range covers all your trips
 Real range: what a car does in everyday driving.
@@ -566,6 +573,7 @@ Range needed
 270 km
 I can charge there
 Battery health over the years
+How much of its capacity the battery keeps, year by year. Tap a year to see it.
 60 %
 70 %
 80 %
@@ -581,6 +589,7 @@ Battery health over the years
 8
 Year →
 Warranty 70 %
+Year 8: 87 %
 Sources & our assumptions
 Edit your inputs
 ›
@@ -593,9 +602,10 @@ Your answers are kept.
 ```
 Costs & resale value
 What does it cost you?
+IN SHORT
 CHF 42’100
-about CHF 585 a month
-more in 6 years than keeping your VW Golf 7 1.0 TSI
+/ CHF 585 a month
+more than keeping your VW Golf 7 1.0 TSI for 6 years
 None of the electric options pays off within 8 years.
 Cost at a glance
 Years you keep it
@@ -617,7 +627,7 @@ Full analysis
 Edit your inputs
 ›
 Next steps
-Compare insurance quotes
+Compare insurance quotes (comparis.ch)
 Check another topic
 Your answers are kept.
 ```
@@ -626,9 +636,10 @@ Your answers are kept.
 ```
 Costs & resale value
 What does it cost you?
+IN SHORT
 CHF 42’100
-about CHF 585 a month
-more in 6 years than keeping your VW Golf 7 1.0 TSI
+/ CHF 585 a month
+more than keeping your VW Golf 7 1.0 TSI for 6 years
 None of the electric options pays off within 8 years.
 Cost at a glance
 Years you keep it
@@ -648,6 +659,7 @@ Difference versus keeping your car over 6 years
 CHF 42’100 more
 Full analysis
 Your options
+Buying an electric car compared with keeping your VW Golf 7 1.0 TSI. Tap an option to choose it.
 Medium, 450+ km
 Selected
 Compared with your VW Golf 7 1.0 TSI
@@ -666,7 +678,6 @@ Energy
 Tax
 Insurance
 Maintenance
-Bars: cost per year by item, same scale for all.
 When does it pay off?
 -40k
 -20k
@@ -684,7 +695,7 @@ Keeping your car cheaper ↓
 Years you keep the car →
 Saving vs. keeping your car (CHF)
 Medium, 450+ km
-Where a line crosses zero, the EV option starts to pay off. EVs lose more value in the first years; lower running costs catch up over time. Assumes your current car keeps running for the whole period – no major repairs, no replacement purchase.
+Above zero, the electric car has paid off.
 Cost per year
 Medium
 450+ km
@@ -723,12 +734,24 @@ about 43’300
 Saving vs. your car in 6 years
 −42’100
 –
-To pay today: the price of the electric car minus any subsidy, plus the charging installation, minus what your current car is worth today.
+To pay today
+Price of the electric car
+−
+Purchase subsidy
+CHF 0
++
+Charging installation
+CHF 0
+−
+What your VW Golf 7 1.0 TSI is worth today
+=
+To pay today
+about CHF 43’300
 Everyday charging
-your choice
+Where you would charge most of the time. It changes the electricity price.
 Own charger
-Public station
-Fast charger
+Public
+Fast
 Good to know
 Value of combustion cars
 Resale values of combustion cars may fall as more people switch.
@@ -740,13 +763,14 @@ Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
 How the battery ages and what the car is worth later. Open Battery & resale.
-Value
+Value of your car over the years
 After 3 years
 34 %
 After 5 years
 12 %
 What this means
 Value over the years
+What the car is still worth, as a share of the new price. Tap a year to see it.
 0 %
 20 %
 40 %
@@ -760,11 +784,12 @@ Value over the years
 7
 8
 Year →
+Year 8: 0 %
 Sources & our assumptions
 Edit your inputs
 ›
 Next steps
-Compare insurance quotes
+Compare insurance quotes (comparis.ch)
 Check another topic
 Your answers are kept.
 ```
@@ -773,10 +798,10 @@ Your answers are kept.
 ```
 Climate impact
 Is it better for the climate?
+IN SHORT
 −62 %
-Medium electric car, over its whole life
 greenhouse gases than a new petrol car
-Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
+Compared with keeping your VW Golf 7 1.0 TSI: switching now saves about 5.8 t CO2 a year.
 Compare
 Size
 Small
@@ -805,10 +830,10 @@ Your answers are kept.
 ```
 Climate impact
 Is it better for the climate?
+IN SHORT
 −62 %
-Medium electric car, over its whole life
 greenhouse gases than a new petrol car
-Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
+Compared with keeping your VW Golf 7 1.0 TSI: switching now saves about 5.8 t CO2 a year.
 Compare
 Size
 Small
@@ -836,29 +861,35 @@ Fuel / electricity
 Maintenance
 Road
 Disposal
-Over 16 years / 200’000 km. Petrol car = 100 % (320.5 g CO2eq/km).
-Keep driving or switch now?
-Switching now saves about 5.8 t CO2eq a year compared with keeping your VW Golf 7 1.0 TSI.
+Over the whole life of the car: 16 years and 200’000 km. The new petrol car is 100 %.
+Keep your car or switch now?
+Compared with keeping your VW Golf 7 1.0 TSI: switching now saves about 5.8 t CO2 a year.
 Keep your VW Golf 7 1.0 TSI
 8.5 t / year
 Switch to an EV now
 2.7 t / year
-That is about 3 return flights Zurich–Miami (economy) – every year.
+5.8 t
+CO2 saved every year
+=
+3 return flights Zurich–Miami (economy) every year
 Battery, raw materials, recycling
-The battery (95.3 kWh) makes up 27 % of this EV's life-cycle emissions.
+The battery (95 kWh) causes 27 % of this car's emissions.
 Typical batteries hold 40–90 kWh and lose about 12 % capacity in 300,000 km; warranties run 8–10 years / 150,000–200,000 km (see "Battery & resale").
-Switzerland has no raw-material deposits; processing is dominated by China; recycled content stays in the single-digit % until the mid-2040s (BFE/BAFU 2026).
-EVs need about 320 Mt of critical-mineral ore, versus more than 100 bn t of fossil fuels extracted in 2024; recycling could cover 10–20 % of lithium/nickel and over 30 % of cobalt demand by 2050 (IEA 2026).
-Take-back is free (sestorec, SENS eRecycling, INOBAT); Swiss plants (Batrec, Librec, Kyburz) recover up to 97 % of active materials (company figures); used batteries get a second life as stationary storage.
-The EU battery passport applies from 18 Feb 2027; there is no binding Swiss equivalent yet.
+Switzerland has no raw-material deposits; processing is dominated by China; recycled content stays in the single-digit % until the mid-2040s.
+EVs need about 320 Mt of critical-mineral ore, versus more than 100 bn t of fossil fuels extracted in 2024; recycling could cover 10–20 % of lithium/nickel and over 30 % of cobalt demand by 2050.
 Front-loaded vs. back-loaded emissions
 An EV causes most of its emissions in production, a combustion car in operation – driving the old car "to the end" still causes its operating emissions.
 A same-size switch saves greenhouse gases in more than 92 % of model combinations (more than 95 % for pure combustion cars).
 From about 8,000 km per year switching almost always pays off; below 4,000–5,000 km per year mostly not.
-The saving per km does not depend on the current car's mileage (all BFE/INFRAS 2025).
 Calculated for
-37’306 km a year from your 1 trips, VW Golf 7 1.0 TSI, petrol, 6.7 l/100 km (from type approval), Swiss average mix
-Assumes the EV drives all your trips. Trips you would do by rental, second car or train stay combustion km, so the saving is somewhat lower.
+Driving per year
+37’306 km (1 trip)
+Your car
+VW Golf 7 1.0 TSI, petrol
+Fuel use
+6.7 l/100 km (type approval)
+Electricity
+Swiss average mix
 Sources & our assumptions
 Edit your inputs
 ›
@@ -872,6 +903,7 @@ Your answers are kept.
 ```
 Which car fits me
 Which electric car fits you?
+IN SHORT
 Medium
 covers all your driving days
 450+ km range
@@ -894,6 +926,7 @@ Your answers are kept.
 ```
 Which car fits me
 Which electric car fits you?
+IN SHORT
 Medium
 covers all your driving days
 450+ km range
@@ -906,7 +939,7 @@ Seats
 New price
 about CHF 49’700
 Full analysis
-All classes
+Compare the car classes
 	
 Medium
 Yours
@@ -915,7 +948,7 @@ New price	about CHF 49’700
 Seats	5
 Driving days	All
 Commute	Electric
-Range for winter and motorway.
+Your trips are checked with the range in winter on the motorway.
 Edit your inputs
 ›
 Check another topic
@@ -926,6 +959,7 @@ Your answers are kept.
 ```
 Charging access
 Where can you charge?
+IN SHORT
 You own a flat: charging needs a decision of the owners' community. Public charging is available nearby.
 Your charging options
 At home
@@ -934,7 +968,7 @@ CHF 5.37
 / 100 km
 Public, normal
 Within 500 m
-No price
+Price not known
 Public, fast
 Within 5 km
 CHF 8.16
@@ -964,9 +998,11 @@ Fast charging 1.1 km away
 St. Gallen - Shopping Silberturm
 +
 −
- Leaflet | © swisstopo
+ Leaflet | © OpenStreetMap contributors © CARTO
+You (about)
 Normal (AC)
 Fast (DC)
+500 m
 St. Gallen - Shopping Silberturm
 1.1 km
 Rorschacher Str. 152, Electra
@@ -1081,6 +1117,7 @@ No mail app opens? Use Copy text, Gmail or Outlook.
 ```
 Battery details
 Battery life
+IN SHORT
 After 8 years the battery keeps about 87 % of its capacity.
 Battery health
 After 5 years
@@ -1088,7 +1125,7 @@ After 5 years
 After 8 years
 87 %
 Warranty
-Value
+Value of your car over the years
 After 3 years
 34 %
 After 5 years
@@ -1105,6 +1142,7 @@ Your answers are kept.
 ```
 Battery details
 Battery life
+IN SHORT
 Battery health today: about 87 %.
 Good for its age – still have it tested before you buy.
 Battery health
@@ -1141,9 +1179,9 @@ Your answers are kept.
 ## summary
 ```
 Summary
-Summary
-Topics 6/6
-Takeaway
+What we found for you
+6 of 6 topics
+IN SHORT
 An electric car covers your trips, but costs about CHF 42’100 more over 6 years in this comparison.
 Your topics
 Charging access
@@ -1154,7 +1192,7 @@ Range & battery life
 Range needed: 270 km
 Costs & resale value
 ›
-CHF 42’100 more in 6 years
+CHF 42’100 more
 Battery & resale
 ›
 Battery after 8 years: 87 %
@@ -1171,9 +1209,6 @@ Review the cost assumptions
 2
 Send the template motion to your property management for the next owners' meeting.
 ›
-Was this helpful?
-Yes
-Not really
 Save or share
 One-page PDF
 Full report
@@ -1184,9 +1219,9 @@ Save your answers
 ## summary-numbers
 ```
 Summary
-Summary
-Topics 6/6
-Takeaway
+What we found for you
+6 of 6 topics
+IN SHORT
 An electric car covers your trips, but costs about CHF 42’100 more over 6 years in this comparison.
 Your topics
 Charging access
@@ -1197,7 +1232,7 @@ Range & battery life
 Range needed: 270 km
 Costs & resale value
 ›
-CHF 42’100 more in 6 years
+CHF 42’100 more
 Battery & resale
 ›
 Battery after 8 years: 87 %
@@ -1214,9 +1249,6 @@ Review the cost assumptions
 2
 Send the template motion to your property management for the next owners' meeting.
 ›
-Was this helpful?
-Yes
-Not really
 Save or share
 One-page PDF
 Full report
@@ -1238,7 +1270,7 @@ Which electric car fits me
 Recalculate
 Your results
 Tell us in your own words
-Start fresh
+Delete my answers
 ```
 
 ## answers
@@ -1274,7 +1306,7 @@ Done
 Which car fits me
 Done
 ›
-Delete your answers
+Delete my answers
 ```
 
 ## answer-edit

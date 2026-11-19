@@ -18,3 +18,17 @@
 - Logo: map pin + bolt in the old blue #2564df (app bar and browser icon).
 - Text: big figure on one line, monthly amount right under it, explanation below; every CHF range shown as one average, "about CHF …".
 - Wording: stays as decided by Christian. Gallery closed (/gallery/ shows "Voting is closed").
+
+## 19.11 – Second round of Simone's notes (V8.8)
+- Top bar and chat use the app background (blurred), no own colour.
+- No auto-advance: every answer is confirmed with Next. Tapping a greyed-out Next/Recalculate shows the reason in red.
+- Car: Brand → Model → Fuel (only if several) → Version; camper/conversion bodies (FIAT-ADRIA, …) hidden; lists stay open when the keyboard closes.
+- First registration of the current car optional (year alone is fine; empty → age estimated from mileage, 15’000 km/year).
+- Postal codes: 3’348 codes with locality names (e.g. 6950 Tesserete (Capriasca) TI), from GeoNames via npm swiss-zipcodes.
+- Results: no pencil at the top; key box "In short" with a coloured left edge on every topic; full analysis indented under the section titles, more space.
+- B2 map: CARTO Voyager tiles, 500 m circle around the estimated home point (it was never drawn before: SVG width bug).
+- B3: big figure + "/ CHF … a month"; "To pay today" as a formula with + / −; missing area data shown as an orange note.
+- B7: "−62 % greenhouse gases than a new petrol car"; keep-vs-switch sentence names the comparison; two boxes (t saved / flights); "Calculated for" in rows.
+- Sources: pills "Source ↗" (link) vs "Our assumption".
+- Summary: title "What we found for you", "In short" box like the topics; "Was this helpful?" removed → short sheet after saving/sharing + "Give feedback" link in the footer (research: ask right after a finished task, never mid-flow).
+- Open for n8n: B7 block1 does not change with renewable electricity; ElCom price / motor tax gaps; AC prices; chat prompt length (frontend sends answer_style + app_facts meanwhile).

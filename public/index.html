@@ -2337,6 +2337,22 @@ const GreenNote = { i: 0, t: null,
     GreenNote.i++; const n = GREEN_NOTES[GreenNote.i % GREEN_NOTES.length]; const p = box.querySelector('p');
     p.classList.add('out'); setTimeout(() => { p.textContent = n; p.classList.remove('out'); }, 260); }, 4200); } };
 const LOAD_PHRASE = { B1: 'Measuring the range your trips need…', B2: 'Looking for charging stations near you…', B3: 'Adding up what the car costs you…', B4: 'Matching car sizes to your trips…', B6: 'Forecasting how the battery ages…', B7: 'Counting the CO2 over the whole life of the car…' };
+/** 23 Nov: after an edit (for example a trip abroad changed or deleted) the other topics whose results became stale are
+ *  recalculated in the background, so the Summary and the PDF do not silently lose them. A result is kept only if the answers
+ *  did not change again in the meantime. */
+async function refreshStale(had, skip) {
+  const codes = (had || []).filter((c) => c !== skip && BARRIERS[c] && !store.results[c]);
+  for (const code of codes) {
+    const sig = inputSig(store.profile, code);
+    const session = { barrier: BARRIERS[code].name, ...(QUICK_SESSION[code] || {}), ...(code === 'B2' && store.session.charging_interest ? { charging_interest: store.session.charging_interest.slice() } : {}) };
+    let resp = null;
+    try { resp = store.settings.demo ? await demoNavigator(code) : await postJSON('navigator', { profile: wireProfile(store.profile), session, request_id: uid() }); } catch { resp = null; }
+    if (resp && resp.status === 'ok' && resp.barrier === code && resp.result && !store.results[code] && inputSig(store.profile, code) === sig) {
+      store.results[code] = { response: resp, request_id: uid(), at: new Date().toISOString(), session, sig };
+      saveResults(); if (['summary', 'home'].includes(ui.view)) render();
+    }
+  }
+}
 async function runAll(codes, opts = {}) {
   const myRev = ++store.rev;
   ui.batch = { codes, done: [], need: [] }; if (!opts.quiet) { ui.view = 'batch'; render(); window.scrollTo({ top: 0 }); }
@@ -3287,10 +3303,11 @@ const Questions = {
         h('button', { class: 'btn ghost', type: 'button', onclick: () => { Questions.closeEdit(); render(); } }, 'Cancel'),
         h('button', { class: 'btn primary', type: 'button', id: 'recalc', disabled: !Questions.editValid(), onclick: () => {
           blocks.forEach((b) => BLOCKS[b].before && BLOCKS[b].before(ui.draft));
+          const had = Object.keys(store.results);
           commitDraft(ui.draft);
           blocks.forEach((b) => BLOCKS[b].after && BLOCKS[b].after());
           Questions.closeEdit();
-          calculate(code);
+          Promise.resolve(calculate(code)).finally(() => refreshStale(had, code));
         } }, icon('calc'), 'Recalculate')),
     ];
   },
@@ -3305,9 +3322,10 @@ const Questions = {
         h('button', { class: 'btn ghost', onclick: () => { ui.flow = null; showResult(code); } }, 'Cancel'),
         h('button', { class: 'btn primary', id: 'recalc', disabled: !Questions.editValid(), onclick: () => {
           blocks.forEach((b) => BLOCKS[b].before && BLOCKS[b].before(ui.draft));
+          const had = Object.keys(store.results);
           commitDraft(ui.draft);
           blocks.forEach((b) => BLOCKS[b].after && BLOCKS[b].after());
-          calculate(code);
+          Promise.resolve(calculate(code)).finally(() => refreshStale(had, code));
         } }, icon('calc'), 'Recalculate')),
       whyLine('why-recalc', blocks, d));
   },
@@ -3671,6 +3689,8 @@ function rankSrc(x, r) {
   if (x.option === 'home') { const run = r.home?.costs?.running; return h('small', { class: 'rsrc' }, h('span', { class: 'srcpill src nolink' }, 'Source'), ` ElCom ${run?.as_of || ''}, ${fmt.n(run?.rp_per_kwh, 1)} Rp/kWh`); }
   if (x.option === 'public_ac') { const site = groupSites(r.public?.home?.ac?.nearest, 'ac').map((st) => [st, cheapest(st, false)]).find(([, p]) => p);
     return site ? h('small', { class: 'rsrc' }, h('a', { class: 'srcpill src', href: safeUrl(site[1].url) || undefined, target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')), ` ${site[1].plan}, CHF ${site[1].v.toFixed(2)}/kWh`) : h('small', { class: 'rsrc' }, h('span', { class: 'srcpill ours' }, 'Our assumption')); }
+  if (x.option === 'public_dc' && x.price_chf_kwh != null) return h('small', { class: 'rsrc' }, safeUrl(x.price_url) ? h('a', { class: 'srcpill src', href: safeUrl(x.price_url), target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')) : h('span', { class: 'srcpill ours' }, 'Our assumption'),
+    ` ${x.price_flat ? 'Shell Recharge, flat price' : x.price_source || ''}, CHF ${x.price_chf_kwh.toFixed(2)}/kWh`);
   return null;
 }
 /** Write email, shown right under the key card when n8n returns a template (landlord, owners, employer). */

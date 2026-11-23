@@ -24,8 +24,14 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
   await ev(() => { ChatNav.on = false; Assistant.msgs.forEach((m) => { if (m.block) m.done = true; }); Assistant.msgs.push({ role: 'bot', text: 'Your results are ready.' }, { role: 'bot', text: '', summary: true }); render(); });
   await cap('assistant-done');
   await ev(() => { store.profile = window.__keep; saveStore(); Assistant.msgs = []; ChatNav.on = false; ui.assistantOpen = false; render(); });
+  // ---- 23 Nov: Switch Compass (Christian): five questions, then the starting point
+  await ev(() => { store.compass = {}; ui.compassStep = 0; go('orient'); }); await cap('compass-1', 300);
+  await ev(() => { store.compass = { stage: 'considering', protect: ['security', 'freedom'] }; ui.compassStep = 2; render(); }); await cap('compass-3', 300);
+  await ev(() => { store.compass = { stage: 'considering', protect: ['security', 'freedom'], hesitation: 'mistake' }; ui.compassStep = 3; render(); }); await cap('compass-4', 300);
+  await ev(() => { store.compass = { stage: 'considering', protect: ['security', 'freedom'], hesitation: 'mistake', condition: 'compare', support: ['compare'] }; ui.compassStep = 5; render(); }); await cap('compass-card', 300);
+  await ev(() => { store.compass = null; ui.compassStep = 0; go('home'); });
   // ---- questions (each block as asked)
-  const Q = { 1: 'B1', 2: 'B1', 3: 'B3', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B3', 8: 'B3', 9: 'B3', 10: 'B3', 11: 'B6', 12: 'B6', 13: 'B4' };
+  const Q = { 1: 'B1', 2: 'B1', 3: 'B3', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B3', 8: 'B3', 9: 'B3', 10: 'B3', 11: 'B6', 12: 'B6' };   // 13 (budget) no longer asked: the price in 9 is the budget
   for (const [b, code] of Object.entries(Q)) {
     await ev(([b, code]) => { ui.barrier = code; store.session = { barrier: BARRIERS[code].name, ...(+b === 12 ? { battery_entry: 'used_car' } : {}) }; ui.flow = { history: [], ownTrips: false, forced: null, current: null, entry: +b === 12 ? 'used_car' : null }; gotoBlock(+b); }, [b, code]);
     await cap('q' + b);

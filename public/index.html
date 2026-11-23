@@ -1609,6 +1609,13 @@ details.datasrc[open] > summary svg:last-child { transform: rotate(180deg); }
 .cbfill i { display: block; height: 100%; border-right: 1.5px solid #fff; } .cbfill i:last-child { border-right: 0; }
 .cblegend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12.5px; color: var(--ink-2); } .cblegend span { display: inline-flex; align-items: center; gap: 5px; } .cblegend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 p > svg:not([width]) { width: 1.05em; height: 1.05em; vertical-align: -0.17em; flex: none; }   /* small inline icons in notes (the approximate-point note showed a giant icon) */
+.evline { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 4px 0 14px; }
+.evc { display: grid; gap: 1px; padding: 8px 12px; border-radius: 12px; background: var(--surface-2); min-width: 0; }
+.evc small { font-size: 11.5px; color: var(--ink-2); } .evc b { font-size: 14px; line-height: 1.25; }
+.evc.ev { background: var(--accent-soft); } .evvs { font-size: 12px; color: var(--ink-2); font-weight: 600; }
+.evedit { margin-left: auto; }
+.choicerow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); margin: 6px 0 10px; }
+.choicerow .small { flex: 1 1 100%; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2624,6 +2631,7 @@ function viewSummary() {
   const rows = ok ? sm.topics : codes.map((code) => ({ code }));
   return h('div', { class: 'col wide summary3' },
     h('div', { class: 'shead' }, h('h1', null, 'What we found for you'), h('span', { class: 'frac' }, `${done} of ${QUICK_CODES.length} topics`)),
+    codes.length ? evChoiceLine() : null,
     codes.length ? verdictCard(overallVerdict()) : null,
     loading ? h('section', { class: 'aibox', role: 'status', 'aria-label': 'Writing your summary in words' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
     ok ? h('section', { class: 'aibox' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('p', { class: 'sumk' }, ...highlight(takeaway(sm)))) : null,
@@ -2650,7 +2658,7 @@ function viewSummary() {
 const pdfCodes = (done) => (store.results.B6 && (done.includes('B1') || done.includes('B3')) ? [...done, 'B6'] : done);
 /* ---------- what you told us ---------- */
 const BUDGETS = [['lt30', 'Up to CHF 30’000', 30000], ['30_45', 'CHF 30’000 – 45’000', 45000], ['45_60', 'CHF 45’000 – 60’000', 60000], ['gt60', 'More than CHF 60’000', Infinity], ['unsure', 'Not sure yet', null]];
-const budgetMax = () => BUDGETS.find((b) => b[0] === store.profile.budget)?.[2] ?? null;
+const budgetMax = () => store.profile.target_ev?.price_chf || (BUDGETS.find((b) => b[0] === store.profile.budget)?.[2] ?? null);   // 23 Nov: the price you would pay is your budget
 function profileLines(p) {
   const c = commuteOf(p); const L = [];
   if (p.postal_code) L.push(['Home', p.home_address ? withPlz(p.home_address, p.postal_code) : [p.postal_code, placeName(p.postal_code)].filter(Boolean).join(' ')]);
@@ -2658,11 +2666,10 @@ function profileLines(p) {
   if (p.trips.length) L.push(['Trips', p.trips.map((t) => t.label || 'Trip').join(', ')]);
   if (p.home_charging_status) L.push(['Charging at home', { yes: 'Yes', no: 'No', unknown: "Don't know" }[p.home_charging_status]]);
   if (p.current_car.targa_id) L.push(['Your car', p.current_car.targa_id === 'skipped' ? 'No car' : carName(p.current_car.targa_id)]);
-  if (p.target_ev?.size) L.push(['Car you want', [{ S: 'Small', M: 'Medium', L: 'Large', any: 'Any size' }[p.target_ev.size], p.target_ev.purchase || 'new or used', p.target_ev.price_chf ? fmt.chf(p.target_ev.price_chf) : null].filter(Boolean).join(', ')]);
-  if (p.budget) L.push(['Budget', BUDGETS.find((b) => b[0] === p.budget)?.[1] || p.budget]);
+  if (p.target_ev?.size) L.push(['Electric car', evChoiceText(p)]);
   return L;
 }
-const LINE_BLOCK = { Home: 1, Work: 2, Trips: 3, 'Charging at home': 5, 'Your car': 7, 'Car you want': 9, 'Second car': 9, Budget: 13 };
+const LINE_BLOCK = { Home: 1, Work: 2, Trips: 3, 'Charging at home': 5, 'Your car': 7, 'Electric car': 9 };
 function editAnswer(b) {
   ui.barrier = 'EDIT'; ui.editOpen = null; store.session = {};
   ui.flow = { history: [], ownTrips: false, forced: b === 7 && store.profile.current_car.targa_id !== 'skipped' ? [7, 8] : [b], current: null, single: true };
@@ -2859,10 +2866,10 @@ function routeFor(code) {
     case 'B1': return dedupe([1, 2, 3, ...own]);
     case 'B2': return ss.charging_interest ? (ss.charging_interest.includes('everyday') ? [6, 1, 5, 2] : [6]) : [6];
     case 'B3': return dedupe([3, ...own, 1, 7, 8, 9, 10]);
-    case 'B4': return dedupe([3, ...own, 1, 7, 9, 10, 13]);
-    case 'QUICK': return [1, 3, 2, 5, 7, 8, 9, 13];
+    case 'B4': return dedupe([3, ...own, 1, 7, 9, 10]);
+    case 'QUICK': return [1, 3, 2, 5, 7, 8, 9];
     case 'MULTI': { const q = multiTodo(), has = (...c) => c.some((x) => q.includes(x)); const ci = ss.charging_interest; const every = has('B2') && (!ci || ci.includes('everyday'));
-      return dedupe([has('B2') ? 6 : null, 1, 3, ...own, has('B1') || every ? 2 : null, every ? 5 : null, has('B3', 'B4', 'B7') ? 7 : null, has('B3') ? 8 : null, has('B3', 'B4') ? 9 : null, has('B3', 'B4') ? 10 : null, has('B4') ? 13 : null].filter((x) => x != null)); }   // trips before work: a commute answer would otherwise skip the trip picker
+      return dedupe([has('B2') ? 6 : null, 1, 3, ...own, has('B1') || every ? 2 : null, every ? 5 : null, has('B3', 'B4', 'B7') ? 7 : null, has('B3') ? 8 : null, has('B3', 'B4') ? 9 : null, has('B3', 'B4') ? 10 : null, null].filter((x) => x != null)); }   // trips before work: a commute answer would otherwise skip the trip picker
     case 'B6': return ss.battery_entry === 'used_car' ? [11, 12] : ss.battery_entry === 'forecast' ? dedupe([11, 3, ...own]) : [11];
     case 'B7': return dedupe([3, ...own, 7]);
   }
@@ -3190,14 +3197,15 @@ const BLOCKS = {
       h('p', { class: 'hint' }, 'A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.')],
     valid: (d) => V.int(d.current_car.odometer_km, 0, 600000) && (!d.current_car.first_registration || V.monthYear(d.current_car.first_registration, 1995)) && (d.current_car.value_today_chf == null || V.int(d.current_car.value_today_chf, 0, 400000)),
     why_not: (d) => (V.int(d.current_car.odometer_km, 0, 600000) ? '' : 'Please enter the mileage of your car.') },
-  // 23 Nov (Simone): "what I drive now / what I want to drive" instead of a second car; the price you would pay sets the purchase cost in Costs.
-  9: { title: 'What would you like to drive?', why: 'Size, new or used, and the price you would pay set the purchase cost in your cost comparison.',
+  // 23 Nov (evening): one question for "the electric car you are looking at". Its price is also your budget (the old budget
+  // question 13 is no longer asked). Lifestyle match and Costs show it as "Your choice" and can change it.
+  9: { title: 'Which electric car are you looking at?', why: 'We compare this car with yours. Lifestyle match checks if it fits your trips; Costs and Climate compare it with your car.',
     render: (d) => {
       const t = d.target_ev; if (!d.second_car.targa_id) d.second_car.targa_id = 'none';
-      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Size'), h('div', { class: 'chips' }, [['S', 'Small'], ['M', 'Medium'], ['L', 'Large'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.size === k, () => { t.size = k; render(); })))),
+      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Size'), h('div', { class: 'chips' }, [['S', 'Small'], ['M', 'Medium'], ['L', 'Large'], ['any', 'Help me choose']].map(([k, l]) => chip(l, t.size === k, () => { t.size = k; render(); })))),
         h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'New or used?'), h('div', { class: 'chips' }, [['new', 'New'], ['used', 'Used'], ['any', 'Not sure']].map(([k, l]) => chip(l, (t.purchase || 'any') === k && t.size != null, () => { t.purchase = k === 'any' ? null : k; render(); })))),
-        chfField('ev-price', 'Price you would pay (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
-        h('p', { class: 'hint' }, icon('info'), 'An offer or a listing price is best. Without it we use typical Swiss prices for the size (Our assumption).')];
+        chfField('ev-price', 'About how much would you pay? (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
+        h('p', { class: 'hint' }, icon('info'), 'An offer, a listing or simply your budget. Without it we use typical Swiss prices for the size.')];
     },
     valid: (d) => !!d.target_ev.size && (d.target_ev.price_chf == null || V.int(d.target_ev.price_chf, 3000, 300000)) },
   10: { title: 'How many people are in the car?', why: 'Seats and trailers decide the car size.',
@@ -3333,7 +3341,7 @@ const Questions = {
       case 'B1': return [1, 2, 3];
       case 'B2': return [...(ss.charging_interest?.includes('abroad') ? [4] : []), ...(ss.charging_interest?.includes('everyday') ? [6, 1, 5, 2] : [6])];
       case 'B3': return [3, 1, 7, 8, 9, 10].filter((b) => b !== 8 || (store.profile.current_car.targa_id && store.profile.current_car.targa_id !== 'skipped'));
-      case 'B4': return [3, 1, 7, 9, 10, 13];
+      case 'B4': return [3, 1, 7, 9, 10];
       case 'B6': return ss.battery_entry === 'used_car' ? [12] : [3];
       case 'B7': return [3, 7];
     }
@@ -3813,7 +3821,8 @@ function b3Pick(r) {
   const selCls = opts.find((l) => l.selected)?.class_id || classes[0];
   const tgt = store.profile.target_ev || {};
   const tgtCls = ['S', 'M', 'L'].includes(tgt.size) ? (String(selCls || '')[0] === tgt.size ? selCls : classes.find((c) => c[0] === tgt.size)) : null;
-  const cls = classes.includes(ui.b3Cls) ? ui.b3Cls : tgtCls || selCls;
+  const mineCls = tgtCls || selCls;
+  const cls = classes.includes(ui.b3Cls) ? ui.b3Cls : mineCls;
   const bmax = budgetMax();
   const newOf = opts.find((l) => l.class_id === cls && (l.purchase || 'new') === 'new');
   const autoBuy = hasBuy && bmax != null && newOf?.price_today_chf?.min > bmax ? 'used' : (r.default_purchase || 'new');
@@ -3826,9 +3835,9 @@ function b3Pick(r) {
     const ref2 = { ...ref, energy_detail: ref.energy_detail ? { ...ref.energy_detail, chf_per_l: ref.energy_detail.chf_per_l * f } : null,
       years: ref.years.map((y) => ({ ...y, items: { ...y.items, energy: Math.round((y.items?.energy || 0) * f) }, total_per_year: shift(y.total_per_year, dE(y)), total_over_n: shift(y.total_over_n, dE(y) * y.n) })) };
     const ev2 = { ...ev, payback_year: undefined, years: ev.years.map((y, k) => ({ ...y, saving_vs_current: shift(y.saving_vs_current, dE(ref.years[k]) * y.n) })) };
-    return { ev: ev2, ref: ref2, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: f };
+    return { ev: ev2, ref: ref2, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: f, mine: { cls: mineCls, buy: ['new', 'used'].includes(tgt.purchase) ? tgt.purchase : null } };
   }
-  return { ev, ref, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: 1 };
+  return { ev, ref, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: 1, mine: { cls: mineCls, buy: ['new', 'used'].includes(tgt.purchase) ? tgt.purchase : null } };
 }
 const evName = (l, long) => (!l ? 'Electric car' : (long ? clsLong(l.class_id) : clsShort(l.class_id)) + (l.purchase === 'used' ? (long ? `, used (about ${l.used_age_years || 4} years old)` : ', used') : l.purchase === 'new' ? (long ? ', new' : ', new') : ''));
 function savingChart(lines, N, payback) {
@@ -4049,8 +4058,12 @@ function renderB3(r) {
 
   // ---- choose the electric car (size, new / used) and the years ----
   const pickRow = P.classes.length > 1 || P.hasBuy ? h('div', { class: 'b3pick' },
-    P.classes.length > 1 ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, 'Size'), h('div', { class: 'chips' }, P.classes.map((c) => chip(clsShort(c), c === P.cls, () => { ui.b3Cls = c; render(); }, true)))) : null,
+    P.classes.length > 1 ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, 'Size'), h('div', { class: 'chips' }, P.classes.map((c) => chip(clsShort(c) + (c === P.mine?.cls ? ' (your choice)' : ''), c === P.cls, () => { ui.b3Cls = c; render(); }, true)))) : null,
     P.hasBuy ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, 'Buy'), seg([['new', 'New'], ['used', `Used, ${r.used_age_years || 4} years old`]], P.buy, (v) => { store.session.ev_purchase = v; render(); }, true)) : null) : null;
+  const offChoice = P.mine && (P.cls !== P.mine.cls || (P.mine.buy && P.buy !== P.mine.buy));
+  const choiceRow = offChoice ? h('div', { class: 'choicerow' }, h('span', { class: 'small' }, 'You are comparing a different car than your choice.'),
+    h('button', { class: 'btn small', type: 'button', onclick: () => { ui.b3Cls = null; store.session.ev_purchase = null; render(); } }, 'Back to my choice'),
+    h('button', { class: 'btn small primary', type: 'button', onclick: () => { const had = setEvChoice(P.cls, P.buy); Promise.resolve(calculate('B3')).finally(() => refreshStale(had, 'B3')); } }, 'Make this my choice')) : null;
   const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), Array.from({ length: H }, (_, i) => i + 1).map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
   const fuelRow = ref && ev && !noRef ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, `${ref.energy_detail?.kind === 'diesel' ? 'Diesel' : 'Petrol'} price`),
     seg([['0.7', '30 % cheaper'], ['1', 'Today'], ['1.3', '30 % dearer']], String(P.fuel), (v) => { ui.b3Fuel = Number(v); render(); }, true)) : null;
@@ -4062,7 +4075,7 @@ function renderB3(r) {
       h('span', null, `Your ${refName} is a ${String(ref.size_label).toLowerCase()} car. Tap to compare with a used ${String(up.size_label).toLowerCase()} electric car.`));
   })();
   const frow = (l, v, cls, sub) => h('div', { class: 'frow' }, h('span', null, l, sub ? h('small', { class: 'frsub' }, sub) : null), h('b', { class: cls || null }, v));
-  const glance = ev ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Your comparison'), pickRow, yearChips, fuelRow,
+  const glance = ev ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Your comparison'), pickRow, choiceRow, yearChips, fuelRow,
     !noRef && M.saving != null ? frow(`Difference over ${yrs}`, M.saving >= 0 ? `${fmt.chf100(M.saving)} less` : `${fmt.chf100(-M.saving)} more`, M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn', 'electric car compared with keeping your car') : null,
     !noRef ? frow('When does it pay off?', payback ? `after about ${yrsTxt(payback)}` : `not within ${horizon} years`, payback ? 'good' : 'warn') : null,
     sizeHint, gapNote(), gapYearNote,
@@ -4229,7 +4242,7 @@ function renderB4(r) {
     const byId = Object.fromEntries((o.trips || []).map((t) => [t.trip_id, t]));
     return h('div', { class: 'b4col' + (o.selected ? ' sel' : '') + (ref ? ' ref' : ''), style: tpl },
       h('div', { class: 'b4head' }, h('span', { class: 'carpic big sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, clsShort(o.class_id)),
-        ref ? h('span', { class: 'pill plain' }, 'Covers every trip') : o.selected ? h('span', { class: 'pill good' }, 'Selected') : h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose')),
+        ref ? h('span', { class: 'pill plain' }, 'Covers every trip') : o.selected ? h('span', { class: 'pill good' }, 'Suggested') : h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose')),
       h('div', { class: 'b4sum' + (overBudget(o) ? ' over' : '') }, h('b', { title: overBudget(o) ? 'Above your budget' : null }, String(fmt.band(o.price_band_chf)).replace('–', '–\u200b') + (overBudget(o) ? ' ⚠' : ''))),
       h('div', { class: 'b4sum' }, h('b', null, `min. ${fmt.n(o.min_wltp_km)} km`)),
       h('div', { class: 'b4sum' }, h('b', null, String(o.seats ?? '–'))),
@@ -4249,22 +4262,28 @@ function renderB4(r) {
   const frow = (l, v, cls) => h('div', { class: 'frow' }, h('span', null, l), h('b', { class: cls || null }, v));
   const clsName = (o) => `${(o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')} (${fmt.n(o.min_wltp_km)}+ km)`;
   const days = (o) => (o.ev_days === o.total_days ? 'All' : `${fmt.n(o.ev_days)} of ${fmt.n(o.total_days)}`);
-  const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), 'Your car'),
+  const tgtSz = ['S', 'M', 'L'].includes(store.profile.target_ev?.size) ? store.profile.target_ev.size : null;
+  const ids = opts.map((o) => o.class_id), pc = store.profile.selected_class_id;
+  const mineId = pc && ids.includes(pc) && (!tgtSz || SIZE_OF(pc) === tgtSz) ? pc : sel && (!tgtSz || SIZE_OF(sel.class_id) === tgtSz) ? sel.class_id : ids.find((id) => SIZE_OF(id) === tgtSz) || null;
+  const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), mineId === sel.class_id ? 'Your choice' : 'Suggested for your trips'),
     frow('Class', clsName(sel)),
     frow('Seats', String(sel.seats ?? '–')),
     frow('New price', fmt.band(sel.price_band_chf) + (overBudget(sel) ? ' ⚠' : ''), overBudget(sel) ? 'warn' : null)) : null;
   const table = h('div', { class: 'b4wrap', role: 'region', 'aria-label': 'Car classes side by side', tabindex: '0' }, h('table', { class: 'b4t' },
-    h('thead', null, h('tr', null, h('th', null, ''), ...cols.map(({ o }) => h('th', { class: o.selected ? 'sel' : null }, h('span', { class: 'carpic sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, (o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')), o.selected ? h('span', { class: 'pill good' }, 'Yours') : h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose'))))),
+    h('thead', null, h('tr', null, h('th', null, ''), ...cols.map(({ o }) => h('th', { class: o.selected ? 'sel' : null }, h('span', { class: 'carpic sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, (o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')), o.class_id === mineId ? h('span', { class: 'pill good' }, 'Your choice') : [o.selected ? h('span', { class: 'pill plain' }, 'Suggested') : null, h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose')])))),
     h('tbody', null,
       h('tr', null, h('th', null, 'Range'), ...cols.map(({ o }) => h('td', null, `${fmt.n(o.min_wltp_km)}+ km`))),
       h('tr', null, h('th', null, 'New price'), ...cols.map(({ o }) => h('td', { class: overBudget(o) ? 'warn' : null }, fmt.band(o.price_band_chf)))),
       h('tr', null, h('th', null, 'Seats'), ...cols.map(({ o }) => h('td', null, String(o.seats ?? '–')))),
       h('tr', null, h('th', null, 'Driving days'), ...cols.map(({ o }) => h('td', null, days(o)))),
       ...trips.map((rt) => h('tr', null, h('th', null, rt.label), ...cols.map(({ o }) => { const t = (o.trips || []).find((x) => x.trip_id === rt.trip_id); return h('td', null, !t || t.covered ? h('span', { class: 'pill good' }, 'Electric') : h('span', { class: 'pill warn' }, MODE_TXT[t.plan?.key] || 'Other')); }))))));
+  const tgtSize = store.profile.target_ev?.size;
+  const sizeNote = sel && ['S', 'M', 'L'].includes(tgtSize) && SIZE_OF(sel.class_id) !== tgtSize
+    ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, `You are looking at a ${({ S: 'small', M: 'medium', L: 'large' })[tgtSize]} car. For your trips we suggest ${clsLong(sel.class_id)}. ${mineId ? 'Both are in the table below; tap Choose to change your choice.' : 'Tap Choose in the table below to make it your choice.'}`)) : null;
   const sections = [
-    pick,
+    pick, sizeNote,
     h('section', { class: 'rsec' }, h('h2', null, 'Compare the car classes'),
-      opts.some(overBudget) ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'Orange price: starts above your budget.')) : null,
+      opts.some(overBudget) ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, `Orange price: starts above the price you would pay (${fmt.chf(bmax)}).`)) : null,
       table,
       h('p', { class: 'small muted' }, 'Your trips are checked with the range in winter on the motorway.')),
   ];
@@ -4517,13 +4536,45 @@ function assumptionsSection(list) {
   })));
 }
 
-/** B4: picking an option only marks it (no new calculation); Costs and Battery use it next time. */
+/* 23 Nov (evening): "the electric car you are looking at" is ONE saved choice (profile.target_ev + selected_class_id).
+   Question 9 sets it; Lifestyle match and Costs show it as "Your choice" and can change it; Summary names it. */
+const SIZE_OF = (cid) => (cid ? String(cid)[0] : null);
+function evChoiceText(p = store.profile) {
+  const t = p.target_ev || {};
+  const cls = p.selected_class_id && (!['S', 'M', 'L'].includes(t.size) || SIZE_OF(p.selected_class_id) === t.size) ? p.selected_class_id : null;
+  const size = cls ? clsShort(cls) : ({ S: 'Small', M: 'Medium', L: 'Large' }[t.size] || 'Size not chosen yet');
+  return [size, t.purchase || null, t.price_chf ? `about ${fmt.chf(t.price_chf)}` : null].filter(Boolean).join(', ');
+}
+/** Make an electric car the saved choice (from Lifestyle match or Costs), then recalculate what depends on it. */
+function setEvChoice(cid, purchase) {
+  const d = clone(store.profile); const t = d.target_ev || (d.target_ev = { size: null, purchase: null, price_chf: null });
+  const changed = (cid && SIZE_OF(cid) !== t.size) || (purchase && purchase !== t.purchase);
+  if (changed && t.price_chf) t.price_chf = null;   // the price was for the car chosen before
+  if (cid) { t.size = SIZE_OF(cid); d.selected_class_id = cid; }
+  if (purchase) t.purchase = purchase;
+  const had = Object.keys(store.results);
+  ui.b3Cls = null; store.session.ev_purchase = null;
+  store.profile = sanitizeProfile(d); store.rev++; dropStaleResults(); saveStore(); saveResults();
+  return had;
+}
+function evChoiceLine(opts = {}) {
+  const t = store.profile.target_ev || {};
+  if (!t.size && !store.profile.selected_class_id) return null;
+  const cur = store.profile.current_car?.targa_id && !['skipped', 'none'].includes(store.profile.current_car.targa_id) ? carName(store.profile.current_car.targa_id) : null;
+  return h('div', { class: 'evline' },
+    cur ? h('span', { class: 'evc now' }, h('small', null, 'Your car'), h('b', null, cur)) : null,
+    cur ? h('span', { class: 'evvs', 'aria-hidden': 'true' }, 'vs') : null,
+    h('span', { class: 'evc ev' }, h('small', null, 'Electric car you are looking at'), h('b', null, evChoiceText())),
+    opts.noEdit ? null : h('button', { class: 'linkbtn evedit', type: 'button', onclick: () => editAnswer(9) }, icon('edit'), h('span', null, 'Change')));
+}
+/** B4: picking an option makes it your choice; the topics that depend on it are recalculated in the background. */
 function chooseClass(cid) {
-  store.profile.selected_class_id = cid;
-  toast(`${clsShort(cid)} chosen – Costs and Battery now use this car.`); window.scrollTo({ top: 0, behavior: 'smooth' });
   const rec = store.results.B4; const r = rec?.response?.result;
-  if (r) { (r.class_options || []).forEach((o) => { o.selected = o.class_id === cid; }); if (rec.response.profile) rec.response.profile.selected_class_id = cid; rec.sig = inputSig(store.profile, 'B4'); }
-  dropStaleResults(); saveStore(); saveResults(); render();
+  if (r) { (r.class_options || []).forEach((o) => { o.selected = o.class_id === cid; }); if (rec.response.profile) rec.response.profile.selected_class_id = cid; }
+  const had = setEvChoice(cid, null);
+  if (rec) { store.results.B4 = rec; rec.sig = inputSig(store.profile, 'B4'); saveResults(); }   // only a selection: Lifestyle match itself stays valid
+  toast(`${clsShort(cid)} is now your choice. Costs and Climate are updated.`); window.scrollTo({ top: 0, behavior: 'smooth' });
+  render(); refreshStale(had, 'B4');
 }
 
 /* ---------- the template ---------- */

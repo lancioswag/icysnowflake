@@ -22,6 +22,7 @@ Climate impact
 Lifestyle match
 Tap the topics you want. Drag them to set the order – we start at the top.
 Check all topics
+Not sure where to start? Five short questions
 Tell us in your own words
 Delete my answers
 ```
@@ -49,6 +50,7 @@ Climate impact
 Lifestyle match
 Tap the topics you want. Drag them to set the order – we start at the top.
 Continue
+Not sure where to start? Five short questions
 Tell us in your own words
 Delete my answers
 ```
@@ -58,11 +60,11 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:23
+22:24
 Can I charge at work?
-18:23
+22:24
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-18:23
+22:24
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -72,11 +74,11 @@ What can the Navigator tell me?
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:23
+22:24
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:23
+22:24
 I'll ask a few short questions here in the chat.
-18:23
+22:24
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8001. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today?
@@ -86,7 +88,7 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-18:23
+22:24
 Stop the check
 ```
 
@@ -95,21 +97,85 @@ Stop the check
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:23
+22:24
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:23
+22:24
 I'll ask a few short questions here in the chat.
-18:23
+22:24
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8001. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today? ✓
-18:23
+22:24
 Your results are ready.
-18:23
+22:24
 Open your summary
-18:23
+22:24
 Do the whole check here in the chat
 What can the Navigator tell me?
+```
+
+## compass-1
+```
+Where to start
+Step 1 of 5
+Where are you starting from?
+Choose the closest description. You do not need to be ready to buy.
+I am curious, but not looking to change yet
+I am considering it, but something holds me back
+I may need to replace my car soon
+I would rather wait for now
+I do not want to switch at the moment
+Continue
+Skip this question
+```
+
+## compass-3
+```
+Where to start
+Step 3 of 5
+Which thought comes closest to your hesitation?
+Pick the one to look at first. It is your description, not a label.
+“I cannot yet picture how it would work for me.”
+“I might lose something I value about driving today.”
+“I could make an expensive decision I later regret.”
+“If I wait, I may make a better decision.”
+“I am not sure it is the right choice for me.”
+“There is too much conflicting information.”
+“Nothing in particular, I see no reason to change.”
+Continue
+Back
+Skip this question
+```
+
+## compass-4
+```
+Where to start
+Step 4 of 5
+What would you need to feel clearer about?
+Choose the most important question for now.
+What a wrong choice could cost me
+Which risks I can limit (battery, resale value)
+How it compares fairly with keeping my car
+Continue
+Back
+Skip this question
+```
+
+## compass-card
+```
+Where to start
+Your starting point
+Your main question
+How it compares fairly with keeping my car
+Where you are
+I am considering it, but something holds me back
+What you want to keep
+Feeling financially secure; The freedom to set off spontaneously
+Help you trust
+A fair comparison of switching and keeping my car
+We will look at: Costs & resale value, Range & battery life. Every figure comes with its source; you can stop at any time, and deciding not to switch is a fine outcome.
+Start with Costs & resale value
+Change my answers
 ```
 
 ## q1
@@ -306,19 +372,19 @@ Next
 ```
 Costs & resale value
 Question 1 of 1
-What would you like to drive?
+Which electric car are you looking at?
 Size
 Small
 Medium
 Large
-Not sure
+Help me choose
 New or used?
 New
 Used
 Not sure
-Price you would pay (optional)
+About how much would you pay? (optional)
 CHF
-An offer or a listing price is best. Without it we use typical Swiss prices for the size (Our assumption).
+An offer, a listing or simply your budget. Without it we use typical Swiss prices for the size.
 Show my result
 ```
 
@@ -399,19 +465,6 @@ Year
 2010
 Mileage today
 km
-Show my result
-```
-
-## q13
-```
-Lifestyle match
-Question 1 of 1
-What is your budget to buy the car?
-Up to CHF 30’000
-CHF 30’000 – 45’000
-CHF 45’000 – 60’000
-More than CHF 60’000
-Not sure yet
 Show my result
 ```
 
@@ -599,7 +652,8 @@ At home
 Ask your landlord
 CHF 5.37
 / 100 km
-Source ElCom 2027, 31.6 Rp/kWh
+Source
+ ElCom 2027, 31.6 Rp/kWh
 At work
 Ask your employer
 No price data
@@ -623,7 +677,8 @@ Extra per month
 about CHF 45
 Electricity if installed
 CHF 5.37 / 100 km
-31.6 Rp/kWh , Source ElCom 2027
+31.6 Rp/kWh , Source
+ ElCom 2027
 Subsidy for your postal code
 Charging stations
 Stadt St. Gallen
@@ -741,7 +796,7 @@ more than keeping your VW Golf 1.5TSI
 It pays off after about 10 years.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -771,6 +826,20 @@ after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
 We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -800,7 +869,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -812,7 +881,7 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+Energy, electric car: 18’400 km a year, 18.8 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7.1 l per 100 km, CHF 1.83 per litre.
 Depreciation and total cost
 CHF
 Keep your car
@@ -873,7 +942,7 @@ more than keeping your VW Golf 1.5TSI
 It pays off after about 10 years.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -903,6 +972,20 @@ after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
 We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -932,7 +1015,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -944,7 +1027,7 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+Energy, electric car: 18’400 km a year, 18.8 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7.1 l per 100 km, CHF 1.83 per litre.
 Depreciation and total cost
 CHF
 Keep your car
@@ -1027,11 +1110,11 @@ Energy
 Km a year, consumption, price.
 1’089
 18’400 km a year
-19 kWh per 100 km
+18.8 kWh per 100 km
 CHF 0.32 per kWh
 2’550
 19’653 km a year
-7 l per 100 km
+7.1 l per 100 km
 CHF 1.83 per litre
 Tax
 351
@@ -1067,6 +1150,8 @@ Electric car
 831 km
 Your VW Golf 1.5TSI
 385 km
+831 km
+385 km
 +
 −
  Leaflet | © OpenStreetMap contributors
@@ -1086,7 +1171,7 @@ Resale values of combustion cars may fall as more people switch.
 Leasing
 Leasing or a car subscription shifts the value risk to the provider.
 Insurance
-Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.
+Typical Comparis premiums: full cover for a car under 5 years old, then liability. Enter your own quote for a sharper result.
 Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
@@ -1243,7 +1328,7 @@ Small
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
-Your car
+Your choice
 Class
 Small (250+ km)
 Seats
@@ -1266,7 +1351,7 @@ Small
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
-Your car
+Your choice
 Class
 Small (250+ km)
 Seats
@@ -1277,7 +1362,7 @@ Full analysis
 Compare the car classes
 	
 Small
-Yours
+Your choice
 	
 Medium
 Choose
@@ -1306,7 +1391,7 @@ more than keeping your VW Golf 1.5TSI
 It pays off after about 10 years.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -1336,6 +1421,20 @@ after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
 We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -1365,7 +1464,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -1377,7 +1476,7 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+Energy, electric car: 18’400 km a year, 18.8 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7.1 l per 100 km, CHF 1.83 per litre.
 Depreciation and total cost
 CHF
 Keep your car
@@ -1460,11 +1559,11 @@ Energy
 Km a year, consumption, price.
 1’089
 18’400 km a year
-19 kWh per 100 km
+18.8 kWh per 100 km
 CHF 0.32 per kWh
 2’550
 19’653 km a year
-7 l per 100 km
+7.1 l per 100 km
 CHF 1.83 per litre
 Tax
 351
@@ -1500,6 +1599,8 @@ Electric car
 831 km
 Your VW Golf 1.5TSI
 385 km
+831 km
+385 km
 +
 −
  Leaflet | © OpenStreetMap contributors
@@ -1510,21 +1611,21 @@ How we calculated
 We compare what each choice costs you over the same number of years (total cost of ownership).
 From the upfront cost to the difference over 6 years
 Net outlay today (price + installation − sale of your car)
-− CHF 18’100
+− CHF 18’110
 Value at the end: electric car minus your car
 + CHF 2’900
 Lower running costs over 6 years
-+ CHF 12’100
++ CHF 12’140
 Interest over 6 years
-− CHF 700
+− CHF 680
 =
 Difference over 6 years
-− CHF 3’800
-Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Rounding can make the lines differ by up to CHF 100.
+− CHF 3’760
+Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Lines rounded to CHF 10; yearly items are rounded before they are added up, so the sum can differ from the difference by a few francs.
 Value loss, not the full price. The electric car counts with its price today minus its value at the end. Your car counts with its value today minus its value at the end.
 Interest on the money tied up in the car (1.25 % a year).
 Energy: your kilometres, consumption and price (electricity at home from ElCom for your postal code, fuel price from BFS).
-Tax, insurance (liability only, a rough placeholder), maintenance and tyres. Older cars need more repairs: +5 % per year of age above 5 years.
+Tax, insurance, maintenance and tyres. Insurance: typical Comparis premiums, full cover while a car is under 5 years old, then liability. Older cars need more repairs: +5 % per year of age above 5 years. You can enter your own values.
 Where the values at the end come from
 Electric car: BFE/EBP 2023, Figure 2 (Eurotax retail values of EVs, share of new price), ages 1–8 for small and medium cars; large cars use the medium curve; beyond 8 years extrapolated with −20 % per year; ±2 percentage points per 10,000 km above or below 15,000 km a year, at most down to 40 % and up to 125 % of the typical value; the value never rises with time
 Used electric car: used EV bought at age 4: price = new price times value share at that age; its value later = new price times share at age 4 + years kept (so from about 5 years kept the curve is extrapolated)
@@ -1544,7 +1645,7 @@ Resale values of combustion cars may fall as more people switch.
 Leasing
 Leasing or a car subscription shifts the value risk to the provider.
 Insurance
-Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.
+Typical Comparis premiums: full cover for a car under 5 years old, then liability. Enter your own quote for a sharper result.
 Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
@@ -1607,6 +1708,8 @@ BFE/EBP study 2023 (Eurotax values)
 what an electric car is worth after 1 to 8 years, maintenance costs (Costs, Battery & resale)
 TCS
 motor vehicle tax by canton (Costs)
+Comparis insurance calculator (2025)
+insurance premiums by car class, full cover or liability (Costs)
 swisstopo and openrouteservice
 your address on the map and the distance of your trips (Range, Charging)
 Paul Scherrer Institut (carculator), BFE
@@ -1617,7 +1720,7 @@ EAFO (European Commission)
 charging abroad (Range, Charging)
 SBB, Mobility, KAYAK
 train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)
-Data checked in November 2026; electricity tariffs for 2027. Insurance is a rough placeholder (liability only), not a quote. Purchase subsidies are not included yet.
+Data checked in November 2026; electricity tariffs for 2027. Insurance is a typical premium, not a quote: enter your own in Costs. Purchase subsidies are not included yet.
 What would you like to check?
 Charging access
 1
@@ -1630,6 +1733,7 @@ Lifestyle match
 Tap the topics you want. Drag them to set the order – we start at the top.
 Recalculate
 Your results
+Not sure where to start? Five short questions
 Tell us in your own words
 Delete my answers
 ```
@@ -1687,7 +1791,8 @@ At home
 Ask your landlord
 CHF 5.37
 / 100 km
-Source ElCom 2027, 31.6 Rp/kWh
+Source
+ ElCom 2027, 31.6 Rp/kWh
 At work
 Ask your employer
 No price data
@@ -1711,7 +1816,8 @@ Extra per month
 about CHF 45
 Electricity if installed
 CHF 5.37 / 100 km
-31.6 Rp/kWh , Source ElCom 2027
+31.6 Rp/kWh , Source
+ ElCom 2027
 Subsidy for your postal code
 Charging stations
 Stadt St. Gallen
@@ -1836,34 +1942,9 @@ Your answers are kept.
 ## r-B6-used
 ```
 Battery details
-Battery life
-IN SHORT
-Battery health today: about 87 %.
-Good for its age – still have it tested before you buy.
-Battery health
-87 %
-50
-60
-70
-80
-90
-100
-below warranty limit
-70–80 %
-over 80 %
-Age
-5.7 years
-Mileage
-68’000 km
-Per year
-12’000 km
-This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160’000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.
-Full analysis
-Edit your inputs
-›
-Continue with Costs & resale value
-Check another topic
-Your answers are kept.
+Something went wrong
+Try again
+Back
 ```
 
 ## summary-loading
@@ -1973,6 +2054,7 @@ Lifestyle match
 Tap the topics you want. Drag them to set the order – we start at the top.
 Recalculate
 Your results
+Not sure where to start? Five short questions
 Tell us in your own words
 Delete my answers
 ```

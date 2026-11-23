@@ -1,0 +1,6 @@
+factor_id,label,g_co2eq_per_kwh,source
+kbob_Strom_CH-Verbrauchermix_in_Personenwagen,Strom CH-Verbrauchermix in Personenwagen,158.0,KBOB/ecobau 2022 v9.0
+kbob_Mix_Stromprodukte_aus_erneuerbaren_Energien_in_Personenwagen,Mix Stromprodukte aus erneuerbaren Energien in Personenwagen,48.099999999999994,KBOB/ecobau 2022 v9.0
+CH_consumer_GHG_2026,CH consumer mix 2022-2024,109.0,https://pubdb.bfe.admin.ch/de/publication/download/12674
+CH_renewable_fossil_CO2_reference,renewable product,9.7,https://pubdb.bfe.admin.ch/de/publication/download/12674
+CH_renewable_compatible_GHG_pending,renewable product,,

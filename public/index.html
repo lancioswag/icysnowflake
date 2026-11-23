@@ -1445,7 +1445,7 @@ body::before { background: color-mix(in srgb, var(--bg) 70%, transparent); backd
 /* map */
 .mk.me { width: 16px !important; height: 16px !important; border-radius: 50%; background: var(--ink); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--ink); }
 .legend i.lg-me { background: var(--ink); border-radius: 50%; }
-.legend i.lg-area { background: color-mix(in srgb, var(--accent) 18%, transparent); border: 1.5px dashed var(--accent); border-radius: 50%; }
+.legend i.lg-area { background: #fff; border: 2px solid var(--accent); border-radius: 50%; box-shadow: 0 0 0 3px rgba(15,30,51,.18); }
 /* costs */
 .formula { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
 .frm { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
@@ -1594,6 +1594,20 @@ details.datasrc[open] > summary svg:last-child { transform: rotate(180deg); }
 .bubble { transition: transform .2s ease, opacity .2s ease; }
 .bubble.tuck { transform: translateY(140%); opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .bubble { transition: none; } }
+.mapgrey .leaflet-tile-pane { filter: grayscale(1) brightness(1.06) contrast(.92); }
+.leaflet-tooltip.r50tip { font: 700 12px/1.2 Inter, system-ui, sans-serif; border: 0; border-radius: 8px; padding: 3px 7px; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.leaflet-tooltip.r50tip.ev { background: var(--accent); color: #fff; } .leaflet-tooltip.r50tip.car { background: #c2410c; color: #fff; }
+.leaflet-tooltip.r50tip::before { display: none; }
+.compassbtn { margin-top: 2px; }
+.clarity .clq { display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px; background: var(--accent-soft); margin: 8px 0 12px; }
+.clarity .clq b { font-size: 18px; line-height: 1.3; }
+.clist { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 8px; }
+.clist li { display: grid; gap: 2px; font-size: 14px; } .clist li span { color: var(--ink-2); font-size: 12.5px; }
+.cbars { display: grid; gap: 10px; margin: 4px 0 14px; }
+.cbar { display: grid; gap: 4px; } .cbhead { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; } .cbhead span { color: var(--ink-2); }
+.cbtrack { height: 26px; border-radius: 8px; background: var(--surface-2); overflow: hidden; } .cbfill { display: flex; height: 100%; }
+.cbfill i { display: block; height: 100%; border-right: 1.5px solid #fff; } .cbfill i:last-child { border-right: 0; }
+.cblegend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12.5px; color: var(--ink-2); } .cblegend span { display: inline-flex; align-items: center; gap: 5px; } .cblegend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -1759,10 +1773,10 @@ function emptyProfile() {
     postal_code: null, home_address: null, charging_at_work: null, work_postal_code: null, work_address: null,
     trips: [], trips_source: null, home_charging_status: null, fixed_parking: null, housing_type: null,
     current_car: { targa_id: null, first_registration: null, odometer_km: null, consumption: null, new_price_chf: null, value_today_chf: null },
-    second_car: { targa_id: null, wltp_range_km: null, towbar: null },
+    second_car: { targa_id: 'none', wltp_range_km: null, towbar: null },   // 23 Nov: second car removed from the questions
     target_ev: { size: null, purchase: null, price_chf: null },   // 23 Nov: the car you want to drive (replaces the second-car question)
     selected_class_id: null, everyday_charging: null,
-    cost_assumptions: { fuel_price_chf_l: null, interest_rate: null, p_dc_chf_kwh: null, tyre_changes_per_year: null },
+    cost_assumptions: { fuel_price_chf_l: null, interest_rate: null, p_dc_chf_kwh: null, tyre_changes_per_year: null, insurance_current_chf_year: null, insurance_ev_chf_year: null, maintenance_current_chf_year: null, maintenance_ev_chf_year: null },
     used_listing: { first_registration: null, odometer_km: null }, electricity_product: null,
     budget: null,             // UI only (B4 marks options above it); not part of the n8n contract
   };
@@ -1781,6 +1795,7 @@ function sanitizeProfile(p) {
     if (base[k] && typeof base[k] === 'object') { for (const kk of Object.keys(base[k])) if (p[k] && p[k][kk] !== undefined) base[k][kk] = p[k][kk]; }
     else if (p[k] !== undefined) base[k] = p[k];
   }
+  base.second_car = { targa_id: 'none', wltp_range_km: null, towbar: null };   // 23 Nov: second car no longer asked or used
   base.trips = Array.isArray(p.trips) ? p.trips.slice(0, 30).map((t) => { const o = {}; for (const k of TRIP_KEYS) o[k] = t?.[k] ?? null; if (!o.routing) delete o.routing; return o; }) : [];
   return base;
 }
@@ -1788,7 +1803,7 @@ function sanitizeProfile(p) {
 const store = {
   profile: emptyProfile(),
   session: {},
-  queue: [], visited: [], carLabels: {},
+  queue: [], visited: [], carLabels: {}, compass: null,
   settings: { apiBase: CONFIG.apiBase, demo: false },
   rev: 0,
   results: {},            // last ok response per barrier (memory only, for summary + assistant)
@@ -1822,6 +1837,7 @@ function loadStore() {
     store.queue = Array.isArray(d.queue) ? d.queue.filter((c) => BARRIERS[c]) : [];
     store.visited = Array.isArray(d.visited) ? d.visited.filter((c) => BARRIERS[c]) : [];
     store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {};
+    store.compass = d.compass && typeof d.compass === 'object' ? d.compass : null;
     if (d.settings) store.settings = { ...store.settings, ...d.settings };
     store.settings.demo = !!window.BEV_PREVIEW;
     const rr = JSON.parse(localStorage.getItem(RESULTS_KEY()) || '{}');
@@ -1831,7 +1847,7 @@ function loadStore() {
 }
 function saveStore() {
   if (typeof Account !== 'undefined') Account.queueSave();
-  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, settings: store.settings })); } catch { /* ignore */ }
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, settings: store.settings, compass: store.compass || null })); } catch { /* ignore */ }
 }
 function resetAll() {
   store.rev++;                       // answers of requests still running are ignored
@@ -1839,7 +1855,7 @@ function resetAll() {
   store.profile = emptyProfile(); store.queue = []; store.visited = []; store.results = {}; store.session = {}; store.carLabels = {};
   store.settings.demo = false;
   ui.topicSel = null; ui.draft = null; ui.flow = null; ui.editOpen = null; ui.assistantOpen = false;
-  ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
+  store.compass = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
   Nav.stack = []; Nav.last = null;
   Summary.cache = {}; Assistant.msgs = []; Assistant.prefill = ''; Account.form = null;
   try { localStorage.removeItem(CONFIG.storageKey); localStorage.removeItem(RESULTS_KEY()); } catch { }
@@ -2103,7 +2119,7 @@ function navTitle() {
   if (ui.assistantOpen) return 'Assistant';
   const t = ui.barrier && BARRIERS[ui.barrier]?.title;
   if (ui.view === 'question' && ui.barrier === 'MULTI') return store.queue.length + ' topics';
-  return ({ home: 'BEV Navigator', topics: 'BEV Navigator', orient: "I'm not sure", question: t, edit: t, result: t, loading: t, error: t, summary: 'Summary', batch: 'Your results', answers: 'Your answers', account: 'Your account', settings: 'Connection & data', reset: 'Your data' })[ui.view] || 'BEV Navigator';
+  return ({ home: 'BEV Navigator', topics: 'BEV Navigator', orient: 'Where to start', question: t, edit: t, result: t, loading: t, error: t, summary: 'Summary', batch: 'Your results', answers: 'Your answers', account: 'Your account', settings: 'Connection & data', reset: 'Your data' })[ui.view] || 'BEV Navigator';
 }
 function navBack() { appBack(); }
 /** The logo in the app colour (the file icon.svg stays for the browser tab). */
@@ -2140,6 +2156,7 @@ function renderView() {
   switch (ui.view) {
     case 'home': return viewTopics();
     case 'topics': return viewTopics();
+    case 'orient': return viewOrient();
     case 'question': return Questions.view();
     case 'edit': return Questions.editView();
     case 'mail': return viewMail();
@@ -2191,6 +2208,7 @@ function viewTopics() {
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
         icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue')),
       anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
+      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('compass'), h('span', null, 'Not sure where to start? Five short questions')),
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
       (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Delete my answers') : null));
 }
@@ -2198,22 +2216,23 @@ function viewTopics() {
 const DATA_SOURCES = [
   ['ElCom electricity tariffs', 'https://www.strompreis.elcom.admin.ch', 'your electricity price at home, by postal code (Charging, Costs)'],
   ['BFE charging map (ich-tanke-strom)', 'https://www.ich-tanke-strom.ch', 'charging stations near your home and work, fast chargers for long trips (Charging)'],
-  ['Charging operators’ price lists', null, 'public charging prices, checked in November 2026 (Charging, Costs)'],
+  ['Charging operators’ price lists', 'https://www.shell.ch/de_ch/laden/ladetarife-fuer-ihr-elektroauto.html', 'public charging prices, checked in November 2026 (Charging, Costs)'],
   ['ASTRA type approvals (TAS)', 'https://opendata.astra.admin.ch/ivzod/4000-Typengenehmigungen_TAS/', 'fuel type and consumption of your current car (Costs, Climate)'],
-  ['BFS fuel prices', null, 'petrol and diesel prices (Costs)'],
+  ['BFS fuel prices', 'https://www.bfs.admin.ch', 'petrol and diesel prices (Costs)'],
   ['BFE/EBP study 2023 (Eurotax values)', 'https://pubdb.bfe.admin.ch/de/publication/download/11314', 'what an electric car is worth after 1 to 8 years, maintenance costs (Costs, Battery & resale)'],
   ['TCS', 'https://www.tcs.ch', 'motor vehicle tax by canton (Costs)'],
-  ['swisstopo and openrouteservice', null, 'your address on the map and the distance of your trips (Range, Charging)'],
+  ['Comparis insurance calculator (2025)', 'https://www.comparis.ch/autoversicherung/praemien/kosten', 'insurance premiums by car class, full cover or liability (Costs)'],
+  ['swisstopo and openrouteservice', 'https://api3.geo.admin.ch', 'your address on the map and the distance of your trips (Range, Charging)'],
   ['Paul Scherrer Institut (carculator), BFE', 'https://carculator.readthedocs.io', 'greenhouse gases over the life of a car (Climate)'],
-  ['Geotab, AVILOO', null, 'how batteries age (Battery & resale)'],
+  ['Geotab, AVILOO', 'https://www.geotab.com/blog/ev-battery-health/', 'how batteries age (Battery & resale)'],
   ['EAFO (European Commission)', 'https://alternative-fuels-observatory.ec.europa.eu', 'charging abroad (Range, Charging)'],
-  ['SBB, Mobility, KAYAK', null, 'train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)'],
+  ['SBB, Mobility, KAYAK', 'https://www.sbb.ch', 'train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)'],
 ];
 function dataSources() {
   return h('details', { class: 'datasrc' }, h('summary', null, icon('info'), h('span', null, 'See our data sources'), icon('chev')),
     h('p', { class: 'small' }, 'Every figure in your results is marked: ', h('span', { class: 'srcpill src nolink' }, 'Source'), ' official or published data, ', h('span', { class: 'srcpill ours' }, 'Our assumption'), ' an estimate by the HSG team, ', h('span', { class: 'srcpill yours' }, 'Your value'), ' what you entered. You can change your values at any time.'),
     h('ul', { class: 'dslist' }, DATA_SOURCES.map(([n, u, what]) => h('li', null, safeUrl(u) ? h('a', { href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('b', null, n), icon('link')) : h('b', null, n), h('span', null, what)))),
-    h('p', { class: 'small muted' }, 'Data checked in November 2026; electricity tariffs for 2027. Insurance is a rough placeholder (liability only), not a quote. Purchase subsidies are not included yet.'));
+    h('p', { class: 'small muted' }, 'Data checked in November 2026; electricity tariffs for 2027. Insurance is a typical premium, not a quote: enter your own in Costs. Purchase subsidies are not included yet.'));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
@@ -2265,24 +2284,72 @@ function trustBlock() {
     h('details', { class: 'more who' }, h('summary', null, 'Why these six topics?'),
       h('p', { class: 'small' }, 'Range, charging, costs, battery and resale, climate and the choice of car are the barriers to switching that Swiss studies name most often, for example the INFRAS final report on reducing barriers to electric mobility. For each one we calculate your own answer instead of an average.')));
 }
-const ORIENT = [
-  { k: 'trips', t: 'Whether an electric car can do my trips', c: ['B1', 'B4'] },
-  { k: 'charge', t: 'Where and how I would charge', c: ['B2'] },
-  { k: 'cost', t: 'What it costs compared with my car', c: ['B3'] },
-  { k: 'battery', t: 'How long the battery lasts and what the car is worth later', c: ['B1', 'B3'] },
-  { k: 'climate', t: 'Whether it is really better for the climate', c: ['B7'] },
+/* 23 Nov (evening): Christian's question logic ("My Switch Compass", meeting 22.11, based on the research on uncertainty, loss
+   aversion, anticipated regret and personal fit). A few choices clarify what matters to the person; they lead to the topics that
+   answer their main question. No score, no label, every question can be skipped; "not switching" is a valid outcome. */
+const COMPASS = [
+  { key: 'stage', title: 'Where are you starting from?', sub: 'Choose the closest description. You do not need to be ready to buy.', options: [['curious', 'I am curious, but not looking to change yet'], ['considering', 'I am considering it, but something holds me back'], ['replacement', 'I may need to replace my car soon'], ['wait', 'I would rather wait for now'], ['no', 'I do not want to switch at the moment']] },
+  { key: 'protect', max: 2, title: 'What would you most want to keep?', sub: 'Think about owning and using a car, not its specifications. Choose up to two.', options: [['ease', 'An easy routine with little to think about'], ['freedom', 'The freedom to set off spontaneously'], ['security', 'Feeling financially secure'], ['familiar', 'Knowing what to expect'], ['enjoy', 'A car I enjoy and that feels like me'], ['independent', 'Making my own choice, without pressure']] },
+  { key: 'hesitation', title: 'Which thought comes closest to your hesitation?', sub: 'Pick the one to look at first. It is your description, not a label.', options: [['uncertainty', '“I cannot yet picture how it would work for me.”'], ['loss', '“I might lose something I value about driving today.”'], ['mistake', '“I could make an expensive decision I later regret.”'], ['timing', '“If I wait, I may make a better decision.”'], ['fit', '“I am not sure it is the right choice for me.”'], ['overload', '“There is too much conflicting information.”'], ['none', '“Nothing in particular, I see no reason to change.”']] },
+  { key: 'condition', dynamic: true, title: 'What would you need to feel clearer about?', sub: 'Choose the most important question for now.' },
+  { key: 'support', max: 2, title: 'What kind of help would you trust?', sub: 'Choose up to two.', options: [['evidence', 'A clear, independent answer to my specific question'], ['compare', 'A fair comparison of switching and keeping my car'], ['experience', 'Trying it myself in a situation that matters to me'], ['peer', 'Talking to someone in a similar situation'], ['space', 'Time to decide without being pushed']] },
 ];
+const COMPASS_COND = {
+  uncertainty: [['daily', 'Whether it fits my routine without extra effort', ['B1', 'B2']], ['exception', 'What happens on a long or unusual trip', ['B1', 'B4']], ['charging', 'Where and how I would charge', ['B2']]],
+  loss: [['freedom', 'Whether I keep the freedom that matters to me', ['B1', 'B4']], ['comfort', 'Which changes to my routine I would accept', ['B2', 'B4']], ['identity', 'Whether it would still feel right for me', ['B4', 'B7']]],
+  mistake: [['consequences', 'What a wrong choice could cost me', ['B3', 'B6']], ['risk', 'Which risks I can limit (battery, resale value)', ['B6', 'B3']], ['compare', 'How it compares fairly with keeping my car', ['B3']]],
+  timing: [['wait', 'What I really gain by waiting (prices, batteries)', ['B6', 'B3']], ['trigger', 'When switching would start to pay off', ['B3']], ['now', 'Whether I have a reason to decide now', ['B3', 'B7']]],
+  fit: [['values', 'What I want from my next car', ['B4']], ['experience', 'Whether daily life with it would suit me', ['B1', 'B2']], ['choice', 'Whether it is better for the climate', ['B7']]],
+  overload: [['sources', 'Which sources and assumptions I can rely on', ['B3', 'B2']], ['question', 'The one question that matters most for me', ['B1', 'B3']], ['balanced', 'The drawbacks and unknowns, not just the benefits', ['B3', 'B6']]],
+  none: [['reason', 'Whether there is a real benefit for me', ['B3', 'B7']], ['replacement', 'What I would want when my car needs replacing', ['B4', 'B3']], ['none', 'Whether it is worth looking at now at all', ['B3']]],
+};
+const PROTECT_TOPIC = { ease: 'B2', freedom: 'B1', security: 'B3', familiar: 'B4', enjoy: 'B4' };
+function compassCodes(a) {
+  const cond = (COMPASS_COND[a.hesitation] || []).find((c) => c[0] === a.condition);
+  const codes = [...(cond ? cond[2] : a.hesitation ? (COMPASS_COND[a.hesitation] || [])[0]?.[2] || [] : []), ...(a.protect || []).map((k) => PROTECT_TOPIC[k]).filter(Boolean)];
+  if (!codes.length) codes.push('B1', 'B2', 'B3');
+  const cs = codes.map((c) => (c === 'B6' ? 'B3' : c)).filter((c) => ORDER.includes(c));   // battery and resale live inside Costs
+  return cs.filter((c, i) => cs.indexOf(c) === i).slice(0, 3);
+}
 function viewOrient() {
-  const sel = new Set(ui.orient);
-  const codes = ORDER.filter((c) => ORIENT.some((o) => sel.has(o.k) && o.c.includes(c)));
-  return h('div', { class: 'flow' },
-    h('div', { class: 'qcard' },
-      h('h1', { class: 'qtitle' }, 'What would help you most right now?'),
-      h('p', { class: 'qsub' }, 'Pick everything that fits.'),
-      h('div', { class: 'choice-list' }, ORIENT.map((o) => h('button', { class: 'choice multi', 'aria-pressed': String(sel.has(o.k)), onclick: () => { sel.has(o.k) ? sel.delete(o.k) : sel.add(o.k); ui.orient = [...sel]; render(); } },
-        h('span', { class: 'mark' }), h('span', { class: 'ct' }, h('b', null, o.t), h('span', null, '→ ' + o.c.map((c) => BARRIERS[c].title).join(' and ')))))),
+  const a = store.compass || (store.compass = {});
+  const i = ui.compassStep ?? 0;
+  if (i >= COMPASS.length) {   // the clarity card
+    const cond = (COMPASS_COND[a.hesitation] || []).find((c) => c[0] === a.condition);
+    const lab = (k, v) => { const st = COMPASS.find((x) => x.key === k); return (st?.options || []).find((o) => o[0] === v)?.[1]; };
+    const codes = compassCodes(a);
+    return h('div', { class: 'flow' }, h('div', { class: 'qcard clarity' },
+      h('h1', { class: 'qtitle' }, 'Your starting point'),
+      cond ? h('p', { class: 'clq' }, h('span', { class: 'small muted' }, 'Your main question'), h('b', null, cond[1])) : null,
+      h('ul', { class: 'clist' },
+        a.stage ? h('li', null, h('span', null, 'Where you are'), h('b', null, lab('stage', a.stage))) : null,
+        a.protect?.length ? h('li', null, h('span', null, 'What you want to keep'), h('b', null, a.protect.map((v) => lab('protect', v)).join('; '))) : null,
+        a.support?.length ? h('li', null, h('span', null, 'Help you trust'), h('b', null, a.support.map((v) => lab('support', v)).join('; '))) : null),
+      h('p', { class: 'small' }, `We will look at: ${codes.map((c) => BARRIERS[c].title).join(', ')}. Every figure comes with its source; you can stop at any time, and deciding not to switch is a fine outcome.`),
       h('div', { class: 'qnav' },
-        h('button', { class: 'btn primary block with-icon', disabled: !codes.length, onclick: () => startQueue(codes) }, icon('arrow'), h('span', null, codes.length ? `Start with ${codes.map((c) => BARRIERS[c].title).join(', ')}` : 'Start')))));
+        h('button', { class: 'btn primary block with-icon', type: 'button', onclick: () => { saveStore(); startQueue(codes); } }, icon('arrow'), h('span', null, `Start with ${BARRIERS[codes[0]].title}`)),
+        h('button', { class: 'linkbtn', type: 'button', onclick: () => { ui.compassStep = 0; render(); } }, 'Change my answers'))));
+  }
+  const st = COMPASS[i];
+  const opts = st.dynamic ? (COMPASS_COND[a.hesitation] || COMPASS_COND.overload).map(([k, t]) => [k, t]) : st.options;
+  const val = a[st.key] ?? (st.max ? [] : null);
+  const pick = (k) => {
+    if (st.max) { let v = Array.isArray(val) ? val.slice() : []; v = v.includes(k) ? v.filter((x) => x !== k) : v.length < st.max ? [...v, k] : v; a[st.key] = v; }
+    else { a[st.key] = k; if (st.key === 'hesitation') delete a.condition; }
+    render();
+  };
+  const step = (d) => { ui.compassStep = Math.max(0, i + d); render(); window.scrollTo({ top: 0 }); };
+  return h('div', { class: 'flow' }, h('div', { class: 'qcard' },
+    h('p', { class: 'small muted' }, `Step ${i + 1} of ${COMPASS.length}${st.max ? ` · choose up to ${st.max}` : ''}`),
+    h('h1', { class: 'qtitle' }, st.title), h('p', { class: 'qsub' }, st.sub),
+    h('div', { class: 'choice-list' }, opts.map(([k, t]) => {
+      const on = st.max ? (val || []).includes(k) : val === k;
+      return h('button', { class: 'choice' + (st.max ? ' multi' : ''), type: 'button', 'aria-pressed': String(on), onclick: () => pick(k) }, st.max ? h('span', { class: 'mark' }) : null, h('span', { class: 'ct' }, h('b', null, t)));
+    })),
+    h('div', { class: 'qnav' },
+      h('button', { class: 'btn primary block with-icon', type: 'button', onclick: () => step(1) }, icon('arrow'), h('span', null, i === COMPASS.length - 1 ? 'See my starting point' : 'Continue')),
+      h('div', { class: 'linkrow' }, i ? h('button', { class: 'linkbtn', type: 'button', onclick: () => step(-1) }, 'Back') : null,
+        h('button', { class: 'linkbtn', type: 'button', onclick: () => { delete a[st.key]; if (st.key === 'hesitation') delete a.condition; step(1); } }, 'Skip this question')))));
 }
 function startQueue(codes) {
   store.queue = codes.filter((c, i) => ORDER.includes(c) && codes.indexOf(c) === i);   // tap order = priority
@@ -2498,7 +2565,7 @@ function askFeedback(force) {
     h('div', { class: 'fbkeys', role: 'group' }, [['yes', 'Yes'], ['not_really', 'Not really']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st.helpful === v), onclick: () => { st.helpful = v; draw(); d.querySelector('textarea')?.focus(); } }, l))),
     st.helpful ? h('textarea', { class: 'input', rows: 3, placeholder: st.helpful === 'yes' ? 'What helped most? (optional)' : 'What was missing? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { st.text = e.target.value; } }, st.text) : null,
     st.helpful ? h('button', { class: 'btn primary block', type: 'button', onclick: async (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Sending…';
-      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.12', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
+      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.14', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
       catch { toast('Could not send, please try again'); draw(); } } }, 'Send') : null);
   draw(); d.addEventListener('close', () => d.remove()); d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
   document.body.append(d); d.showModal();
@@ -2591,7 +2658,6 @@ function profileLines(p) {
   if (p.home_charging_status) L.push(['Charging at home', { yes: 'Yes', no: 'No', unknown: "Don't know" }[p.home_charging_status]]);
   if (p.current_car.targa_id) L.push(['Your car', p.current_car.targa_id === 'skipped' ? 'No car' : carName(p.current_car.targa_id)]);
   if (p.target_ev?.size) L.push(['Car you want', [{ S: 'Small', M: 'Medium', L: 'Large', any: 'Any size' }[p.target_ev.size], p.target_ev.purchase || 'new or used', p.target_ev.price_chf ? fmt.chf(p.target_ev.price_chf) : null].filter(Boolean).join(', ')]);
-  else if (p.second_car.targa_id && p.second_car.targa_id !== 'none') L.push(['Second car', carName(p.second_car.targa_id)]);
   if (p.budget) L.push(['Budget', BUDGETS.find((b) => b[0] === p.budget)?.[1] || p.budget]);
   return L;
 }
@@ -3543,6 +3609,15 @@ function siteInfo(x) {
     p ? h('span', { class: 'sub price' }, h('b', null, `CHF ${p.v.toFixed(2)} / kWh`), p.fee ? ` · CHF ${Number(p.fee).toFixed(2)} a month` : '')
       : operatorLink(x) ? h('a', { class: 'noprice', href: operatorLink(x), target: '_blank', rel: 'noopener noreferrer' }, 'No price data', icon('arrow')) : h('span', { class: 'sub' }, 'No price data'));
 }
+/** 23 Nov (evening): calm grey map with a spotlight on the area that matters (everything outside it is dimmed). */
+function focusMask(map, lat, lon, radiusM, dim = 0.32) {
+  const pts = []; const R = 6371000;
+  for (let i = 0; i <= 96; i++) { const b = (i / 96) * 2 * Math.PI, d = radiusM / R, la1 = lat * Math.PI / 180, lo1 = lon * Math.PI / 180;
+    const la2 = Math.asin(Math.sin(la1) * Math.cos(d) + Math.cos(la1) * Math.sin(d) * Math.cos(b));
+    const lo2 = lo1 + Math.atan2(Math.sin(b) * Math.sin(d) * Math.cos(la1), Math.cos(d) - Math.sin(la1) * Math.sin(la2));
+    pts.push([la2 * 180 / Math.PI, lo2 * 180 / Math.PI]); }
+  return L.polygon([[[85, -179.9], [85, 179.9], [-85, 179.9], [-85, -179.9]], pts], { stroke: false, fillColor: '#0f1e33', fillOpacity: dim, interactive: false }).addTo(map);
+}
 /** One circle around all sites; tapping a point shows its details under the map. */
 function siteMap(place) {
   const sites = [...groupSites(place.ac?.nearest, 'ac'), ...groupSites(place.dc?.nearest, 'dc')];
@@ -3554,7 +3629,7 @@ function siteMap(place) {
     if (!window.L) { el.remove(); info.replaceChildren(...sites.map(siteInfo)); return; }
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
     // 19.11: CARTO tiles now ask for an API key → official Swiss map (swisstopo, free, no key); OpenStreetMap if swisstopo does not load
-    const base = L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 19, maxNativeZoom: 18, attribution: '© swisstopo' }).addTo(map);
+    const base = L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 19, maxNativeZoom: 18, attribution: '© swisstopo' }).addTo(map);   // grey map: the charging points stand out
     let okTiles = 0, badTiles = 0;
     base.on('tileload', () => { okTiles++; });
     base.on('tileerror', () => { if (++badTiles >= 3 && !okTiles && map.hasLayer(base)) { map.removeLayer(base); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map); } });
@@ -3565,7 +3640,8 @@ function siteMap(place) {
     const rad = place.dc && !place.ac?.nearest?.length ? 5000 : 500;
     map.setView([lat, lon], 15);
     const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2564df';
-    const circle = L.circle([lat, lon], { radius: rad, color: ac, weight: 2, dashArray: '6 6', fillColor: ac, fillOpacity: 0.12 }).addTo(map);
+    focusMask(map, lat, lon, rad, 0.28);
+    const circle = L.circle([lat, lon], { radius: rad, color: ac, weight: 2.5, fill: false }).addTo(map);
     L.marker([lat, lon], { icon: L.divIcon({ className: 'mk me', html: '', iconSize: [16, 16] }), title: 'You', keyboard: false, interactive: false }).addTo(map);
     let sel = null;
     sites.forEach((x) => {
@@ -3583,7 +3659,7 @@ function costTiles(costs, node) {
   const t = [];
   if (costs.one_off) t.push(h('div', { class: 'tile' }, h('span', null, 'Installation, once'), h('b', null, fmt.band(costs.one_off, false)), h('small', null, 'per parking space')));
   if (costs.monthly_extra) t.push(h('div', { class: 'tile' }, h('span', null, 'Extra per month'), h('b', null, fmt.band(costs.monthly_extra, false))));
-  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, node === 'H0' ? 'Electricity at home' : 'Electricity if installed'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`, ' · ', h('span', { class: 'srcpill src nolink' }, 'Source'), ` ElCom ${costs.running.as_of || ''}`)));
+  if (costs.running && node !== 'HX') t.push(h('div', { class: 'tile' }, h('span', null, node === 'H0' ? 'Electricity at home' : 'Electricity if installed'), h('b', null, `CHF ${fmt.n(costs.running.chf_per_100km, 2)} / 100 km`), h('small', null, `${fmt.n(costs.running.rp_per_kwh, 1)} Rp/kWh`, ' · ', h('a', { class: 'srcpill src', href: 'https://www.strompreis.elcom.admin.ch', target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')), ` ElCom ${costs.running.as_of || ''}`)));
   return t.length ? h('div', { class: 'tiles' }, t) : null;
 }
 /* Status of home / work charging at a glance: icon + one line, then the next step and what it costs. */
@@ -3689,7 +3765,7 @@ function renderB2(r) {
 }
 /** Source next to a cost per 100 km: ElCom for home, the operator's price list for public charging. */
 function rankSrc(x, r) {
-  if (x.option === 'home') { const run = r.home?.costs?.running; return h('small', { class: 'rsrc' }, h('span', { class: 'srcpill src nolink' }, 'Source'), ` ElCom ${run?.as_of || ''}, ${fmt.n(run?.rp_per_kwh, 1)} Rp/kWh`); }
+  if (x.option === 'home') { const run = r.home?.costs?.running; return h('small', { class: 'rsrc' }, h('a', { class: 'srcpill src', href: 'https://www.strompreis.elcom.admin.ch', target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')), ` ElCom ${run?.as_of || ''}, ${fmt.n(run?.rp_per_kwh, 1)} Rp/kWh`); }
   if (x.option === 'public_ac') { const site = groupSites(r.public?.home?.ac?.nearest, 'ac').map((st) => [st, cheapest(st, false)]).find(([, p]) => p);
     return site ? h('small', { class: 'rsrc' }, h('a', { class: 'srcpill src', href: safeUrl(site[1].url) || undefined, target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')), ` ${site[1].plan}, CHF ${site[1].v.toFixed(2)}/kWh`) : h('small', { class: 'rsrc' }, h('span', { class: 'srcpill ours' }, 'Our assumption')); }
   if (x.option === 'public_dc' && x.price_chf_kwh != null) return h('small', { class: 'rsrc' }, safeUrl(x.price_url) ? h('a', { class: 'srcpill src', href: safeUrl(x.price_url), target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link')) : h('span', { class: 'srcpill ours' }, 'Our assumption'),
@@ -3799,8 +3875,8 @@ function stackBar(items, scale) {
 /** Energy in three short parts: km a year, consumption, price (the app writes no × or → signs). */
 function energyParts(l) {
   const e = l?.energy_detail; if (!e || !e.km_per_year) return null;
-  if (e.kind === 'electricity') return e.kwh_per_100km != null && e.chf_per_kwh != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.kwh_per_100km)} kWh per 100 km`, `CHF ${e.chf_per_kwh.toFixed(2)} per kWh`] : null;
-  return e.l_per_100km != null && e.chf_per_l != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.l_per_100km)} l per 100 km`, `CHF ${e.chf_per_l.toFixed(2)} per litre`] : null;
+  if (e.kind === 'electricity') return e.kwh_per_100km != null && e.chf_per_kwh != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km`, `CHF ${e.chf_per_kwh.toFixed(2)} per kWh`] : null;
+  return e.l_per_100km != null && e.chf_per_l != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.l_per_100km, 1)} l per 100 km`, `CHF ${e.chf_per_l.toFixed(2)} per litre`] : null;
 }
 const energyText = (l) => energyParts(l)?.join(', ') || null;
 /** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
@@ -3817,9 +3893,13 @@ function rangeFor50(ev, ref, refName) {
     try { const plz = store.profile.postal_code; if (/^\d{4}$/.test(plz || '')) { const j = await (await fetch(`https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${plz}&type=locations&limit=1`)).json(); const a = j.results?.[0]?.attrs; if (a?.lat) { lat = a.lat; lon = a.lon; } } } catch (er) { /* keep Zurich */ }
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true }).setView([lat, lon], 6);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap contributors' }).addTo(map);
+    el.classList.add('mapgrey');
     const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2564df';
-    const big = L.circle([lat, lon], { radius: kmEv * 1000, color: ac, weight: 2, fillColor: ac, fillOpacity: 0.18 }).addTo(map);
-    const small = L.circle([lat, lon], { radius: kmCar * 1000, color: '#b45309', weight: 2, fillColor: '#b45309', fillOpacity: 0.25 }).addTo(map);
+    focusMask(map, lat, lon, Math.max(kmEv, kmCar) * 1000, 0.22);
+    const big = L.circle([lat, lon], { radius: kmEv * 1000, color: ac, weight: 2, fillColor: ac, fillOpacity: 0.28 }).addTo(map);
+    const small = L.circle([lat, lon], { radius: kmCar * 1000, color: '#c2410c', weight: 2, fillColor: '#c2410c', fillOpacity: 0.45 }).addTo(map);
+    big.bindTooltip(`${fmt.n(kmEv)} km`, { permanent: true, direction: 'top', className: 'r50tip ev', offset: [0, -4] });
+    small.bindTooltip(`${fmt.n(kmCar)} km`, { permanent: true, direction: 'bottom', className: 'r50tip car' });
     L.marker([lat, lon], { icon: L.divIcon({ className: 'mk me', html: '', iconSize: [16, 16] }), interactive: false, keyboard: false }).addTo(map);
     map.fitBounds((kmEv >= kmCar ? big : small).getBounds().pad(0.05));
   };
@@ -3883,7 +3963,7 @@ const n1 = (x) => (x == null || isNaN(x) ? '–' : (x < 0 ? '−' : '') + fmt.n(
 function b3Blocks(M) {
   const { ev, ref, N, e, c, noRef } = M;
   if (!ev) return null;
-  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance (liability)'], ['maintenance', 'Maintenance and tyres'], ['bridging', 'Other transport for rare trips']];
+  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance'], ['maintenance', 'Maintenance and tyres'], ['bridging', 'Other transport for rare trips']];
   const it = (y, k) => (y ? y.items?.[k] ?? null : null);
   const upfront = [
     ['Price', noRef ? null : '0', n100(M.price), { sub: ev.purchase === 'used' ? `used, about ${ev.used_age_years || 4} years old` : 'new' }],
@@ -3914,6 +3994,27 @@ function b3Verdict(M) {
   if (M.saving == null) return { kind: 'missing', why: `we have no cost data for ${yrsTxt(M.N)}` };
   if (M.scen?.flips) return { kind: 'missing', why: `what the two cars are worth after ${yrsTxt(M.N)} decides the comparison` };
   return { kind: M.saving >= 0 ? 'ev' : 'keep', saving: M.saving };
+}
+/** 23 Nov (evening, Martin: Tages-Anzeiger style): one stacked bar per car, what a year costs on average, by item. */
+function costBars(M) {
+  const { ev, c, N, e, noRef } = M;
+  if (!ev || noRef || !c || !e || M.evEnd == null || M.refEnd == null || M.price == null) return null;
+  const IT = [['loss', 'Value loss', '#1e3a8a'], ['interest', 'Interest', '#6b7fd1'], ['energy', 'Energy', '#f59e0b'], ['tax', 'Tax', '#94a3b8'], ['insurance', 'Insurance', '#14b8a6'], ['maintenance', 'Maintenance and tyres', '#a855f7'], ['bridging', 'Other transport', '#e11d48'], ['installation', 'Charging installation', '#64748b']];
+  const vals = (isEv) => {
+    const y = isEv ? e : c;
+    return { loss: isEv ? (M.price - M.evEnd) / N : (M.ref.value_today_chf - M.refEnd) / N, interest: y.items?.interest || 0, energy: y.items?.energy || 0, tax: y.items?.tax || 0,
+      insurance: y.items?.insurance || 0, maintenance: y.items?.maintenance || 0, bridging: y.items?.bridging || 0, installation: isEv ? M.install / N : 0 };
+  };
+  const rows = [[M.refName, vals(false)], [`Electric car, ${clsShort(ev.class_id).split(', ')[0].toLowerCase()}, ${ev.purchase === 'used' ? 'used' : 'new'}`, vals(true)]].map(([name, v]) => ({ name, v, tot: Object.values(v).reduce((a, x) => a + Math.max(0, x), 0) }));
+  const max = Math.max(...rows.map((r) => r.tot)) || 1;
+  const used = IT.filter(([k]) => rows.some((r) => r.v[k] > 0.5));
+  return h('div', { class: 'cbars', role: 'img', 'aria-label': `Cost per year: ${rows.map((r) => `${r.name} CHF ${fmt.n(Math.round(r.tot / 10) * 10)}`).join(', ')}` },
+    h('h3', null, 'What a year costs, on average'), h('p', { class: 'small muted' }, `Everything included, spread over the ${yrsTxt(N)} you keep the car.`),
+    rows.map((r) => h('div', { class: 'cbar' },
+      h('div', { class: 'cbhead' }, h('span', null, r.name), h('b', null, 'CHF ' + fmt.n(Math.round(r.tot / 10) * 10))),
+      h('div', { class: 'cbtrack' }, h('div', { class: 'cbfill', style: { width: (r.tot / max * 100).toFixed(1) + '%' } },
+        used.map(([k, l, col]) => r.v[k] > 0.5 ? h('i', { style: { width: (r.v[k] / r.tot * 100).toFixed(2) + '%', background: col }, title: `${l}: CHF ${fmt.n(Math.round(r.v[k]))}` }) : null))))),
+    h('div', { class: 'cblegend' }, used.map(([k, l, col]) => h('span', null, h('i', { style: { background: col } }), l))));
 }
 function renderB3(r) {
   const M = b3Model(r); const { P, ev, ref, noRef, N, H, payback } = M;
@@ -3993,6 +4094,7 @@ function renderB3(r) {
       bt.replacement_chf ? h('p', { class: 'small' }, h('b', null, 'Replacement, a separate scenario: '), `about ${fmt.chf100(bt.replacement_chf)} for a ${fmt.n(bt.gross_kwh)} kWh battery. It is not in the figures above: the values we use are prices of cars with their original battery.${M.saving != null && !noRef && over ? ` If a replacement were needed within ${yrs}, the difference would change by ${fmt.chf100(bt.replacement_chf)}.` : ''}`) : null);
   })();
   const blocks = ev && B ? h('section', { class: 'rsec b3blocks' }, h('h2', null, noRef ? `Your costs over ${yrs}` : `Keep or switch, over ${yrs}`),
+    costBars(M),
     h('h3', null, 'Upfront cost'), cmpTable(B.upfront, 'CHF'),
     h('h3', null, 'Running costs'), cmpTable(B.running, 'CHF per year'), energyParts(ev) ? h('p', { class: 'small muted' }, `Energy, electric car: ${energyText(ev)}.${ref && !noRef && energyParts(ref) ? ` Your car: ${energyText(ref)}.` : ''}`) : null,
     h('h3', null, 'Depreciation and total cost'), cmpTable(B.dep, 'CHF'),
@@ -4034,7 +4136,7 @@ function renderB3(r) {
       h('li', null, h('b', null, 'Value loss, not the full price. '), 'The electric car counts with its price today minus its value at the end. Your car counts with its value today minus its value at the end.'),
       h('li', null, h('b', null, 'Interest '), `on the money tied up in the car (${fmt.n((val('interest_rate')?.value ?? 1.25), 2)} % a year).`),
       h('li', null, h('b', null, 'Energy: '), 'your kilometres, consumption and price (electricity at home from ElCom for your postal code, fuel price from BFS).'),
-      h('li', null, h('b', null, 'Tax, insurance (liability only, a rough placeholder), maintenance and tyres. '), 'Older cars need more repairs: +5 % per year of age above 5 years.')),
+      h('li', null, h('b', null, 'Tax, insurance, maintenance and tyres. '), 'Insurance: typical Comparis premiums, full cover while a car is under 5 years old, then liability. Older cars need more repairs: +5 % per year of age above 5 years. You can enter your own values.')),
     dc ? [h('h3', null, 'Where the values at the end come from'), h('ul', { class: 'small' },
       h('li', null, h('b', null, 'Electric car: '), dc.ev), h('li', null, h('b', null, 'Used electric car: '), dc.ev_used), h('li', null, h('b', null, 'Your car: '), dc.current_car),
       h('li', null, h('b', null, 'Uncertainty: '), dc.uncertainty), h('li', null, h('b', null, 'Battery: '), dc.battery))] : null,
@@ -4058,14 +4160,14 @@ function renderB3(r) {
     rsec('Good to know', null, h('div', { class: 'infoboxes' },
       [['Value of combustion cars', 'Resale values of combustion cars may fall as more people switch.'],
         ['Leasing', 'Leasing or a car subscription shifts the value risk to the provider.'],
-        ['Insurance', 'Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.'],
+        ['Insurance', 'Typical Comparis premiums: full cover for a car under 5 years old, then liability. Enter your own quote for a sharper result.'],
         ['Subsidies can change', 'Cantonal tax rebates and purchase subsidies are reviewed regularly.']].map(([t, x]) => h('div', { class: 'ibox' }, h('b', null, t), h('span', null, x))),
       h('button', { class: 'ibox link', type: 'button', onclick: () => (store.results.B1 ? showResult('B1') : startBarrier('B1')) }, h('b', null, 'Battery and resale'), h('span', null, 'How the battery ages and what the car is worth later. Open Battery & resale.')))),
   ];
   return {
     statement, detail, sections, big, topN: 2,
     actions: [
-      { icon: 'link', title: 'Compare insurance quotes (comparis.ch)', desc: 'We count liability insurance only. Placeholder: comparis shows real offers.', href: 'https://www.comparis.ch/autoversicherung/berechnen' },
+      { icon: 'link', title: 'Compare insurance quotes (comparis.ch)', desc: 'We use typical Comparis premiums; your own quote is better (enter it under Sources & our assumptions).', href: 'https://www.comparis.ch/autoversicherung/berechnen' },
       { icon: 'down', title: 'Download the cost table', desc: `All cost items for ${yrs} (CSV).`, run: () => Actions.costCSV(r, N) },
       { icon: 'arrow', title: 'Battery and resale value', desc: 'What the electric car is worth after these years.', to: 'B6', run: () => startBarrier('B6') },
     ],
@@ -4104,7 +4206,7 @@ function carSvg(id) {
 function renderB4(r) {
   const opts = r.class_options || [];
   const trips = r.trips || [];
-  const COVER = { must_ev: 'Must', no_second_car: 'No 2nd car', any: 'Any' };
+  const COVER = { must_ev: 'Must', any: 'Any' };
   const sel = opts.find((o) => o.selected) || opts[0];
   const showRef = r.reference && !opts.some((o) => o.class_id === r.reference.class_id);
   const cols = [...opts.map((o) => ({ o })), ...(showRef ? [{ o: r.reference, ref: true }] : [])];
@@ -4372,17 +4474,29 @@ function renderB7(r) {
 }
 
 /* ---------- assumptions & sources (with ⓘ edits) ---------- */
+/** 23 Nov (evening): "Source" was not clickable when n8n sent a source name without a link. Known publishers get their page here. */
+const SRC_URLS = [
+  [/elcom/i, 'https://www.strompreis.elcom.admin.ch'], [/comparis/i, 'https://www.comparis.ch/autoversicherung/praemien/kosten'],
+  [/BFE\/EBP|EBP 2023/i, 'https://pubdb.bfe.admin.ch/de/publication/download/11314'], [/BFE\/INFRAS/i, 'https://pubdb.bfe.admin.ch/de/publication/download/12158'],
+  [/treeze|Umweltkennwerte/i, 'https://pubdb.bfe.admin.ch/de/publication/download/12674'], [/ich-tanke-strom|BFE ich/i, 'https://www.ich-tanke-strom.ch'],
+  [/ASTRA|TAS/, 'https://opendata.astra.admin.ch/ivzod/4000-Typengenehmigungen_TAS/'], [/\bBFS\b|LIK/, 'https://www.bfs.admin.ch'],
+  [/carculator|Paul Scherrer|PSI/i, 'https://carculator.readthedocs.io'], [/Leitfaden Ladeinfrastruktur/i, 'https://www.energieschweiz.ch/ladeinfrastruktur/werkzeuge/ladeinfrastruktur-in-mietobjekten/'],
+  [/BVG/i, 'https://www.bsv.admin.ch'], [/\bTCS\b/, 'https://www.tcs.ch'], [/ICCT/i, 'https://theicct.org'], [/ADAC/i, 'https://www.adac.de'], [/\bACE\b/, 'https://www.ace.ch'],
+  [/AVILOO/i, 'https://aviloo.com'], [/Geotab/i, 'https://www.geotab.com/blog/ev-battery-health/'], [/EAFO/i, 'https://alternative-fuels-observatory.ec.europa.eu'],
+  [/Shell/i, 'https://www.shell.ch/de_ch/laden/ladetarife-fuer-ihr-elektroauto.html'], [/Mobility/i, 'https://www.mobility.ch'], [/KAYAK/i, 'https://www.kayak.ch'], [/sbb/i, 'https://www.sbb.ch'],
+];
+const srcUrlFor = (src, url) => safeUrl(url) || (src ? (SRC_URLS.find(([re]) => re.test(String(src))) || [])[1] || null : null);
 function assumptionsSection(list) {
   if (!list?.length) return null;
   const ours = (a) => !a.url && /assumption|design decision|placeholder|not included|estimate by/i.test(String(a.source || '')) || !a.source;
   list = list.filter((a) => a.key !== 'all_trips_electric');
-  return more('Sources & our assumptions', h('div', { class: 'srclegend' }, h('span', { class: 'srcpill src' }, 'Source'), h('span', null, 'official data, tap to open'), h('span', { class: 'srcpill ours' }, 'Our assumption'), h('span', null, 'estimate by the HSG team')), h('div', { class: 'assum' }, list.map((a) => {
+  return more('Sources & our assumptions', h('div', { class: 'srclegend' }, h('span', { class: 'srcpill src' }, 'Source'), h('span', null, 'official data, tap Source to open it'), h('span', { class: 'srcpill ours' }, 'Our assumption'), h('span', null, 'estimate by the HSG team')), h('div', { class: 'assum' }, list.map((a) => {
     const vtxt = a.value == null ? '–' : typeof a.value === 'boolean' ? (a.value ? 'yes' : 'no') : `${typeof a.value === 'number' ? fmt.n(a.value, a.value % 1 ? 2 : 0) : a.value}${a.unit ? ' ' + a.unit : ''}`;
     const row = h('div', { class: 'as-row' + (vtxt.length > 22 ? ' long' : '') },
       h('span', null, a.label, a.is_user_value ? h('span', { class: 'yours' }, 'your value') : null),
       a.profile_field ? h('button', { type: 'button', class: 'v vbtn', 'aria-label': `Change: ${a.label}` }, vtxt, icon('edit')) : h('span', { class: 'v' }, vtxt),
       h('span', { class: 's' }, a.is_user_value ? h('span', { class: 'srcpill yours' }, 'Your value') : ours(a) ? h('span', { class: 'srcpill ours' }, 'Our assumption')
-        : safeUrl(a.url) ? h('a', { class: 'srcpill src', href: safeUrl(a.url), target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link'), h('span', { class: 'srcname' }, String(a.source).split(/[,;(]/)[0].trim().slice(0, 60)))
+        : srcUrlFor(a.source, a.url) ? h('a', { class: 'srcpill src', href: srcUrlFor(a.source, a.url), target: '_blank', rel: 'noopener noreferrer' }, 'Source', icon('link'), h('span', { class: 'srcname' }, String(a.source).split(/[,;(]/)[0].trim().slice(0, 60)))
         : h('span', { class: 'srcpill src nolink' }, 'Source', h('span', { class: 'srcname' }, String(a.source).split(/[,;(]/)[0].trim().slice(0, 60)))));
     if (a.profile_field) {
       const ed = h('div', { class: 'ed' });
@@ -4540,7 +4654,7 @@ const BLOCK_OPTIONS = {
   3: ['City, car-light', 'Suburban family', 'Rural, long distances, caravan', 'define my own trips'], 4: ['list of regular trips: destination or km, how often'],
   5: ['can charge at home: yes / no / don\'t know', 'fixed parking space: yes / no', 'house owner / flat owner / tenant'], 6: ['everyday', 'longer trips in Switzerland', 'holidays abroad'],
   7: ['type-approval number (field 24 of the registration document)', 'brand and model', 'no car'], 8: ['first registration month/year', 'mileage km'],
-  9: ['no second car', 'second car: type-approval number'], 10: ['people per trip: up to 4 / 5 / 6–7', 'trailer or bike carrier per trip', 'towbar on second car'],
+  9: ['size of the electric car you would like: small / mid / large', 'new or used', 'price you would pay (CHF)'], 10: ['people per trip: up to 4 / 5 / 6–7', 'trailer or bike carrier per trip'],
   11: ['forecast for a new EV', 'check a used EV'], 12: ['first registration month/year', 'mileage km'],
 };
 const CHANGEABLE = {

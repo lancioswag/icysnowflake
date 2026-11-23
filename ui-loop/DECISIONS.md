@@ -2,6 +2,7 @@
 
 <!-- Write one line per decision, newest on top. Write STOP to stop the loop. -->
 
+- 2026-11-23 16:40: Isolated Claude version. The app calls `/navigator-claude` (n8n folder "BEV Navigator – Claude (versione isolata)", workflows "C – …", Supabase of the credential "Supabase N00 (dev)"). Prototype 1 and 2 belong to the team and are no longer changed by Claude.
 - 2026-11-23 (V8.11, Christian + Martin): Costs = total cost of ownership. Your car counts with its value today (new optional question "What would you get if you sold it today?", else estimate) and loses value every year; the electric car counts with value loss, not the full price. One electric car against your car, chosen on the page by size (options + one size up) and new / used (about 4 years old; used is preselected when the budget is below the new price). Energy shown as km a year, consumption, price. "How we calculated" box (Tages-Anzeiger style). Payback year up to 12 years. Chat button in the window corner on desktop. All topics draggable on the start page. The app now calls Prototype 2 (/navigator-v2, Supabase incl. R12 tables).
 - 2026-11-18: Codex implements and deploys UI updates directly while Simone reviews the map; no waiting for the Claude loop.
 - 2026-11-18: Start keeps five topic keys. Visually separate them from Continue, Your results and Tell us in your own words; use a softer pressed-key style. The top badge counts selected topics. Your answers and Start provide Start fresh. Keep the assistant launcher available on every screen.

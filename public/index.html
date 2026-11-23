@@ -1591,6 +1591,9 @@ details.datasrc[open] > summary svg:last-child { transform: rotate(180deg); }
 .hook .promise { font-size: 14.5px; font-weight: 650; margin: 10px 0 0; text-align: left; }
 .whynot li b { color: var(--ink); }
 .whynot li svg { flex: none; width: 18px; height: 18px; color: var(--accent); margin-top: 2px; }
+.bubble { transition: transform .2s ease, opacity .2s ease; }
+.bubble.tuck { transform: translateY(140%); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .bubble { transition: none; } }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -5072,6 +5075,14 @@ Object.assign(Actions, {
 loadStore();
 Account.init();
 render();
+
+/* 23 Nov: on a phone the chat bubble covered controls (e.g. the petrol price switch). It now slides away while you scroll
+   down and comes back when you scroll up or reach the end of the page. */
+(() => { let last = 0; addEventListener('scroll', () => {
+  const b = document.querySelector('.bubble'); if (!b) return; const y = scrollY;
+  const atEnd = innerHeight + y >= document.documentElement.scrollHeight - 40;
+  b.classList.toggle('tuck', innerWidth < 900 && y > last + 4 && y > 120 && !atEnd);
+  if (y < last - 4 || atEnd) b.classList.remove('tuck'); last = y; }, { passive: true }); })();
 </script>
 
 </body>

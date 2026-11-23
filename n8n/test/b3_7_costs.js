@@ -20,7 +20,7 @@ const r100 = (x) => Math.round(x / 100) * 100;
 const fmt = (x) => Math.abs(x).toLocaleString('en-US');
 const NS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const NS_PAYBACK = NS;
-const START_N = 6;
+const START_N = 6;  // also used for the insurance shown in the assumptions
 const SIZE_WORD = { S: 'Small', M: 'Medium', L: 'Large' };
 const NEXT_SIZE = { S: 'M', M: 'L' };
 const tables = input.tables ?? {};
@@ -103,6 +103,13 @@ const taxPerYear = (row, N) => {
   return (during * Math.min(N, yrs) + full * Math.max(0, N - yrs)) / N;
 };
 const insRow = (drive, key) => pick((tables.insurance ?? []).filter((r) => r.drive === drive && (drive === 'bev' ? r.class_id === key : r.size === key)));
+// 23 Nov (evening): insurance from Comparis premium ranges (calculator, 1 Apr 2025), midpoint of lowest and highest premium;
+// full cover (Vollkasko) for the first 5 years of a car's life, liability only after (Mobiliar rule of thumb); luxury class from CHF 70,000 new.
+const INS = { liab: { S: 551.6, M: 617.9, LUX: 940.0 }, full: { S: 964.6, M: 1165.6, LUX: 2156.5 } };
+const insCat = (size, newPrice) => (num(newPrice) !== null && newPrice >= 70000 ? 'LUX' : size === 'S' ? 'S' : 'M');
+const insAvg = (cat, ageStart, N) => { let t = 0; for (let k = 0; k < N; k++) t += (ageStart + k < 5 ? INS.full[cat] : INS.liab[cat]); return t / N; };
+const insUserCur = num(ca.insurance_current_chf_year), insUserEv = num(ca.insurance_ev_chf_year);
+const mntUserCur = num(ca.maintenance_current_chf_year), mntUserEv = num(ca.maintenance_ev_chf_year);
 const maint = (size, ev, km, ageFactor = 1) => {
   const s = C.S_SERVICE[size] * (ev ? C.EV_SERVICE[size] : 1);
   return (0.5 * s + C.tyre_changes * C.TYRE_CHANGE_CHF + ((0.5 * s) / 15000 + C.TYRE_KM[size]) * km) * ageFactor;
@@ -166,6 +173,21 @@ if (selOpt && NEXT_SIZE[selOpt.size]) {
       ev_annual_km: Math.round(evKm), extra: 'size_up' });
   }
 }
+// 23 Nov (evening): the car you want (profile.target_ev.size) is always compared, even if Vehicle choice picked another size
+{
+  const ts = ['S', 'M', 'L'].includes(profile.target_ev?.size) ? profile.target_ev.size : null;
+  if (ts && !classes.some((c) => c.size === ts)) {
+    const need = selOpt?.min_wltp_km ?? 0;
+    const pickC = catalogue.filter((c) => c.valid !== false && c.size === ts && c.range_band_min_km >= need).sort((a, b) => a.range_band_min_km - b.range_band_min_km)[0]
+      ?? catalogue.filter((c) => c.size === ts).sort((a, b) => b.range_band_min_km - a.range_band_min_km)[0];
+    if (pickC) {
+      const fits = fit.filter((f) => f.class_id === pickC.class_id && f.fits);
+      const evKm = fits.reduce((s2, f) => s2 + f.days * 2 * (tripById[f.trip_id]?.km ?? 0), 0);
+      classes.unshift({ class_id: pickC.class_id, size: pickC.size, min_wltp_km: pickC.range_band_min_km, price_min_chf: pickC.price_min_chf, price_max_chf: pickC.price_max_chf,
+        ev_annual_km: Math.round(evKm) || (classes[0]?.ev_annual_km ?? 0), extra: 'your_choice' });
+    }
+  }
+}
 // Energy: B4 energy per trip × EV days; special trips with stops: first leg at the everyday price, rest DC (B3 §4.2)
 const evEnergy = (classId) => {
   let chf = 0, kwh = 0;
@@ -213,8 +235,8 @@ for (const purchase of ['new', 'used']) {
     const en = evEnergy(o.class_id);
     const tax = taxRow('bev', o.class_id);
     const ins = insRow('bev', o.class_id);
-    const insV = num(ins?.liability_chf_year) ?? 0;
-    const mnt = maint(size, true, o.ev_annual_km, purchase === 'used' ? 1.1 : 1);
+    const insCatEv = insCat(size, (newMin + newMax) / 2);
+    const mnt = mntUserEv ?? maint(size, true, o.ev_annual_km, purchase === 'used' ? 1.1 : 1);
     const bridging = bridgingOf(o).map((it) => {
       const alt = (it.alternatives || []).find((a) => a.key === it.assigned) || {};
       if (it.cost_per_year_chf == null) bridgingPending = true;
@@ -235,6 +257,7 @@ for (const purchase of ['new', 'used']) {
       const taxV = taxPerYear(tax, N);
       const iMin = installs ? C.INSTALL.min / N : 0;
       const iMax = installs ? C.INSTALL.max / N : 0;
+      const insV = insUserEv ?? insAvg(insCatEv, age, N);
       const rest = en.chf + taxV + insV + mnt + bridgingSum;
       const tMin = a.loss + a.interest + iMin + rest;
       const tMax = b.loss + b.interest + iMax + rest;
@@ -278,14 +301,16 @@ for (const purchase of ['new', 'used']) {
     });
   });
 }
+if (tgtSize && lines.some((l) => l.extra === 'your_choice')) { const yc = lines.find((l) => l.extra === 'your_choice').class_id; lines.forEach((l) => { l.selected = l.class_id === yc; }); }
 if (lines.length && !lines.some((l) => l.selected)) lines.forEach((l) => { if (l.class_id === lines[0].class_id) l.selected = true; });
 
 // ---------- reference line "keep your current car" ----------
 let refYears = null;
 if (ref) {
-  const insV = num(ref.ins?.liability_chf_year) ?? 0;
-  const mnt = maint(ref.size, false, ref.annual, ref.repairF);
+  const insCatRef = insCat(ref.size, ref.K);
+  const mnt = mntUserCur ?? maint(ref.size, false, ref.annual, ref.repairF);
   const yearOf = (N) => {
+    const insV = insUserCur ?? insAvg(insCatRef, ref.age0, N);
     const P = ref.value(0);
     const RW = ref.value(N);
     const loss = (P - RW) / N;
@@ -387,8 +412,11 @@ assumptions.push(A('p_public_ac', 'Public AC charging price', pAC, 'CHF/kWh', pr
 assumptions.push(A('p_dc', 'Fast charging (DC) price', pDC, 'CHF/kWh', pr.p_dc?.source ?? null, pr.p_dc?.url ?? null, 'cost_assumptions.p_dc_chf_kwh', pr.p_dc?.user === true));
 assumptions.push(A('tyre_changes', 'Tyre changes per year (summer / winter)', C.tyre_changes, null, num(ca.tyre_changes_per_year) !== null ? 'your value' : 'BFE/EBP 2023; TCS (CHF 80 per change)', null, 'cost_assumptions.tyre_changes_per_year', num(ca.tyre_changes_per_year) !== null));
 assumptions.push(A('motor_vehicle_tax', `Motor vehicle tax, electric car (estimate, canton ${canton ?? 'unknown'})`, t0 ? r0(taxPerYear(t0, START_N)) : null, 'CHF/yr', t0?.source ?? null, t0?.url ?? null));
-assumptions.push(A('insurance', 'Insurance, liability only (estimate)', i0 ? num(i0.liability_chf_year) : null, 'CHF/yr', i0?.source ?? null, i0?.url ?? null));
-assumptions.push(A('maintenance', 'Maintenance incl. tyres (estimate)', 'service and tyre costs per size; EV service ×0.6 (small, medium) / ×0.8 (large); used EV +10 %', null, 'BFE/EBP 2023, Tables 12–14', BFE_EBP));
+const COMPARIS = 'https://www.comparis.ch/autoversicherung/praemien/kosten';
+if (ref) assumptions.push(A('insurance_current', 'Insurance of your current car', r0(insUserCur ?? insAvg(insCat(ref.size, ref.K), ref.age0, START_N)), 'CHF/yr', insUserCur !== null ? 'your value' : `Comparis premium ranges 2025 (midpoint), ${ref.age0 + 0 >= 5 ? 'liability only (car older than 5 years)' : 'full cover while under 5 years old, then liability'}`, insUserCur !== null ? null : COMPARIS, 'cost_assumptions.insurance_current_chf_year', insUserCur !== null));
+assumptions.push(A('insurance', 'Insurance of the electric car', r0(insUserEv ?? insAvg(insCat(optLines[0] ? (optLines[0].size_label === 'Small' ? 'S' : 'M') : 'M', null), 0, START_N)), 'CHF/yr', insUserEv !== null ? 'your value' : 'Comparis premium ranges 2025 (midpoint): full cover for the first 5 years of the car, then liability; used cars accordingly', insUserEv !== null ? null : COMPARIS, 'cost_assumptions.insurance_ev_chf_year', insUserEv !== null));
+if (ref) assumptions.push(A('maintenance_current', 'Service, repairs and tyres of your current car', r0(mntUserCur ?? maint(ref.size, false, ref.annual, ref.repairF)), 'CHF/yr', mntUserCur !== null ? 'your value' : 'BFE/EBP 2023 service and tyre costs per size; older cars +5 % per year above 5 years (our assumption). Your garage bills are better.', mntUserCur !== null ? null : BFE_EBP, 'cost_assumptions.maintenance_current_chf_year', mntUserCur !== null));
+assumptions.push(A('maintenance', 'Service and tyres of the electric car', mntUserEv ?? 'service and tyre costs per size; EV service ×0.6 (small, medium) / ×0.8 (large); used EV +10 %', mntUserEv !== null ? 'CHF/yr' : null, mntUserEv !== null ? 'your value' : 'BFE/EBP 2023, Tables 12–14', mntUserEv !== null ? null : BFE_EBP, 'cost_assumptions.maintenance_ev_chf_year', mntUserEv !== null));
 if (tgtCls) assumptions.push(A('ev_price', `Price of the electric car you want (${tgtBuy ?? 'new'})`, tgtPrice, 'CHF', 'your value', null, 'target_ev.price_chf', true));
 assumptions.push(A('ev_price_typical', 'Typical prices of electric cars by size and range', 'price band per class', null, 'BEV Navigator vehicle classes (Swiss list prices)', null));
 assumptions.push(A('ev_resale', 'Value of the electric car', 'share of the new price by age (after 4 years about 40 %), data for ages 1\u20138, extrapolated after; 2 % per 10,000 km above or below 15,000 km a year', null, 'BFE/EBP 2023, Figure 2 (Eurotax retail values)', BFE_EBP));

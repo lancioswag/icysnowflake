@@ -2211,7 +2211,7 @@ function viewTopics() {
     dataSources(),
     h('h2', { class: 'pickhead' }, 'What would you like to check?'),
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
-      h('p', { class: 'kinfo pickhint' }, icon('grip'), h('span', null, 'Tap the topics you want. Drag them to set the order – we start at the top.'))),
+      null),   // 23 Nov: no instruction text; the keys show what to do
     h('div', { class: 'cta' },
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
         icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue')),
@@ -3193,8 +3193,9 @@ const BLOCKS = {
   8: { title: null, why: 'Age and mileage decide what your car is worth today.',
     heading: (d) => store.carLabels[d.current_car.targa_id] && store.carLabels[d.current_car.targa_id] !== 'your car' ? 'Your ' + store.carLabels[d.current_car.targa_id] : 'Your car',
     render: (d) => [h('p', { class: 'qsub' }, `Type approval ${d.current_car.targa_id}`), ...[].concat(regFields('cc', d.current_car, 1995, 600000)),
-      chfField('cc-val', 'What would you get if you sold it today? (optional)', d.current_car.value_today_chf, (v) => { d.current_car.value_today_chf = v; refreshNav(); }, 400000),
-      h('p', { class: 'hint' }, 'A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.')],
+      // 23 Nov (Simone): few people know what their car is worth, so we estimate it; the offer field only appears when you change answers later
+      ...(ui.barrier === 'EDIT' || ui.view === 'edit' || d.current_car.value_today_chf != null ? [chfField('cc-val', 'Offer for your car (optional)', d.current_car.value_today_chf, (v) => { d.current_car.value_today_chf = v; refreshNav(); }, 400000),
+        h('p', { class: 'hint' }, 'From a dealer or a similar car on AutoScout24. Empty: we estimate it from age and mileage.')] : [])],
     valid: (d) => V.int(d.current_car.odometer_km, 0, 600000) && (!d.current_car.first_registration || V.monthYear(d.current_car.first_registration, 1995)) && (d.current_car.value_today_chf == null || V.int(d.current_car.value_today_chf, 0, 400000)),
     why_not: (d) => (V.int(d.current_car.odometer_km, 0, 600000) ? '' : 'Please enter the mileage of your car.') },
   // 23 Nov (evening): one question for "the electric car you are looking at". Its price is also your budget (the old budget
@@ -3202,8 +3203,8 @@ const BLOCKS = {
   9: { title: 'Which electric car are you looking at?', why: 'We compare this car with yours. Lifestyle match checks if it fits your trips; Costs and Climate compare it with your car.',
     render: (d) => {
       const t = d.target_ev; if (!d.second_car.targa_id) d.second_car.targa_id = 'none';
-      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Size'), h('div', { class: 'chips' }, [['S', 'Small'], ['M', 'Medium'], ['L', 'Large'], ['any', 'Help me choose']].map(([k, l]) => chip(l, t.size === k, () => { t.size = k; render(); })))),
-        h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'New or used?'), h('div', { class: 'chips' }, [['new', 'New'], ['used', 'Used'], ['any', 'Not sure']].map(([k, l]) => chip(l, (t.purchase || 'any') === k && t.size != null, () => { t.purchase = k === 'any' ? null : k; render(); })))),
+      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Size'), h('div', { class: 'chips' }, [['S', 'Small'], ['M', 'Medium'], ['L', 'Large'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.size === k, () => { t.size = t.size === k ? null : k; render(); })))),
+        h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'New or used?'), h('div', { class: 'chips' }, [['new', 'New'], ['used', 'Used'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.purchase === k, () => { t.purchase = t.purchase === k ? null : k; render(); })))),
         chfField('ev-price', 'About how much would you pay? (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
         h('p', { class: 'hint' }, icon('info'), 'An offer, a listing or simply your budget. Without it we use typical Swiss prices for the size.')];
     },
@@ -4079,7 +4080,7 @@ function renderB3(r) {
     !noRef && M.saving != null ? frow(`Difference over ${yrs}`, M.saving >= 0 ? `${fmt.chf100(M.saving)} less` : `${fmt.chf100(-M.saving)} more`, M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn', 'electric car compared with keeping your car') : null,
     !noRef ? frow('When does it pay off?', payback ? `after about ${yrsTxt(payback)}` : `not within ${horizon} years`, payback ? 'good' : 'warn') : null,
     sizeHint, gapNote(), gapYearNote,
-    ref?.value_today_source === 'estimate' && !noRef ? h('button', { class: 'kinfo linkish', type: 'button', onclick: () => editAnswer(8) }, icon('edit'), h('span', null, `We estimated what your ${refName} is worth today. Your own value (for example a dealer offer) makes the result much more accurate.`)) : null) : null;
+    ref?.value_today_source === 'estimate' && !noRef ? h('button', { class: 'kinfo linkish', type: 'button', onclick: () => editAnswer(8) }, icon('edit'), h('span', null, `Your ${refName} is worth about ${fmt.chf100(ref.value_today_chf)} today (our estimate). Got an offer? Enter it.`)) : null) : null;
 
   // ---- three blocks: Keep your car / Switch to an EV, same number of years ----
   const B = b3Blocks(M);
@@ -4542,8 +4543,8 @@ const SIZE_OF = (cid) => (cid ? String(cid)[0] : null);
 function evChoiceText(p = store.profile) {
   const t = p.target_ev || {};
   const cls = p.selected_class_id && (!['S', 'M', 'L'].includes(t.size) || SIZE_OF(p.selected_class_id) === t.size) ? p.selected_class_id : null;
-  const size = cls ? clsShort(cls) : ({ S: 'Small', M: 'Medium', L: 'Large' }[t.size] || 'Size not chosen yet');
-  return [size, t.purchase || null, t.price_chf ? `about ${fmt.chf(t.price_chf)}` : null].filter(Boolean).join(', ');
+  const size = cls ? clsShort(cls) : ({ S: 'Small', M: 'Medium', L: 'Large' }[t.size] || 'Size open');
+  return [size, ['new', 'used'].includes(t.purchase) ? t.purchase : null, t.price_chf ? `about ${fmt.chf(t.price_chf)}` : null].filter(Boolean).join(', ');
 }
 /** Make an electric car the saved choice (from Lifestyle match or Costs), then recalculate what depends on it. */
 function setEvChoice(cid, purchase) {

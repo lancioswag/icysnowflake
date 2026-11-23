@@ -189,6 +189,12 @@ const bridgingOf = (cls) => {
   return items ?? [];
 };
 const installs = everyday.value === 'private_ac' && profile.home_charging_status !== 'yes';
+// 23 Nov: the car you want to drive (profile.target_ev): its price replaces the typical price of the matching class (size, new / used)
+const tgt = profile.target_ev ?? {};
+const tgtPrice = num(tgt.price_chf);
+const tgtSize = ['S', 'M', 'L'].includes(tgt.size) ? tgt.size : null;
+const tgtBuy = ['new', 'used'].includes(tgt.purchase) ? tgt.purchase : null;
+const tgtCls = tgtPrice === null ? null : (classes.find((c) => c.class_id === selId && (!tgtSize || c.size === tgtSize)) ?? classes.find((c) => c.size === tgtSize))?.class_id ?? null;
 let bridgingPending = false;
 const v0 = ref ? ref.V0 : 0;
 
@@ -201,8 +207,9 @@ for (const purchase of ['new', 'used']) {
     const newMax = num(o.price_max_chf) ?? newMin;
     const age = purchase === 'used' ? C.USED_AGE : 0;
     const buyF = rwAt(size, age) / 100;
-    const pMin = newMin * buyF;
-    const pMax = newMax * buyF;
+    const userPrice = tgtCls === o.class_id && purchase === (tgtBuy ?? 'new');
+    const pMin = userPrice ? tgtPrice : newMin * buyF;
+    const pMax = userPrice ? tgtPrice : newMax * buyF;
     const en = evEnergy(o.class_id);
     const tax = taxRow('bev', o.class_id);
     const ins = insRow('bev', o.class_id);
@@ -256,6 +263,7 @@ for (const purchase of ['new', 'used']) {
       extra: o.extra,
       selected: o.class_id === selId,
       price_today_chf: { min: r0(pMin), max: r0(pMax) },
+      price_source: userPrice ? 'user' : 'typical',
       upfront: { price: { min: r0(pMin), max: r0(pMax) }, installation: installs ? { min: C.INSTALL.min, max: C.INSTALL.max } : { min: 0, max: 0 }, subsidy: 0, sale_of_current_car: ref ? r0(v0) : 0,
         net: { min: r0(pMin + (installs ? C.INSTALL.min : 0) - v0), max: r0(pMax + (installs ? C.INSTALL.max : 0) - v0) } },
       battery: { gross_kwh: kwh, replacement_chf: kwh ? r100(kwh * C.BATTERY_CHF_KWH) : null, warranty_years: C.WARRANTY_YEARS, warranty_km: C.WARRANTY_KM, age_today: age },
@@ -333,7 +341,7 @@ const payback = (l) => {
 };
 for (const l of optLines) { l.payback_year = payback(l); }
 const payNote = 'payback_year = first year from which the saving stays at or above zero up to year 12; null = not within 12 years';
-const defaultPurchase = ['new', 'used'].includes(profile.ev_purchase) ? profile.ev_purchase : 'new';
+const defaultPurchase = ['new', 'used'].includes(profile.ev_purchase) ? profile.ev_purchase : (tgtBuy ?? 'new');
 const yrs = (N) => `${N} year${N === 1 ? '' : 's'}`;
 const shown = optLines.filter((l) => l.purchase === defaultPurchase);
 const statements = NS.map((N) => {
@@ -381,6 +389,8 @@ assumptions.push(A('tyre_changes', 'Tyre changes per year (summer / winter)', C.
 assumptions.push(A('motor_vehicle_tax', `Motor vehicle tax, electric car (estimate, canton ${canton ?? 'unknown'})`, t0 ? r0(taxPerYear(t0, START_N)) : null, 'CHF/yr', t0?.source ?? null, t0?.url ?? null));
 assumptions.push(A('insurance', 'Insurance, liability only (estimate)', i0 ? num(i0.liability_chf_year) : null, 'CHF/yr', i0?.source ?? null, i0?.url ?? null));
 assumptions.push(A('maintenance', 'Maintenance incl. tyres (estimate)', 'service and tyre costs per size; EV service ×0.6 (small, medium) / ×0.8 (large); used EV +10 %', null, 'BFE/EBP 2023, Tables 12–14', BFE_EBP));
+if (tgtCls) assumptions.push(A('ev_price', `Price of the electric car you want (${tgtBuy ?? 'new'})`, tgtPrice, 'CHF', 'your value', null, 'target_ev.price_chf', true));
+assumptions.push(A('ev_price_typical', 'Typical prices of electric cars by size and range', 'price band per class', null, 'BEV Navigator vehicle classes (Swiss list prices)', null));
 assumptions.push(A('ev_resale', 'Value of the electric car', 'share of the new price by age (after 4 years about 40 %), data for ages 1\u20138, extrapolated after; 2 % per 10,000 km above or below 15,000 km a year', null, 'BFE/EBP 2023, Figure 2 (Eurotax retail values)', BFE_EBP));
 assumptions.push(A('ev_used', 'Used electric car', `about ${C.USED_AGE} years old, price = new price × value share at that age`, null, 'BFE/EBP 2023, Figure 2', BFE_EBP, 'ev_used_age_years'));
 assumptions.push(A('battery_warranty', 'Battery warranty (typical)', `${C.WARRANTY_YEARS} years / ${C.WARRANTY_KM.toLocaleString('en-US')} km`, null, 'our assumption; most makers, check your offer', null));

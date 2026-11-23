@@ -41,6 +41,9 @@ const OUT = (process.env.OUT || '/tmp/screens/'); fs.mkdirSync(OUT, { recursive:
     await ev((c) => { ui.deep = {}; showResult(c); }, c); await cap('r-' + c, 900);
     if (await page.locator('#fullan').count()) { await page.click('#fullan > summary'); await cap('r-' + c + '-full', 900); }
   }
+  // 23 Nov: Costs at 10 years with the full analysis and How we calculated open; start page with the data sources open
+  await ev(() => { ui.deep = { B3: true }; ui.b3N = 10; showResult('B3'); }); await page.waitForTimeout(500); await ev(() => { const hc = document.querySelector('.howcalc'); if (hc) hc.open = true; }); await cap('r-B3-10y', 900);
+  await ev(() => { ui.b3N = null; ui.deep = {}; go('home'); }); await page.waitForTimeout(300); await ev(() => { const d = document.querySelector('details.datasrc'); if (d) d.open = true; }); await cap('home-sources', 600);
   // B2 details: write email, site tapped, near work, action panel email
   await ev(() => { ui.deep = { B2: true }; showResult('B2'); }); await page.waitForTimeout(900);
   const mk = page.locator('.leaflet-marker-icon.mk.dc'); if (await mk.count()) await mk.first().click({ force: true });

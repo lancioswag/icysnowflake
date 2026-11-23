@@ -1594,7 +1594,7 @@ details.datasrc[open] > summary svg:last-child { transform: rotate(180deg); }
 .bubble { transition: transform .2s ease, opacity .2s ease; }
 .bubble.tuck { transform: translateY(140%); opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .bubble { transition: none; } }
-.mapgrey .leaflet-tile-pane { filter: grayscale(1) brightness(1.12) contrast(.8); }
+.mapgrey .leaflet-tile-pane { filter: grayscale(1) brightness(1.04) contrast(.9); }
 .leaflet-tooltip.r50tip { font: 700 12px/1.2 Inter, system-ui, sans-serif; border: 0; border-radius: 8px; padding: 3px 7px; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
 .leaflet-tooltip.r50tip.ev { background: var(--accent); color: #fff; } .leaflet-tooltip.r50tip.car { background: #c2410c; color: #fff; }
 .leaflet-tooltip.r50tip::before { display: none; }
@@ -3630,11 +3630,12 @@ function siteMap(place) {
     if (!window.L) { el.remove(); info.replaceChildren(...sites.map(siteInfo)); return; }
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
     // 19.11: CARTO tiles now ask for an API key → official Swiss map (swisstopo, free, no key); OpenStreetMap if swisstopo does not load
-    const base = L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 19, maxNativeZoom: 18, attribution: '© swisstopo' }).addTo(map);
-    el.classList.add('mapgrey');   // light grey map (CSS filter): the charging points stand out
+    // 23 Nov (evening): OpenStreetMap in light grey (swisstopo shows dense old towns almost black); swisstopo if OSM does not load
+    el.classList.add('mapgrey');
+    const base = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map);
     let okTiles = 0, badTiles = 0;
     base.on('tileload', () => { okTiles++; });
-    base.on('tileerror', () => { if (++badTiles >= 3 && !okTiles && map.hasLayer(base)) { map.removeLayer(base); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map); } });
+    base.on('tileerror', () => { if (++badTiles >= 3 && !okTiles && map.hasLayer(base)) { map.removeLayer(base); L.tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 19, maxNativeZoom: 18, attribution: '© swisstopo' }).addTo(map); } });
     // where you are: the point whose distances to the sites match the distances n8n measured (least squares)
     let lat = sites.reduce((a, x) => a + x.latitude, 0) / sites.length, lon = sites.reduce((a, x) => a + x.longitude, 0) / sites.length;
     const ds = sites.filter((x) => x.distance_m != null);

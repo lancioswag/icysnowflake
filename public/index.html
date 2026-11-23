@@ -1615,7 +1615,7 @@ const CONFIG = {
   apiBase: 'https://hsg-consultancy-project.app.n8n.cloud/webhook',   // n8n production webhooks
   // navigator: original "API Navigator" (POST /webhook/navigator → … → Respond to Webhook returns contract v2 on the same call).
   // Add ?api=test to the page URL to call "API Navigator copy" in folder Test Claude instead.
-  paths: { navigator: '/navigator-claude', assist: '/assist-v2', action: '/action', summary: '/summary', feedback: '/feedback' },
+  paths: { navigator: '/navigator-test', assist: '/assist-v2', action: '/action', summary: '/summary', feedback: '/feedback' },
   timeoutMs: { navigator: 90000, assist: 25000, action: 20000, summary: 60000, feedback: 15000 },
   contract: '2.',            // accepted contract_version prefix
   assistLive: true,          // V8.9: /assist-v2 (n8n "Assist v2 – Navigator in chat", model selector; old /assist untouched)

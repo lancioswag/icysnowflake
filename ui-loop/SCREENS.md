@@ -12,6 +12,7 @@ Charging access
 Costs & resale value
 Climate impact
 Lifestyle match
+Tap the topics you want. Drag them to set the order – we start at the top.
 Check all topics
 Tell us in your own words
 Delete my answers
@@ -23,10 +24,14 @@ BEV Navigator
 Ready to make the switch to electric?
 What factors, if any, are making you hesitate to switch to an electric car?
 Charging access
+1
 Range & battery life
+2
 Costs & resale value
+3
 Climate impact
 Lifestyle match
+Tap the topics you want. Drag them to set the order – we start at the top.
 Continue
 Tell us in your own words
 Delete my answers
@@ -37,11 +42,11 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:11
+10:12
 Can I charge at work?
-18:11
+10:12
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-18:11
+10:12
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -51,11 +56,11 @@ What can the Navigator tell me?
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:11
+10:12
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:11
+10:12
 I'll ask a few short questions here in the chat.
-18:11
+10:12
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today?
@@ -65,7 +70,7 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-18:11
+10:12
 Stop the check
 ```
 
@@ -74,19 +79,19 @@ Stop the check
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-18:11
+10:12
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:11
+10:12
 I'll ask a few short questions here in the chat.
-18:11
+10:12
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today? ✓
-18:11
+10:12
 Your results are ready.
-18:11
+10:12
 Open your summary
-18:11
+10:12
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -267,6 +272,9 @@ Year
 Mileage today
 km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
+What would you get if you sold it today? (optional)
+CHF
+A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.
 Next
 ```
 
@@ -424,6 +432,9 @@ Year
 Mileage today
 km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
+What would you get if you sold it today? (optional)
+CHF
+A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.
 Show my result
 ```
 
@@ -475,7 +486,7 @@ Fast charging 1.1 km away
 St. Gallen - Shopping Silberturm
 +
 −
- Leaflet | © OpenStreetMap contributors © CARTO
+ Leaflet | © swisstopo
 You (about)
 Normal (AC)
 Fast (DC)
@@ -508,7 +519,7 @@ Fast charging 1.1 km away
 St. Gallen - Shopping Silberturm
 +
 −
- Leaflet | © OpenStreetMap contributors © CARTO
+ Leaflet | © swisstopo
 You (about)
 Normal (AC)
 Fast (DC)
@@ -653,11 +664,17 @@ Your answers are kept.
 Costs & resale value
 What does it cost you?
 IN SHORT
-CHF 42’100
-/ CHF 585 a month
-more than keeping your VW Golf 7 1.0 TSI for 6 years
-None of the electric options pays off within 8 years.
+CHF 6’400
+/ CHF 534 a month
+a year more than keeping your VW Golf 7 1.0 TSI
+Kept for 6 years. It does not pay off within 12 years.
 Cost at a glance
+Size
+Medium, 450+ km
+Large, 450+ km
+Buy
+New
+Used, 4 years old
 Years you keep it
 1
 2
@@ -667,12 +684,37 @@ Years you keep it
 6
 7
 8
+Medium, 450+ km, new
+price today about CHF 49’700
+about CHF 15’600 a year
+Keep your VW Golf 7 1.0 TSI
+worth about CHF 8’800 today (our estimate)
+CHF 9’200 a year
+Difference per year
+CHF 6’400 more
+When does it pay off?
+not within 12 years
 To pay today
-about CHF 43’300
-Average total cost per year
-about CHF 15’600
-Difference versus keeping your car over 6 years
-CHF 42’100 more
+price minus what your VW Golf 7 1.0 TSI is worth today
+about CHF 40’900
+We estimated what your VW Golf 7 1.0 TSI is worth today. Your own value (e.g. a dealer offer) makes the result much more accurate.
+When does it pay off?
+-40k
+-20k
+0k
+1
+2
+3
+4
+5
+6
+7
+8
+Electric car cheaper ↑
+Keeping your car cheaper ↓
+Years you keep the car →
+Saved compared with keeping your car (CHF)
+Above zero the electric car would have paid off. With your answers it does not within 12 years.
 Full analysis
 Edit your inputs
 ›
@@ -687,11 +729,17 @@ Your answers are kept.
 Costs & resale value
 What does it cost you?
 IN SHORT
-CHF 42’100
-/ CHF 585 a month
-more than keeping your VW Golf 7 1.0 TSI for 6 years
-None of the electric options pays off within 8 years.
+CHF 6’400
+/ CHF 534 a month
+a year more than keeping your VW Golf 7 1.0 TSI
+Kept for 6 years. It does not pay off within 12 years.
 Cost at a glance
+Size
+Medium, 450+ km
+Large, 450+ km
+Buy
+New
+Used, 4 years old
 Years you keep it
 1
 2
@@ -701,33 +749,20 @@ Years you keep it
 6
 7
 8
-To pay today
-about CHF 43’300
-Average total cost per year
-about CHF 15’600
-Difference versus keeping your car over 6 years
-CHF 42’100 more
-Full analysis
-Your options
-Two options: buy a new electric car, or keep your VW Golf 7 1.0 TSI. A new petrol car is not part of this comparison. Tap an option to choose it.
-Medium, 450+ km
-Selected
-Compared with your VW Golf 7 1.0 TSI
-CHF 42’100 more
-Per year
-about CHF 15’600
-To pay today
-about CHF 43’300
+Medium, 450+ km, new
+price today about CHF 49’700
+about CHF 15’600 a year
 Keep your VW Golf 7 1.0 TSI
-Total in 6 years
-CHF 51’600
-Per year
-CHF 8’600
-Vehicle
-Energy
-Tax
-Insurance
-Maintenance
+worth about CHF 8’800 today (our estimate)
+CHF 9’200 a year
+Difference per year
+CHF 6’400 more
+When does it pay off?
+not within 12 years
+To pay today
+price minus what your VW Golf 7 1.0 TSI is worth today
+about CHF 40’900
+We estimated what your VW Golf 7 1.0 TSI is worth today. Your own value (e.g. a dealer offer) makes the result much more accurate.
 When does it pay off?
 -40k
 -20k
@@ -740,52 +775,82 @@ When does it pay off?
 6
 7
 8
-EV cheaper in total ↑
+Electric car cheaper ↑
 Keeping your car cheaper ↓
 Years you keep the car →
-Saving vs. keeping your car (CHF)
-Medium, 450+ km
-Above zero, the electric car has paid off.
-Cost per year
+Saved compared with keeping your car (CHF)
+Above zero the electric car would have paid off. With your answers it does not within 12 years.
+Full analysis
+Where the money goes
+Medium, 450+ km, new
+Per year, kept 6 years
+about CHF 15’600
+Price today
+about CHF 49’700
+Worth after 6 years
+about CHF 900
+Keep your VW Golf 7 1.0 TSI
+Per year, kept 6 years
+CHF 9’200
+Worth today
+CHF 8’800
+Worth after 6 years
+CHF 2’000
+Value loss
+Interest on the money in the car
+Energy
+Tax
+Insurance
+Maintenance and tyres
+CHF per year
 Medium
 450+ km
 Your car
-VW Golf 7 1.0 TSI
-Vehicle
-8’446
-1’107
+VW Golf
+Value loss
+Price today minus value at the end, per year. Not the full price.
+8’130
+CHF 49’700 today
+CHF 900 after 6 years
+1’145
+CHF 8’800 today
+CHF 2’000 after 6 years
+Interest on the money in the car
+The money could earn 1.25 % elsewhere.
+316
+68
 Energy
+Km a year, consumption, price.
 4’655
+37’306 km a year
+26 kWh per 100 km
+CHF 0.49 per kWh
 4’555
+37’306 km a year
+7 l per 100 km
+CHF 1.83 per litre
 Tax
 655
 515
 Insurance
 180
 175
-Maintenance
+Maintenance and tyres
 1’679
-2’247
-Charging installation
-0
-0
-Other transport
-0
-0
+2’743
 Total per year
 about 15’600
-8’600
+9’200
 Total in 6 years
 about 93’700
-51’600
-To pay today
-about 43’300
+55’200
+Saved in 6 years
+−38’500
 –
-Saving vs. your car in 6 years
-−42’100
-–
+How we calculated
 To pay today
 Price of the electric car
+about CHF 49’700
 −
 Purchase subsidy
 CHF 0
@@ -794,9 +859,10 @@ Charging installation
 CHF 0
 −
 What your VW Golf 7 1.0 TSI is worth today
+CHF 8’800
 =
 To pay today
-about CHF 43’300
+about CHF 40’900
 Everyday charging
 Where you would charge most of the time. It changes the electricity price.
 Own charger
@@ -1021,16 +1087,12 @@ Fast charging 1.1 km away
 St. Gallen - Shopping Silberturm
 +
 −
- Leaflet | © OpenStreetMap contributors © CARTO
+ Leaflet | © swisstopo
 You (about)
 Normal (AC)
 Fast (DC)
 500 m
-St. Gallen - Shopping Silberturm
-1.1 km
-Rorschacher Str. 152, Electra
-Fast, 200 kW, 4 points
-No price data
+Tap a point on the map.
 Full analysis
 How long does charging take?
 Home wallbox, 11 kW
@@ -1233,7 +1295,7 @@ Summary
 What we found for you
 6 of 6 topics
 IN SHORT
-An electric car covers your trips, but costs about CHF 42’100 more over 6 years in this comparison.
+An electric car covers your trips, but costs about CHF 38’500 more over 6 years in this comparison.
 Your topics
 Charging access
 ›
@@ -1243,7 +1305,7 @@ Range & battery life
 Range needed: 270 km
 Costs & resale value
 ›
-CHF 42’100 more
+CHF 6’400 a year more
 Battery & resale
 ›
 Battery after 8 years: 87 %
@@ -1273,7 +1335,7 @@ Summary
 What we found for you
 6 of 6 topics
 IN SHORT
-An electric car covers your trips, but costs about CHF 42’100 more over 6 years in this comparison.
+An electric car covers your trips, but costs about CHF 38’500 more over 6 years in this comparison.
 Your topics
 Charging access
 ›
@@ -1283,7 +1345,7 @@ Range & battery life
 Range needed: 270 km
 Costs & resale value
 ›
-CHF 42’100 more
+CHF 6’400 a year more
 Battery & resale
 ›
 Battery after 8 years: 87 %
@@ -1314,10 +1376,14 @@ BEV Navigator
 Ready to make the switch to electric?
 What factors, if any, are making you hesitate to switch to an electric car?
 Charging access
+1
 Range & battery life
+2
 Costs & resale value
+3
 Climate impact
 Lifestyle match
+Tap the topics you want. Drag them to set the order – we start at the top.
 Recalculate
 Your results
 Tell us in your own words

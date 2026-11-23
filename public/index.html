@@ -1536,6 +1536,10 @@ html[data-accent="petrol"] { --glow: #86c6cf; --wash: #eef6f7; --surface-2: #f5f
 .ctab { font-size: 13px; }
 .tscroll .ctab.b3tab { min-width: 0; }
 .ctab.b3tab .ch.r, .ctab.b3tab .cv { padding-left: 8px; }
+.r50row { display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 10px; margin: 8px 0; font-size: 13.5px; }
+.r50bar { height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: flex-end; padding: 0 8px; color: #fff; font-size: 13px; min-width: 64px; }
+.r50bar.ev { background: var(--accent); } .r50bar.car { background: #b45309; }
+.r50map { height: 300px; margin-top: 12px; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2392,7 +2396,7 @@ function askFeedback(force) {
     h('div', { class: 'fbkeys', role: 'group' }, [['yes', 'Yes'], ['not_really', 'Not really']].map(([v, l]) => h('button', { type: 'button', 'aria-pressed': String(st.helpful === v), onclick: () => { st.helpful = v; draw(); d.querySelector('textarea')?.focus(); } }, l))),
     st.helpful ? h('textarea', { class: 'input', rows: 3, placeholder: st.helpful === 'yes' ? 'What helped most? (optional)' : 'What was missing? (optional)', 'aria-label': 'Your feedback', oninput: (e) => { st.text = e.target.value; } }, st.text) : null,
     st.helpful ? h('button', { class: 'btn primary block', type: 'button', onclick: async (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Sending…';
-      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.11', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
+      try { await postJSON('feedback', { kind: 'app', helpful: st.helpful, comment: st.text.slice(0, 2000), version: 'V8.12', topics: Summary.codes().join(','), theme: '' }); try { localStorage.setItem('bevnav.feedback', '1'); } catch { } d.replaceChildren(h('p', { class: 'fbthanks' }, icon('check'), 'Thank you!')); setTimeout(() => d.close(), 1400); }
       catch { toast('Could not send, please try again'); draw(); } } }, 'Send') : null);
   draw(); d.addEventListener('close', () => d.remove()); d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
   document.body.append(d); d.showModal();
@@ -3579,7 +3583,16 @@ function b3Pick(r) {
   const autoBuy = hasBuy && bmax != null && newOf?.price_today_chf?.min > bmax ? 'used' : (r.default_purchase || 'new');
   const buy = hasBuy ? (['new', 'used'].includes(store.session.ev_purchase) ? store.session.ev_purchase : autoBuy) : 'new';
   const ev = opts.find((l) => l.class_id === cls && (l.purchase || 'new') === buy) || opts[0] || null;
-  return { ev, ref, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy };
+  const f = ui.b3Fuel || 1;
+  if (f !== 1 && ref && ev) {   // fuel price scenario: only the energy of your car changes
+    const dE = (y) => (y.items?.energy || 0) * (f - 1);
+    const shift = (b, d) => (b ? { min: b.min + d, max: b.max + d } : b);
+    const ref2 = { ...ref, energy_detail: ref.energy_detail ? { ...ref.energy_detail, chf_per_l: ref.energy_detail.chf_per_l * f } : null,
+      years: ref.years.map((y) => ({ ...y, items: { ...y.items, energy: Math.round((y.items?.energy || 0) * f) }, total_per_year: shift(y.total_per_year, dE(y)), total_over_n: shift(y.total_over_n, dE(y) * y.n) })) };
+    const ev2 = { ...ev, payback_year: undefined, years: ev.years.map((y, k) => ({ ...y, saving_vs_current: shift(y.saving_vs_current, dE(ref.years[k]) * y.n) })) };
+    return { ev: ev2, ref: ref2, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: f };
+  }
+  return { ev, ref, opts, classes, cls, buy, hasBuy, noRef: !!r.no_reference || !ref, autoBuy, fuel: 1 };
 }
 const evName = (l, long) => (!l ? 'Electric car' : (long ? clsLong(l.class_id) : clsShort(l.class_id)) + (l.purchase === 'used' ? (long ? `, used (about ${l.used_age_years || 4} years old)` : ', used') : l.purchase === 'new' ? (long ? ', new' : ', new') : ''));
 function savingChart(lines, N, payback) {
@@ -3632,6 +3645,33 @@ function energyParts(l) {
   return e.l_per_100km != null && e.chf_per_l != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.l_per_100km)} l per 100 km`, `CHF ${e.chf_per_l.toFixed(2)} per litre`] : null;
 }
 const energyText = (l) => energyParts(l)?.join(', ') || null;
+/** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
+function rangeFor50(ev, ref, refName) {
+  const e = ev.energy_detail, c = ref.energy_detail;
+  if (!e?.kwh_per_100km || !e?.chf_per_kwh || !c?.l_per_100km || !c?.chf_per_l) return null;
+  const kmEv = Math.round(50 / (e.kwh_per_100km * e.chf_per_kwh) * 100), kmCar = Math.round(50 / (c.l_per_100km * c.chf_per_l) * 100);
+  const max = Math.max(kmEv, kmCar);
+  const bar = (lab, km, cls) => h('div', { class: 'r50row' }, h('span', null, lab), h('div', { class: 'r50bar ' + cls, style: { width: Math.max(8, (km / max) * 100) + '%' } }, h('b', null, `${fmt.n(km)} km`)));
+  const el = h('div', { class: 'map r50map', 'data-chart': '1', role: 'img', 'aria-label': `Map: about ${kmEv} km with the electric car, ${kmCar} km with your car` });
+  el._draw = async () => {
+    if (el._done || !el.clientWidth || !window.L) return; el._done = true;
+    let lat = 47.3769, lon = 8.5417;   // Zurich if your postal code cannot be found
+    try { const plz = store.profile.postal_code; if (/^\d{4}$/.test(plz || '')) { const j = await (await fetch(`https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${plz}&type=locations&limit=1`)).json(); const a = j.results?.[0]?.attrs; if (a?.lat) { lat = a.lat; lon = a.lon; } } } catch (er) { /* keep Zurich */ }
+    const map = L.map(el, { scrollWheelZoom: false, attributionControl: true }).setView([lat, lon], 6);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap contributors' }).addTo(map);
+    const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2564df';
+    const big = L.circle([lat, lon], { radius: kmEv * 1000, color: ac, weight: 2, fillColor: ac, fillOpacity: 0.18 }).addTo(map);
+    const small = L.circle([lat, lon], { radius: kmCar * 1000, color: '#b45309', weight: 2, fillColor: '#b45309', fillOpacity: 0.25 }).addTo(map);
+    L.marker([lat, lon], { icon: L.divIcon({ className: 'mk me', html: '', iconSize: [16, 16] }), interactive: false, keyboard: false }).addTo(map);
+    map.fitBounds((kmEv >= kmCar ? big : small).getBounds().pad(0.05));
+  };
+  if (window.ResizeObserver) new ResizeObserver(() => el._draw()).observe(el);
+  return h('section', { class: 'rsec' }, h('h2', null, 'How far you get with CHF 50'),
+    h('p', { class: 'small muted' }, 'Energy costs only, at your prices.'),
+    bar('Electric car', kmEv, 'ev'), bar(`Your ${refName}`, kmCar, 'car'), el,
+    h('div', { class: 'legend' }, h('span', null, h('i', { style: { background: 'var(--accent)' } }), 'Electric car'), h('span', null, h('i', { style: { background: '#b45309' } }), 'Your car')),
+    h('p', { class: 'note keep' }, 'Distance as the crow flies from your postal code; by road you get less far.'));
+}
 function renderB3(r) {
   const N = ui.b3N || r.start_years || 6;
   const P = b3Pick(r); const { ev, ref, noRef } = P;
@@ -3648,7 +3688,7 @@ function renderB3(r) {
   const yrs = `${N} year${N > 1 ? 's' : ''}`;
   const evPY = ev ? mid(yr(ev).total_per_year) : null, refPY = ref ? mid(yr(ref).total_per_year) : null;
   const diffPY = evPY != null && refPY != null ? refPY - evPY : null;   // > 0: the electric car is cheaper per year
-  const pbTxt = payback ? `It pays off after about ${payback} year${payback > 1 ? 's' : ''}.` : 'It does not pay off within 12 years.';
+  const pbTxt = payback ? `It pays off after about ${payback} year${payback > 1 ? 's' : ''}.` : `It does not pay off within ${P.fuel !== 1 ? 8 : 12} years.`;
   let statement = 'Your cost comparison', detail = null, big = null;
   if (ev && !noRef && diffPY != null) {
     statement = diffPY >= 0 ? `A ${evName(ev, true)} costs about ${fmt.chf100(diffPY)} a year less than keeping your ${refName}.`
@@ -3666,6 +3706,8 @@ function renderB3(r) {
     P.classes.length > 1 ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, 'Size'), h('div', { class: 'chips' }, P.classes.map((c) => chip(clsShort(c), c === P.cls, () => { ui.b3Cls = c; render(); }, true)))) : null,
     P.hasBuy ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, 'Buy'), seg([['new', 'New'], ['used', `Used, ${r.used_age_years || 4} years old`]], P.buy, (v) => { store.session.ev_purchase = v; render(); }, true)) : null) : null;
   const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), [1, 2, 3, 4, 5, 6, 7, 8].map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
+  const fuelRow = ref && ev ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, `${ref.energy_detail?.kind === 'diesel' ? 'Diesel' : 'Petrol'} price`),
+    seg([['0.7', '30 % cheaper'], ['1', 'Today'], ['1.3', '30 % dearer']], String(P.fuel), (v) => { ui.b3Fuel = Number(v); render(); }, true)) : null;
   const sizeHint = (() => {   // like for like: your car is bigger than the chosen electric car
     if (!ref || !ev) return null; const order = { Small: 0, Medium: 1, Large: 2 };
     const up = P.opts.find((l) => l.extra === 'size_up' && l.purchase === 'used');
@@ -3674,11 +3716,11 @@ function renderB3(r) {
       h('span', null, `Your ${refName} is a ${String(ref.size_label).toLowerCase()} car. A used ${String(up.size_label).toLowerCase()} electric car costs about ${fmt.chf100(mid(yr(up).total_per_year))} a year – tap to compare.`));
   })();
   const frow = (l, v, cls, sub) => h('div', { class: 'frow' }, h('span', null, l, sub ? h('small', { class: 'frsub' }, sub) : null), h('b', { class: cls || null }, v));
-  const glance = ev ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Cost at a glance'), pickRow, yearChips,
+  const glance = ev ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Cost at a glance'), pickRow, yearChips, fuelRow,
     frow(`${evName(ev)}`, `${fmt.band(yr(ev).total_per_year)} a year`, null, ev.price_today_chf ? `price today about ${fmt.chf100(mid(ev.price_today_chf))}` : null),
     ref ? frow(`Keep your ${refName}`, `${fmt.band(yr(ref).total_per_year)} a year`, null, ref.value_today_chf != null ? `worth about ${fmt.chf100(ref.value_today_chf)} today${ref.value_today_source === 'estimate' ? ' (our estimate)' : ''}` : null) : null,
     !noRef && diffPY != null ? frow('Difference per year', diffPY >= 0 ? `${fmt.chf100(diffPY)} less` : `${fmt.chf100(-diffPY)} more`, diffPY >= 0 ? 'good' : 'warn') : null,
-    !noRef ? frow('When does it pay off?', payback ? `after about ${payback} year${payback > 1 ? 's' : ''}` : 'not within 12 years', payback ? 'good' : 'warn') : null,
+    !noRef ? frow('When does it pay off?', payback ? `after about ${payback} year${payback > 1 ? 's' : ''}` : `not within ${P.fuel !== 1 ? 8 : 12} years`, payback ? 'good' : 'warn') : null,
     frow('To pay today', fmt.band(ev.cash_need_today_chf), null, ref ? `price minus what your ${refName} is worth today` : null),
     sizeHint,
     ref?.value_today_source === 'estimate' ? h('button', { class: 'kinfo linkish', type: 'button', onclick: () => editAnswer(8) }, icon('edit'), h('span', null, `We estimated what your ${refName} is worth today. Your own value (e.g. a dealer offer) makes the result much more accurate.`)) : null) : null;
@@ -3724,10 +3766,11 @@ function renderB3(r) {
   const sections = [
     glance,
     h('section', { class: 'rsec' }, h('h2', null, noRef ? 'Total cost over the years' : 'When does it pay off?'), ev ? savingChart([ev], N, payback) : null,
-      h('p', { class: 'note keep' }, noRef ? 'Total cost by how long you keep the car.' : payback ? `Above zero the electric car has paid off – with your answers after about ${payback} year${payback > 1 ? 's' : ''}${payback > 8 ? ' (beyond this chart)' : ''}.` : 'Above zero the electric car would have paid off. With your answers it does not within 12 years.')),
+      h('p', { class: 'note keep' }, noRef ? 'Total cost by how long you keep the car.' : payback ? `Above zero the electric car has paid off – with your answers after about ${payback} year${payback > 1 ? 's' : ''}${payback > 8 ? ' (beyond this chart)' : ''}.` : `Above zero the electric car would have paid off. With your answers it does not within ${P.fuel !== 1 ? 8 : 12} years.`)),
     h('section', { class: 'rsec' }, h('h2', null, 'Where the money goes'), gapNote,
       noRef ? h('p', { class: 'infoline' }, r.no_reference === 'out_of_scope' ? 'Your car is not petrol or diesel, so there is no comparison with it.' : 'Without a current car there is no comparison.') : null,
       h('div', { class: 'ocards' }, ev ? card(ev) : null, ref ? card(ref, true) : null), legend, table, kmNote),
+    ev && ref ? rangeFor50(ev, ref, refName) : null,
     howCalc,
     ev ? rsec('To pay today', null, (() => { const A = (k) => r.assumptions?.find((a) => a.key === k)?.value; const sub = A('ev_subsidy'), ins = A('installation');
       const fr = (sg, l, v, cls) => h('div', { class: 'frm' + (cls ? ' ' + cls : '') }, h('span', { class: 'sg' }, sg), h('span', null, l), h('b', null, v || ''));

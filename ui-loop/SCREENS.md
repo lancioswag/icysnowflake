@@ -42,11 +42,11 @@ Delete my answers
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-10:12
+16:42
 Can I charge at work?
-10:12
+16:42
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-10:12
+16:42
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -56,11 +56,11 @@ What can the Navigator tell me?
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-10:12
+16:42
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-10:12
+16:42
 I'll ask a few short questions here in the chat.
-10:12
+16:42
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today?
@@ -70,7 +70,7 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-10:12
+16:42
 Stop the check
 ```
 
@@ -79,19 +79,19 @@ Stop the check
 Assistant
 Today
 Hi! Ask me anything about this page or your results.
-10:12
+16:42
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-10:12
+16:42
 I'll ask a few short questions here in the chat.
-10:12
+16:42
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8050. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today? ✓
-10:12
+16:42
 Your results are ready.
-10:12
+16:42
 Open your summary
-10:12
+16:42
 Do the whole check here in the chat
 What can the Navigator tell me?
 ```
@@ -684,6 +684,10 @@ Years you keep it
 6
 7
 8
+Petrol price
+30 % cheaper
+Today
+30 % dearer
 Medium, 450+ km, new
 price today about CHF 49’700
 about CHF 15’600 a year
@@ -749,6 +753,10 @@ Years you keep it
 6
 7
 8
+Petrol price
+30 % cheaper
+Today
+30 % dearer
 Medium, 450+ km, new
 price today about CHF 49’700
 about CHF 15’600 a year
@@ -847,6 +855,18 @@ about 93’700
 Saved in 6 years
 −38’500
 –
+How far you get with CHF 50
+Energy costs only, at your prices.
+Electric car
+400 km
+Your VW Golf 7 1.0 TSI
+408 km
++
+−
+ Leaflet | © OpenStreetMap contributors
+Electric car
+Your car
+Distance as the crow flies from your postal code; by road you get less far.
 How we calculated
 To pay today
 Price of the electric car
@@ -1092,7 +1112,11 @@ You (about)
 Normal (AC)
 Fast (DC)
 500 m
-Tap a point on the map.
+St. Gallen - Shopping Silberturm
+1.1 km
+Rorschacher Str. 152, Electra
+Fast, 200 kW, 4 points
+No price data
 Full analysis
 How long does charging take?
 Home wallbox, 11 kW

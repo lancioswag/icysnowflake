@@ -2,6 +2,7 @@
 
 <!-- Write one line per decision, newest on top. Write STOP to stop the loop. -->
 
+- 2026-11-23 (V8.12, Tages-Anzeiger idea from Martin): cost page gets a fuel price switch (30 % cheaper / today / 30 % dearer, only your car's energy changes) and "How far you get with CHF 50" with bars and a map (crow-flies circles from your postal code).
 - 2026-11-23 16:40: Isolated Claude version. The app calls `/navigator-claude` (n8n folder "BEV Navigator – Claude (versione isolata)", workflows "C – …", Supabase of the credential "Supabase N00 (dev)"). Prototype 1 and 2 belong to the team and are no longer changed by Claude.
 - 2026-11-23 (V8.11, Christian + Martin): Costs = total cost of ownership. Your car counts with its value today (new optional question "What would you get if you sold it today?", else estimate) and loses value every year; the electric car counts with value loss, not the full price. One electric car against your car, chosen on the page by size (options + one size up) and new / used (about 4 years old; used is preselected when the budget is below the new price). Energy shown as km a year, consumption, price. "How we calculated" box (Tages-Anzeiger style). Payback year up to 12 years. Chat button in the window corner on desktop. All topics draggable on the start page. The app now calls Prototype 2 (/navigator-v2, Supabase incl. R12 tables).
 - 2026-11-18: Codex implements and deploys UI updates directly while Simone reviews the map; no waiting for the Claude loop.

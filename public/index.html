@@ -3850,6 +3850,7 @@ function b3Model(r) {
 const evPhrase = (l) => (l ? `${l.purchase === 'used' ? 'used' : 'new'} ${clsLong(l.class_id)}` : 'electric car');
 const yrsTxt = (n) => `${n} year${n === 1 ? '' : 's'}`;
 const signChf = (v) => (v == null ? '–' : (v >= 0 ? '+ ' : '− ') + fmt.chf100(Math.abs(v)));
+const signChf10 = (v) => (v == null ? '–' : (v >= 0 ? '+ ' : '− ') + 'CHF ' + fmt.n(Math.round(Math.abs(v) / 10) * 10));   // the bridge uses CHF 10 so its lines add up
 /** Band of a value after N years as text: "CHF 900 to 1,800". */
 const bandTxt = (b) => (b && b.low != null ? `CHF ${fmt.n(Math.round(b.low / 100) * 100)} to ${fmt.n(Math.round(b.high / 100) * 100)}` : null);
 /** Rows of the three blocks; used on the page and in the PDF. Each row: [label, keep, switch, opts]. */
@@ -4003,9 +4004,9 @@ function renderB3(r) {
   const howCalc = h('details', { class: 'rsec more howcalc' }, h('summary', null, icon('info'), h('span', null, 'How we calculated')),
     h('p', null, 'We compare what each choice costs you over the same number of years (total cost of ownership).'),
     bridgeRows ? [h('h3', null, `From the upfront cost to the difference over ${yrs}`),
-      h('div', { class: 'formula' }, bridgeRows.map(([l, v]) => h('div', { class: 'frm' }, h('span', { class: 'sg' }, ''), h('span', null, l), h('b', null, signChf(v)))),
-        h('div', { class: 'frm tot' }, h('span', { class: 'sg' }, '='), h('span', null, `Difference over ${yrs}`), h('b', null, signChf(M.saving)))),
-      h('p', { class: 'small muted' }, `Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Rounding can make the lines differ by up to CHF ${Math.abs(Math.round((M.bridge.sum - M.saving) / 100) * 100) || 100}.`)] : null,
+      h('div', { class: 'formula' }, bridgeRows.map(([l, v]) => h('div', { class: 'frm' }, h('span', { class: 'sg' }, ''), h('span', null, l), h('b', null, signChf10(v)))),
+        h('div', { class: 'frm tot' }, h('span', { class: 'sg' }, '='), h('span', null, `Difference over ${yrs}`), h('b', null, signChf10(M.saving)))),
+      h('p', { class: 'small muted' }, `Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Lines rounded to CHF 10; yearly items are rounded before they are added up, so the sum can differ from the difference by a few francs.`)] : null,
     h('ul', { class: 'small' },
       h('li', null, h('b', null, 'Value loss, not the full price. '), 'The electric car counts with its price today minus its value at the end. Your car counts with its value today minus its value at the end.'),
       h('li', null, h('b', null, 'Interest '), `on the money tied up in the car (${fmt.n((val('interest_rate')?.value ?? 1.25), 2)} % a year).`),
@@ -4896,9 +4897,9 @@ const Report = {
       be ? [`After ${yrs}`, `${fmt.n(be.age_at_end)} years, ${fmt.n(Math.round(be.km_at_end / 1000) * 1000)} km, ${be.warranty_over ? 'warranty over' : 'within warranty'}`] : null,
       bt.replacement_chf ? ['Replacement (separate scenario, not in the figures)', `about ${fmt.chf100(bt.replacement_chf)} (${fmt.n(bt.gross_kwh)} kWh)`] : null].filter(Boolean)));
     if (M.bridge) out.push(R.h3(`From the upfront cost to the difference over ${yrs}`), R.kv([
-      ['Net outlay today (price and installation, minus the sale of your car)', signChf(M.bridge.net)], ['Value at the end: electric car minus your car', signChf(M.bridge.ends)],
-      [`Lower running costs over ${yrs}`, signChf(M.bridge.running)], [`Interest over ${yrs}`, signChf(M.bridge.interest)], [`Difference over ${yrs} (sum of the lines)`, signChf(M.saving)]]),
-      { text: 'Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Amounts rounded to CHF 100, running costs per year to CHF 1; lines can differ from their sum by rounding.', fontSize: 8, color: C.muted });
+      ['Net outlay today (price and installation, minus the sale of your car)', signChf10(M.bridge.net)], ['Value at the end: electric car minus your car', signChf10(M.bridge.ends)],
+      [`Lower running costs over ${yrs}`, signChf10(M.bridge.running)], [`Interest over ${yrs}`, signChf10(M.bridge.interest)], [`Difference over ${yrs}`, signChf10(M.saving)]]),
+      { text: 'Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. These lines are rounded to CHF 10; the tables above to CHF 100 and running costs per year to CHF 1.', fontSize: 8, color: C.muted });
     const dc = r.depreciation_curve; if (dc) out.push(R.h3('Where the values at the end come from'), R.list([`Electric car: ${dc.ev}`, `Used electric car: ${dc.ev_used}`, `Your car: ${dc.current_car}`, `Uncertainty: ${dc.uncertainty}`, `Battery: ${dc.battery}`]));
     return out.filter(Boolean); },
 

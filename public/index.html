@@ -1679,6 +1679,47 @@ a.dsname:hover, a.dsname:focus-visible { color: var(--accent); background-size: 
 .home .cta .compassbtn .two { justify-items: center; flex: none; }
 .home .cta .btn.block.compassbtn { display: flex; justify-content: center; gap: 12px; text-align: center; }
 .sitefoot b { color: var(--ink-2); font-weight: 650; }
+
+/* 24 Nov evening: landing v2 */
+.lp-mask { overflow: hidden; }
+.lp-claim { font-size: clamp(32px, 10vw, 64px) !important; }
+.lp-line { white-space: nowrap; }
+.lp-word { animation: none !important; }
+.lp-line:nth-child(3) .lp-word { -webkit-text-stroke: 0; color: var(--ink); }
+.lp-about { align-self: flex-end; max-width: 30ch !important; text-align: right; font-style: italic; font-size: 15px !important; animation: none !important; }
+.lp-q { background: none !important; padding: 0 !important; border-radius: 0 !important; gap: 8px !important; animation: none !important; }
+.lp-q-l { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.lp-q-q { position: relative; margin: 0; font-size: 26px; line-height: 1.18; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); max-width: 15em; }
+.lp-q-q.wipe { overflow: hidden; }
+.lp-q-q.wipe::after { content: ''; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; animation: lpWipe 1.6s cubic-bezier(.77,0,.18,1) both; animation-delay: var(--wd, 0ms); }
+.lp-anim .lp-q-q.wipe { color: transparent; animation: lpShow .01s linear both; animation-delay: calc(var(--wd, 0ms) + 800ms); }
+@keyframes lpWipe { 0% { transform: scaleX(0); transform-origin: 0 50%; } 50% { transform: scaleX(1); transform-origin: 0 50%; } 50.1% { transform-origin: 100% 50%; } 100% { transform: scaleX(0); transform-origin: 100% 50%; } }
+@keyframes lpShow { to { color: var(--ink); } }
+.lp-src { animation: none !important; border: 0 !important; background: none !important; padding: 0 !important; box-shadow: none !important; }
+.lp-src > summary { border: 0 !important; padding: 6px 0 !important; font-size: 14px !important; justify-content: flex-start !important; }
+.lp-src > summary svg { width: 16px !important; height: 16px !important; }
+.dsname { background: none !important; text-shadow: none !important; }
+.dsname .ul { background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size .45s cubic-bezier(.2,.8,.2,1), color .25s; }
+a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); background-size: 100% 2px; }
+.lp-src[open] .dsname .ul { animation: lpUl 1.6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 90ms + .2s); }
+@keyframes lpUl { 0% { background-size: 0 2px; color: var(--ink); } 45% { background-size: 100% 2px; color: var(--accent); } 100% { background-size: 100% 0; color: var(--ink); } }
+.lp-src[open] .dsname { animation: none !important; }
+.dsdate { display: flex !important; flex-wrap: nowrap !important; justify-content: space-between; gap: 8px; font-size: 11.5px !important; white-space: nowrap; margin: 10px 0 0 !important; }
+.dsmonthly { flex-basis: auto !important; }
+.lp-go { display: block !important; position: relative; width: 100% !important; height: 76px; flex: none; animation: none !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; min-height: 76px !important; padding: 0 !important; overflow: visible !important; }
+.lp-frame { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); overflow: visible; pointer-events: none; }
+.lp-frame rect { fill: none; stroke-width: 3; stroke-dasharray: 1; vector-effect: non-scaling-stroke; }
+.lp-line-draw { stroke: var(--accent); }
+.lp-line-hover { stroke: var(--ink); stroke-dashoffset: 1; transition: stroke-dashoffset .9s cubic-bezier(.65,0,.35,1); }
+.lp-go-in { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: clamp(20px, 6.4vw, 30px); font-weight: 800; letter-spacing: -0.035em; text-transform: uppercase; transition: background .5s cubic-bezier(.2,.8,.2,1); }
+.lp-go:hover .lp-line-hover, .lp-go:focus-visible .lp-line-hover { stroke-dashoffset: 0; }
+.lp-go:hover .lp-go-in, .lp-go:focus-visible .lp-go-in { background: #21569a; }
+.lp-go:hover { transform: none !important; }
+.lp-go:active .lp-go-in { background: var(--ink); }
+.landing:not(.lp-anim) .lp-line-draw { stroke-dashoffset: 0; }
+.home .cta .btn.block.compassbtn { gap: 10px; }
+.lp-go > svg.lp-frame { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); fill: none; stroke: none; z-index: 1; }
+.landing .dsdate { width: 100%; box-sizing: border-box; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -1747,7 +1788,7 @@ function s(tag, attrs, ...kids) {
 const ICONS = {
   chev: 'M6 9l6 6 6-6',
   bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
-  help: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01',
+  skip: 'M4 6l8 6-8 6V6zM12 6l8 6-8 6V6zM21 6v12',
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z',
   plug: 'M9 2v4M15 2v4M7 6h10v4a5 5 0 0 1-10 0V6zM12 15v7',
@@ -2187,6 +2228,7 @@ function render() {
   queueMicrotask(() => document.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
   const kind = ui.anim; ui.anim = null;
   if (kind) Motion.enter(kind);
+  if (ui.view === 'landing' && !ui.assistantOpen) Landing.animate();
   Nav.afterRender();
 }
 function navTitle() {
@@ -2222,8 +2264,7 @@ function renderBubble() {
 function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
-    h('p', null, h('b', null, 'Independent tool, developed at the University of St. Gallen (HSG).')),
-    h('p', null, 'Swiss data from BFE, ASTRA, BFS and swisstopo.'),
+    h('p', null, h('b', null, 'Independent tool by the University of St. Gallen (HSG).')),
     h('button', { class: 'linkbtn fblink', type: 'button', onclick: () => askFeedback(true) }, 'Give feedback'),
     null);
 }
@@ -2275,7 +2316,7 @@ function viewTopics() {
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
         allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Check topics')),
       anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
-      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('help'), h('span', { class: 'two' }, h('b', null, 'Not sure where to start?'), h('small', null, 'Straight to the point: 5 questions'))),
+      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('skip'), h('span', null, 'Keep it short with 5 questions')),
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
       (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Delete my answers') : null));
 }
@@ -2295,31 +2336,62 @@ const DATA_SOURCES = [
   ['EAFO (European Commission)', 'https://alternative-fuels-observatory.ec.europa.eu', 'charging abroad (Range, Charging)'],
   ['SBB, Mobility, KAYAK', 'https://www.sbb.ch', 'train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)'],
 ];
-const DATA_UPDATED = '23 November 2026';   // date of the last data check; change it with each monthly refresh
+const DATA_UPDATED = '23 Nov 2026';   // date of the last data check; change it with each monthly refresh
 function dataSources() {
   return h('details', { class: 'datasrc lp-src' }, h('summary', null, h('span', null, 'See our data sources'), icon('chev')),
     h('ul', { class: 'dsgrid' }, DATA_SOURCES.map(([n, u, what], i) => h('li', { style: { '--i': i } },
-      safeUrl(u) ? h('a', { class: 'dsname', href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, n) : h('span', { class: 'dsname' }, n),
+      safeUrl(u) ? h('a', { class: 'dsname', href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('span', { class: 'ul' }, n)) : h('span', { class: 'dsname' }, h('span', { class: 'ul' }, n)),
       h('span', { class: 'dswhat' }, what)))),
-    h('p', { class: 'dsdate' }, h('span', null, 'Data last updated'), h('b', null, DATA_UPDATED), h('span', { class: 'dsmonthly' }, 'Recurring monthly update')));
+    null);
 }
 /* ---------- landing page (24 Nov, Simone): what the tool is, before the topics ---------- */
 const Landing = {
-  key: 'bev_landing_seen',
-  seen() { try { return sessionStorage.getItem(Landing.key) === '1'; } catch { return false; } },
-  start() { try { sessionStorage.setItem(Landing.key, '1'); } catch { } go('home'); window.scrollTo({ top: 0 }); },
+  start() { go('home'); window.scrollTo({ top: 0 }); },
+  /** Scramble: characters spin like a departure board, then settle left to right (text nodes only, so bold words stay bold). */
+  scramble(el, dur = 1400, delay = 0) {
+    const nodes = []; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim()) nodes.push([n, n.nodeValue]);
+    const CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const total = nodes.reduce((a, [, t]) => a + t.length, 0); let t0 = null;
+    const tick = (ts) => {
+      if (t0 === null) t0 = ts; const p = Math.max(0, Math.min(1, (ts - t0 - delay) / dur)); let k = Math.floor(p * total);
+      for (const [node, txt] of nodes) { const keep = Math.max(0, Math.min(txt.length, k)); k -= txt.length;
+        node.nodeValue = txt.slice(0, keep) + [...txt.slice(keep)].map((c) => (c === ' ' || p === 0 ? c : CH[(Math.random() * CH.length) | 0])).join(''); }
+      if (p < 1) requestAnimationFrame(tick); else nodes.forEach(([node, txt]) => { node.nodeValue = txt; });
+    };
+    requestAnimationFrame(tick);
+  },
+  animate() {
+    const root = document.querySelector('.landing'); if (!root || Motion.off()) { root?.classList.add('lp-done'); return; }
+    const E = 'cubic-bezier(.16,1,.3,1)', go = (el, kf, o) => el && el.animate(kf, { fill: 'both', easing: E, ...o });
+    root.classList.add('lp-anim');
+    go(root.querySelector('.lp-brand'), [{ transform: 'translateY(110%)' }, { transform: 'none' }], { duration: 1100, delay: 100 });
+    root.querySelectorAll('.lp-word').forEach((w, i) => go(w, [{ transform: 'translateY(108%)' }, { transform: 'none' }], { duration: 1500, delay: 350 + i * 260 }));
+    const t1 = 350 + 2 * 260 + 1100;   // claim done
+    const about = root.querySelector('.lp-about'); go(about, [{ opacity: 0, transform: 'translateX(48px)' }, { opacity: 1, transform: 'none' }], { duration: 1300, delay: t1 }); Landing.scramble(about, 1500, t1);
+    const ql = root.querySelector('.lp-q-l'), qq = root.querySelector('.lp-q-q');
+    go(ql, [{ opacity: 0, transform: 'translateX(-40px)' }, { opacity: 1, transform: 'none' }], { duration: 1100, delay: t1 + 650 }); Landing.scramble(ql, 900, t1 + 650);
+    qq?.classList.add('wipe'); qq?.style.setProperty('--wd', (t1 + 950) + 'ms');
+    const src = root.querySelector('.lp-src > summary'); go(src, [{ opacity: 0, transform: 'translateX(-40px)' }, { opacity: 1, transform: 'none' }], { duration: 1100, delay: t1 + 1500 }); Landing.scramble(src.querySelector('span'), 900, t1 + 1500);
+    const ds = root.querySelector('.dsdate'); go(ds, [{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: t1 + 1900 });
+    // the button: first its outline is drawn, then the button itself appears
+    const btn = root.querySelector('.lp-go'), line = btn.querySelector('.lp-line-draw');
+    go(line, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1500, delay: t1 + 2200, easing: 'cubic-bezier(.65,0,.35,1)' });
+    go(btn.querySelector('.lp-go-in'), [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: t1 + 3700 });
+  },
 };
 function viewLanding() {
   const words = ['Better data.', 'Independent.', 'Swiss.'];
+  const NS = 'http://www.w3.org/2000/svg';
+  const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true');
+  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); r.setAttribute('x', '0'); r.setAttribute('y', '0'); r.setAttribute('width', '100%'); r.setAttribute('height', '100%'); r.setAttribute('pathLength', '1'); frame.append(r); }
   return h('div', { class: 'landing' },
-    h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR')),
-    h('h1', { class: 'lp-claim', 'aria-label': words.join(' ') }, words.map((w, i) => h('span', { class: 'lp-line', 'aria-hidden': 'true' },
-      h('span', { class: 'lp-word', style: { '--d': (0.25 + i * 0.32) + 's' } }, w)))),
-    h('p', { class: 'lp-about' }, 'BEV Navigator is a project by the ', h('b', null, 'University of St. Gallen (HSG)'), ' and ', h('b', null, 'Zurich Insurance'),
-      '. It uses Swiss data and reliable sources, for a better informed choice about going electric.'),
-    h('div', { class: 'lp-q' }, h('span', null, 'You get an answer to your question'), h('b', null, 'Should I keep my car or switch to an electric one?')),
+    h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR'))),
+    h('h1', { class: 'lp-claim', 'aria-label': words.join(' ') }, words.map((w) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, w)))),
+    h('p', { class: 'lp-about' }, 'BEV Navigator is a project developed by the University of St. Gallen and Zurich Insurance. It uses Swiss data, reliable sources and AI to guide you towards a more informed decision about electric vehicles.'),
+    h('div', { class: 'lp-q' }, h('span', { class: 'lp-q-l' }, 'You get an answer to your question'), h('p', { class: 'lp-q-q' }, 'Should I keep my car or switch to an electric one?')),
     dataSources(),
-    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-charge', 'aria-hidden': 'true' }), icon('bolt'), h('span', null, 'Start my journey')));
+    h('p', { class: 'dsdate' }, h('span', null, 'Data last updated: ', h('b', null, DATA_UPDATED)), h('span', { class: 'dsmonthly' }, 'Recurring monthly update')),
+    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, frame, h('span', { class: 'lp-go-in' }, 'Start My Journey')));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
@@ -2865,8 +2937,15 @@ function viewReset() {
 /* ---------- motion (Mobility selection: A01 + A04 first open, B03 + A06 question change, A14 progress, B08 summary) ---------- */
 const Motion = {
   off: () => !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches,
-  D: 820, out: 260, stag: 150, ease: 'cubic-bezier(.25,.8,.25,1)',
-  rise(el, delay = 0) { if (el) el.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' }); },
+  D: 1100, out: 260, stag: 120, ease: 'cubic-bezier(.16,1,.3,1)',
+  rise(el, delay = 0) {   // 24 Nov (Simone): straight, slow; titles come up out of a mask, the rest slides in from its own side
+    if (!el) return;
+    const title = el.matches('h1, h2, .qtitle, .bigtitle, .rhead');
+    const right = getComputedStyle(el).textAlign === 'right';
+    const kf = title ? [{ clipPath: 'inset(0 0 100% 0)', transform: 'translateY(40%)' }, { clipPath: 'inset(0 0 0 0)', transform: 'none' }]
+      : [{ opacity: 0, transform: `translateX(${right ? 36 : -36}px)` }, { opacity: 1, transform: 'none' }];
+    el.animate(kf, { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' });
+  },
   fog(el, o = {}) { Motion.rise(el, o.delay || 0); },
   enter(kind) {
     if (Motion.off()) return;
@@ -5324,7 +5403,7 @@ Object.assign(Actions, {
 
 loadStore();
 Account.init();
-if (ui.view === 'home' && !Landing.seen() && !location.hash) ui.view = 'landing';
+if (ui.view === 'home' && !location.hash) ui.view = 'landing';   // 24 Nov: every fresh load starts on the landing page
 render();
 
 /* 23 Nov: on a phone the chat bubble covered controls (e.g. the petrol price switch). It now slides away while you scroll

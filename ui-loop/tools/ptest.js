@@ -9,7 +9,9 @@ const OUT = process.env.OUT || '/tmp/pt/'; fs.mkdirSync(OUT, { recursive: true }
   const text = () => ev(() => document.querySelector('main')?.innerText || '');
   await ev((F) => { store.profile = sanitizeProfile(F.profile); for (const [c, resp] of Object.entries(F.fx)) { const r = JSON.parse(JSON.stringify(resp)); store.results[c] = { response: r, request_id: 'p' + c, at: Date.now(), session: { barrier: BARRIERS[c].name }, sig: inputSig(store.profile, c) }; } store.queue = ['B1', 'B2', 'B3']; store.visited = ['B1', 'B2', 'B3', 'B4', 'B6', 'B7']; saveResults(); saveStore(); go('home'); }, FX);
   await cap('start', false); await cap('start_full');
-  await ev(() => { document.querySelector('details.datasrc').open = true; }); await cap('start_sources');
+  await ev(() => { go('landing'); }); await page.waitForTimeout(2600); await cap('landing');
+  await ev(() => { document.querySelector('details.datasrc').open = true; }); await cap('landing_sources');
+  await ev(() => { go('home'); });
   await ev(() => showResult('B2')); await cap('charging');
   await ev(() => { ui.b3N = 6; showResult('B3'); }); await cap('costs_6');
   fs.writeFileSync(OUT + 'costs_6.txt', await text());

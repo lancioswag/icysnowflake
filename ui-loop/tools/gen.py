@@ -4,7 +4,9 @@ def lane(x0,cols,rows):
     for r,row in enumerate(rows):
         for c,item in enumerate(row):
             if item: N[item[0]]=dict(x=x0+c*230,y=150+r*520,label=item[1],note=item[2] if len(item)>2 else '')
-lane(40,1,[[('home-empty','Start, nothing picked','Not sure where to start? opens the five questions')],[('home-picked','Start, topics picked','Pressed keys, drag handle to reorder')],[('home-results','Start, results exist','Blue button turns into Recalculate')],[('assistant','Assistant','Open from any screen')],[('assistant-check','Check in the chat','Same questions inside the chat; free text is turned into answers')],[('assistant-done','Results in the chat','Summary in the chat, then open the full summary')]])
+lane(40,1,[[('home-empty','Start, nothing picked','Discover if an EV makes sense; Keep it short opens the five questions')],[('home-picked','Start, topics picked','Pressed keys, drag handle to reorder')],[('home-results','Start, results exist','Blue button turns into Recalculate')],[('assistant','Assistant','Open from any screen')],[('assistant-check','Check in the chat','Same questions inside the chat; free text is turned into answers')],[('assistant-done','Results in the chat','Summary in the chat, then open the full summary')]])
+N['landing']=dict(x=40,y=-370,label='Landing page',note='What the tool is, data sources, Start my journey (once per visit)')
+N['landing-sources']=dict(x=270,y=-370,label='Landing, data sources open',note='Name on the left lights up; what it feeds on the right')
 lane(330,3,[[('q6','Q · Let’s talk charging','Only when Charging is picked'),('q1','Q · Where do you live?'),('q3','Q · Which trips?')],
             [('q2','Q · Drive to work?'),('q4','Q · Other regular trips','Range only, or own trips'),('q5','Q · Charge at home today?')],
             [('q7','Q · Which car today?'),('q8','Q · Your car (age, km)'),('q9','Q · Which electric car?','Size, new or used, price = budget. Saved as your choice')],
@@ -20,7 +22,9 @@ lane(1640,5,[[('r-B1','Range & battery life'),('r-B2','Charging access'),('r-B3'
 lane(2900,1,[[('answers','Your answers','List icon in the top bar')],[('answer-edit','Change one answer')],[('account-create','Save your answers · Create')],[('account-login','Save your answers · Log in')],[('account-in','Your account (logged in)')],[('reset','Delete your answers?','From Start and Your answers')]])
 lane(3180,1,[[('mail','Write email','From Charging, Back returns')]])
 LANES=[(40,1,'Start'),(330,3,'Questions · each asked once for all picked topics'),(1070,1,'Calculating'),(1350,1,'Summary'),(1640,5,'Five topic results · tap any after Summary'),(2900,1,'Your answers and account'),(3180,1,'Email')]
-E=[('home-empty','home-picked','tap topics','m'),('home-picked','q6','Continue','m'),('home-empty','q1','Check all topics','a'),('home-empty','assistant','own words','a'),('home-empty','compass-1','Not sure where to start?','a'),('compass-1','compass-3','','q'),('compass-3','compass-4','','q'),('compass-4','compass-card','','q'),('compass-card','q6','Start with the topics','m'),('assistant','assistant-check','I want my ideal car…','a'),('assistant-check','assistant-done','last answer','a'),
+_dy=max(0,150-min(v['y'] for v in N.values()))
+for v in N.values(): v['y']+=_dy
+E=[('landing','home-empty','Start my journey','m'),('landing','landing-sources','See our data sources','a'),('home-empty','home-picked','tap topics','m'),('home-picked','q6','Continue','m'),('home-empty','q1','Check all topics','a'),('home-empty','assistant','own words','a'),('home-empty','compass-1','Not sure where to start?','a'),('compass-1','compass-3','','q'),('compass-3','compass-4','','q'),('compass-4','compass-card','','q'),('compass-card','q6','Start with the topics','m'),('assistant','assistant-check','I want my ideal car…','a'),('assistant-check','assistant-done','last answer','a'),
  ('home-results','batch','Recalculate','m'),('home-results','summary','Your results','a'),
  ('home-picked','reset','Start fresh','a'),('home-results','reset','Start fresh','a'),('answers','reset','Delete your answers','a'),
  ('q6','q1','','q'),('q1','q3','','q'),('q3','q2','','q'),('q2','q4','','q'),('q4','q5','','q'),('q5','q7','','q'),('q7','q8','','q'),('q8','q9','','q'),('q9','q10','','q'),

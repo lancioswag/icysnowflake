@@ -1776,6 +1776,16 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .lp-side .lp-src > summary span { flex: none !important; }
 .lp-side .lp-src > summary { min-height: 0 !important; }
 .lp-about { font-size: 12.5px !important; }
+
+/* 24 Nov, 23:10 */
+.flagw::after { background: linear-gradient(#fff, #fff) 50% 56% / 32% 10% no-repeat, linear-gradient(#fff, #fff) 50% 56% / 9% 34% no-repeat, #d52b1e !important; -webkit-background-clip: text !important; background-clip: text !important; }
+.lp-side .lp-src > summary svg { display: none !important; }
+.lp-mid { margin: auto 0; padding: 48px 0 40px; text-align: center; }
+.lp-mid .lp-q-in { margin: 0 auto; max-width: none; font-size: clamp(19px, 5.4vw, 28px) !important; line-height: 1.22 !important; }
+.lp-end { margin-top: 0 !important; padding-top: 0 !important; }
+.flagw::after { background: #d52b1e !important; -webkit-background-clip: text !important; background-clip: text !important; }
+.flagw::before { content: ''; position: absolute; z-index: 1; left: 50%; top: 52%; width: .34em; height: .34em; transform: translate(-50%, -50%);
+  background: linear-gradient(#fff, #fff) 50% 50% / 62% 20% no-repeat, linear-gradient(#fff, #fff) 50% 50% / 20% 62% no-repeat, #d52b1e; box-shadow: 0 0 0 2px var(--ink); }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2407,7 +2417,7 @@ const Landing = {
   frame(btn) {
     const svg = btn.querySelector('.lp-frame'); const w = btn.clientWidth, hh = btn.clientHeight, P = 2 * (w - 3) + 2 * (hh - 3);
     svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
-    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); r.style.strokeDasharray = `${P} ${P}`; r.style.strokeDashoffset = String(P); });
+    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); r.style.strokeDasharray = `${P + 12} ${P + 12}`; r.style.strokeDashoffset = String(P); });
     return P;
   },
   button(btn, after, still) {
@@ -2450,8 +2460,8 @@ function viewLanding() {
     h('div', { class: 'lp-side' },
       h('p', { class: 'lp-about' }, 'BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.'),
       dataSources()),
+    h('div', { class: 'lp-mid' }, h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should you keep your car or', h('br'), 'switch to an electric vehicle?'))),
     h('div', { class: 'lp-end' },
-      h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should you keep your car or switch to an electric vehicle?')),
       h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame)));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */

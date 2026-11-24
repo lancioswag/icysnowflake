@@ -1652,7 +1652,7 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .dw { display: inline; }
 .dsname .ul { background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat !important; }
 a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); background-size: 100% 2px !important; animation: none; }
-/* ---------- landing (25 Nov, rewrite): everything on one phone screen, one type scale ---------- */
+/* ---------- landing (25 Nov, v6): claim, question, button, credits; one cascade from the top ---------- */
 @keyframes lpFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes lpPulse { 0% { box-shadow: 0 0 0 0 rgba(43,105,180,.45); } 70% { box-shadow: 0 0 0 10px rgba(43,105,180,0); } 100% { box-shadow: 0 0 0 0 rgba(43,105,180,0); } }
 @keyframes lpUl2 { 0% { background-size: 0 2px; color: var(--ink); } 50% { background-size: 100% 2px; color: var(--accent); } 100% { background-size: 100% 1px; color: var(--ink); } }
@@ -1662,39 +1662,39 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .lp-mask { overflow: hidden; }
 .lp-brand { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
 .lp-brand svg { width: 22px; height: 22px; flex: none; }
-.lp-claim { margin: clamp(22px, 5vh, 48px) 0 0; display: flex; flex-direction: column; font-size: clamp(40px, 12.6vw, 72px); line-height: .95; font-weight: 800;
-  letter-spacing: -0.045em; text-transform: uppercase; color: var(--ink); text-wrap: nowrap; }
+.lp-body { margin: auto 0; padding: 28px 0 8px; display: flex; flex-direction: column; }
+.lp-claim { margin: 0; display: flex; flex-direction: column; font-size: clamp(40px, 12.6vw, 72px); line-height: .95; font-weight: 800;
+  letter-spacing: -0.045em; text-transform: uppercase; color: var(--ink); }
 .lp-line { display: block; overflow: hidden; padding: .03em 0 .08em; white-space: nowrap; }
-.lp-word { display: inline-block; }
+.lp-word { display: inline-flex; align-items: center; }
 .lp-line:nth-child(2) .lp-word { color: var(--accent); }
-/* a small square Swiss flag right after the word: half the cap height, centred on the capitals (Inter caps ≈ .73em) */
-.lp-flag { display: inline-block; width: .36em; height: .36em; margin-left: .14em; vertical-align: .185em; border-radius: .025em;
+/* Swiss: white letters with an outline; the flag as tall as the capitals, with a gap */
+.lp-swiss { color: var(--bg); -webkit-text-stroke: .075em var(--ink); paint-order: stroke fill; }
+.lp-flag { display: inline-block; flex: none; width: .72em; height: .72em; margin-left: .28em; border-radius: .05em;
   background: linear-gradient(#fff, #fff) 50% 50% / 62.5% 18.75% no-repeat, linear-gradient(#fff, #fff) 50% 50% / 18.75% 62.5% no-repeat, #d52b1e; }
-.lp-side { margin-top: clamp(18px, 3.6vh, 34px); display: grid; justify-items: end; gap: 8px; }
-.lp-about { margin: 0; max-width: 30ch; text-align: right; font-style: italic; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
-.lp-src { width: 100%; }
-.lp-src > summary { display: flex; justify-content: flex-end; list-style: none; cursor: pointer; padding: 4px 0; font-size: 14px; font-weight: 600; color: var(--accent); }
-.lp-src > summary::-webkit-details-marker { display: none; }
+.lp-body { container-type: inline-size; }
+.lp-q-in { margin: 1em 0 0; font-size: calc(100cqi / 14); line-height: 1.22; font-weight: 800; letter-spacing: -0.025em; color: var(--ink);
+  hyphens: none; }
+.lp-q-in > span { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
+.lp-go { position: relative; display: block; width: 100%; height: 62px; margin-top: 34px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.lp-go > svg.lp-frame { position: absolute; inset: -6px; width: calc(100% + 12px); height: calc(100% + 12px); overflow: visible; fill: none; stroke: none; pointer-events: none; z-index: 2; }
+.lp-frame rect { fill: none; stroke-width: 3; }
+.lp-line-draw { stroke: var(--accent); transition: stroke .5s; }
+.lp-go:hover .lp-line-draw, .lp-go:focus-visible .lp-line-draw { stroke: var(--ink); }
+.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; transition: background .3s; }
+.lp-go:hover .lp-go-fill { background: #245d9f; }
+.lp-go:active .lp-go-fill { background: var(--ink); }
+.lp-go:focus-visible { outline: none; }
+.lp-about { margin: 26px auto 0; max-width: 34em; text-align: center; font-size: 13px; line-height: 1.55; color: var(--ink-2); text-wrap: balance; }
+details.datasrc.lp-src { margin: 8px 0 0; border: 0; border-radius: 0; background: none; padding: 0; }
+details.datasrc.lp-src > summary { min-height: 0; justify-content: center; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--accent); }
 .lp-src > summary svg { display: none; }
 .lp-src .dsgrid li { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 10px; padding: 9px 0; }
 .lp-src .dsname { font-size: 13px; } .lp-src .dswhat { font-size: 12px; }
 .lp-src .dsdate { margin: 10px 0 2px !important; font-size: 12px !important; }
 .lp-src[open] .dsname .ul { animation: lpUl2 1.4s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 110ms + .15s); }
-.lp-mid { margin: auto 0; padding: clamp(24px, 5vh, 56px) 0; text-align: center; }
-.lp-q-in { margin: 0; font-size: clamp(21px, 6vw, 28px); line-height: 1.2; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); text-wrap: balance; }
-.lp-go { position: relative; display: block; width: 100%; height: 62px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.lp-go > svg.lp-frame { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: none; stroke: none; pointer-events: none; z-index: 2; }
-.lp-frame rect { fill: none; stroke-width: 3; }
-.lp-line-draw { stroke: var(--accent); }
-.lp-line-hover { stroke: var(--ink); opacity: 0; }
-.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;
-  clip-path: inset(0 100% 0 0); transition: clip-path .55s cubic-bezier(.65,0,.35,1), background .3s; }
-.lp-go.ready .lp-go-fill, .lp-still .lp-go-fill { clip-path: inset(0); }
-.lp-go.ready:hover .lp-go-fill { background: #245d9f; }
-.lp-go:active .lp-go-fill { background: var(--ink); }
-.lp-go:focus-visible { outline: 3px solid var(--glow); outline-offset: 4px; }
-@media (min-width: 700px) { .landing { padding-top: 48px; padding-bottom: 48px; } .lp-about { font-size: 15px; } }
-@media (max-height: 640px) { .lp-claim { font-size: clamp(34px, 10.5vw, 60px); } .lp-mid { padding: 18px 0; } }
+@media (min-width: 700px) { .landing { padding-top: 48px; padding-bottom: 48px; } .lp-about { font-size: 14px; } }
+@media (max-height: 640px) { .lp-claim { font-size: clamp(34px, 10.5vw, 60px); } .lp-go { margin-top: 24px; } }
 @media (prefers-reduced-motion: reduce) { .landing *, .landing { animation: none !important; transition: none !important; } }
 .enbox { margin: 10px 0 4px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); display: grid; gap: 8px; }
 .enbox h4 { margin: 0; font-size: 14px; } .enbox p { margin: 0; font-size: 14px; line-height: 1.45; } .enbox small { color: var(--ink-2); font-size: 13px; }
@@ -1725,8 +1725,6 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .modalcard .btn.block { min-height: 46px; }
 .bigfig .bigline { margin-bottom: 10px; }
 .bigfig > small + span { margin-top: 4px; }
-details.datasrc.lp-src { margin: 0; border: 0; border-radius: 0; background: none; padding: 0; }
-details.datasrc.lp-src > summary { min-height: 0; justify-content: flex-end; padding: 4px 0; font-size: 14px; font-weight: 600; }
 details.datasrc.lp-src > summary span { flex: none; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
@@ -2401,54 +2399,52 @@ const Landing = {
     if (!standalone && matchMedia('(pointer: coarse)').matches && D.requestFullscreen && !document.fullscreenElement) D.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
     go('home'); window.scrollTo({ top: 0 });
   },
-  /** The button outline in real pixels (a dash as long as the whole edge), so the line always closes on itself. */
+  /** The outline in real pixels, 6 px outside the button: a line three quarters of the edge long that keeps running round. */
   frame(btn) {
-    const svg = btn.querySelector('.lp-frame'); const w = btn.clientWidth, hh = btn.clientHeight, P = 2 * (w - 3) + 2 * (hh - 3);
+    const svg = btn.querySelector('.lp-frame'); const G = 6, w = btn.clientWidth + 2 * G, hh = btn.clientHeight + 2 * G, P = 2 * (w - 3) + 2 * (hh - 3);
     svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
-    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); r.style.strokeDasharray = `${P + 12} ${P + 12}`; r.style.strokeDashoffset = String(P); });
+    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); });
     return P;
   },
-  button(btn, after, still) {
-    const P = Landing.frame(btn), draw = btn.querySelector('.lp-line-draw'), hov = btn.querySelector('.lp-line-hover');
-    let hovA = null;
-    const round = () => { if (!btn.classList.contains('ready')) return; hovA?.cancel(); hov.style.opacity = '1'; hovA = hov.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 3200, easing: 'linear', fill: 'forwards' }); };
-    const off = () => { hovA?.cancel(); hovA = null; hov.style.opacity = '0'; };
-    btn.addEventListener('pointerenter', round); btn.addEventListener('focus', round); btn.addEventListener('pointerleave', off); btn.addEventListener('blur', off);
-    if (still) { draw.style.strokeDashoffset = '0'; btn.classList.add('ready'); return; }
-    // 25 Nov: the button is on screen from the start on a phone, so it draws at once (no waiting for the text)
-    const run = () => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1000, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' }).finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready'));
-    setTimeout(run, Math.max(0, after - performance.now()));
+  button(btn, still) {
+    const P = Landing.frame(btn), run = btn.querySelector('.lp-line-draw');
+    run.style.strokeDasharray = `${0.75 * P} ${0.25 * P}`;
+    if (still) return;
+    // 25 Nov (Simone): always three quarters full and turning, at constant speed
+    run.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -P }], { duration: 4200, iterations: Infinity, easing: 'linear' });
+    addEventListener('resize', () => { const P2 = Landing.frame(btn); run.style.strokeDasharray = `${0.75 * P2} ${0.25 * P2}`; }, { once: true });
   },
+  /** One direction for everything: a cascade from the top. The claim line by line, the rest block by block. */
   animate() {
     const root = document.querySelector('.landing'); if (!root) return;
     const btn = root.querySelector('.lp-go');
-    if (Motion.off()) { root.classList.add('lp-still'); Landing.button(btn, 0, true); return; }
-    const E = 'cubic-bezier(.16,1,.3,1)', t = performance.now(), a = (el, kf, delay, duration = 1300) => el && el.animate(kf, { duration, delay, easing: E, fill: 'both' });
-    root.classList.add('lp-anim');
-    a(root.querySelector('.lp-brand'), [{ transform: 'translateY(110%)' }, { transform: 'none' }], 0, 900);
-    root.querySelectorAll('.lp-word').forEach((w, i) => a(w, [{ transform: 'translateY(108%)' }, { transform: 'none' }], 120 + i * 160, 1100));
-    const fromRight = [{ opacity: 0, transform: 'translateX(30px)' }, { opacity: 1, transform: 'none' }];
-    a(root.querySelector('.lp-about'), fromRight, 600, 1000);
-    a(root.querySelector('.lp-src'), fromRight, 750, 1000);
-    a(root.querySelector('.lp-q-in'), [{ transform: 'translateY(105%)' }, { transform: 'none' }], 700, 1100);
-    Landing.button(btn, t + 200);
+    if (Motion.off()) { Landing.button(btn, true); return; }
+    const E = 'cubic-bezier(.16,1,.3,1)', a = (el, kf, delay, duration) => el && el.animate(kf, { duration, delay, easing: E, fill: 'both' });
+    const fromTop = [{ opacity: 0, transform: 'translateY(-18px)' }, { opacity: 1, transform: 'none' }];
+    a(root.querySelector('.lp-brand'), [{ transform: 'translateY(-110%)' }, { transform: 'none' }], 0, 800);
+    const words = [...root.querySelectorAll('.lp-word')];
+    words.forEach((w, i) => a(w, [{ transform: 'translateY(-105%)' }, { transform: 'none' }], 120 + i * 150, 1000));
+    let t = 120 + words.length * 150 + 80;
+    for (const q of ['.lp-q-in', '.lp-go', '.lp-about', '.lp-src']) { a(root.querySelector(q), fromTop, t, 900); t += 130; }
+    Landing.button(btn);
   },
 };
+
 function viewLanding() {
   const NS = 'http://www.w3.org/2000/svg';
   const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
-  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); frame.append(r); }
-  const line = (k, kids) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, ...kids));
+  const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', 'lp-line-draw'); frame.append(r);
+  const line = (kids) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, ...kids));
+  // 25 Nov (Simone): claim, the question right under it, the button, then who is behind it and the sources
   return h('div', { class: 'landing' },
     h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR'))),
-    h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
-      line(1, ['Better data']), line(2, ['Neutral']), line(3, ['Swiss', h('span', { class: 'lp-flag' })])),   // 25 Nov: small square flag after the word
-    h('div', { class: 'lp-side' },
-      h('p', { class: 'lp-about' }, 'BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.'),
-      dataSources()),
-    h('div', { class: 'lp-mid' }, h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should you keep your car or', h('br'), 'switch to an electric vehicle?'))),
-    h('div', { class: 'lp-end' },
-      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame)));
+    h('div', { class: 'lp-body' },
+      h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
+        line(['Better data']), line(['Neutral']), line([h('span', { class: 'lp-swiss' }, 'Swiss'), h('span', { class: 'lp-flag' })])),
+      h('p', { class: 'lp-q-in' }, h('span', null, 'Should you keep your car or'), h('span', null, 'switch to an electric vehicle?')),
+      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame),
+      h('p', { class: 'lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources and AI to guide you to a more informed decision about electric vehicles.'),
+      dataSources()));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {

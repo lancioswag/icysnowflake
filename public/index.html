@@ -1964,7 +1964,7 @@ function emptyProfile() {
   return {
     postal_code: null, home_address: null, charging_at_work: null, work_postal_code: null, work_address: null,
     trips: [], trips_source: null, home_charging_status: null, fixed_parking: null, housing_type: null,
-    current_car: { targa_id: null, first_registration: null, odometer_km: null, consumption: null, new_price_chf: null, value_today_chf: null },
+    current_car: { targa_id: null, first_registration: null, odometer_km: null, consumption: null, new_price_chf: null, value_today_chf: null, approval_year: null },
     second_car: { targa_id: 'none', wltp_range_km: null, towbar: null },   // 23 Nov: second car removed from the questions
     target_ev: { size: null, purchase: null, price_chf: null },   // 23 Nov: the car you want to drive (replaces the second-car question)
     selected_class_id: null, everyday_charging: null,
@@ -2075,6 +2075,12 @@ function refineCarVersion(p) {
   if (best && best[1] !== cc.targa_id) { delete store.carAuto[cc.targa_id]; cc.targa_id = best[1]; store.carAuto[best[1]] = key; store.carLabels[best[1]] = `${b} ${m}`; }
   store.carAutoNote = store.carAutoNote || {}; const r = y0(best?.[0]); store.carAutoNote[cc.targa_id] = r && yr - r[1] >= 4 ? r[1] : null;
 }
+/** Year the type was approved (from cars.json), sent to Costs: the gap between test and real consumption depends on it. */
+function approvalYear(id) {
+  if (!id || !CARS.data) return null;
+  if (!CARS.byId) { CARS.byId = {}; for (const vs of Object.values(CARS.data)) for (const [lab, n] of vs) CARS.byId[n] = lab; }
+  const m = String(CARS.byId[id] || '').match(/approved (\d{4})/); return m ? Number(m[1]) : null;
+}
 function commitDraft(draft) {
   const old = store.profile, nw = clone(draft);
   // rule 7: car changed → its details go
@@ -2097,6 +2103,7 @@ function commitDraft(draft) {
     if (workMoved && t.trip_type === 'commute') delete t.routing;
   });
   refineCarVersion(nw);
+  nw.current_car.approval_year = approvalYear(nw.current_car.targa_id);
   store.profile = sanitizeProfile(nw);
   dropStaleResults(); saveResults();
   saveStore();
@@ -2360,7 +2367,7 @@ function whyNotChat() {
   const pts = [['Better data', 'The tariff of your municipality (ElCom), chargers near you (BFE), your car\u2019s type approval (ASTRA). A chatbot does not have them.'],
     ['More reliable', 'Fixed formulas calculate every figure, and each one shows its source. AI only puts the result into words.'],
     ['Independent', 'It sells nothing: no cars, no chargers, no ads.'],
-    ['Swiss', 'Built for Swiss drivers with Swiss data. No account needed; your answers stay in your browser unless you log in.']];
+    ['Swiss', 'Made in Switzerland for Swiss drivers, with Swiss public data. No account needed: your answers are kept in your browser and only sent to calculate your results.']];
   const btn = h('button', { class: 'btn primary block', type: 'button', onclick: close }, 'Got it');
   const wrap = h('div', { class: 'modalwrap', role: 'presentation', onclick: (e) => { if (e.target === wrap) close(); } },
     h('div', { class: 'modalcard', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'wnc-t' },
@@ -4179,13 +4186,13 @@ function energyFormula(l, asm = []) {
     if (e.kwh_per_100km == null || e.chf_per_kwh == null) return null;
     const tot = e.km_per_year * e.kwh_per_100km / 100 * e.chf_per_kwh;
     const pk = { private_ac: 'p_home', public_ac: 'p_public_ac', public_dc: 'p_dc' }[e.everyday] || 'p_home';
-    return { calc: `${fmt.n(e.km_per_year)} km × ${fmt.n(e.kwh_per_100km, 1)} kWh/100 km × CHF ${e.chf_per_kwh.toFixed(2)}/kWh = ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+    return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km and CHF ${e.chf_per_kwh.toFixed(2)} per kWh: ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
       basis: `Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ${A(pk)?.source || 'tariff where you charge'}.` };
   }
   if (e.l_per_100km == null || e.chf_per_l == null) return null;
   const tot = e.km_per_year * e.l_per_100km / 100 * e.chf_per_l;
-  const cons = e.consumption_source === 'user' ? 'your value' : e.l_per_100km_rated != null ? `type approval ${fmt.n(e.l_per_100km_rated, 1)} l/100 km (${e.cycle || 'WLTP'}) × ${e.real_factor} for real driving (ICCT)` : 'type approval (ASTRA TAS), real-world estimate';
-  return { calc: `${fmt.n(e.km_per_year)} km × ${fmt.n(e.l_per_100km, 1)} l/100 km × CHF ${e.chf_per_l.toFixed(2)}/l = ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+  const cons = e.consumption_source === 'user' ? 'your value' : e.l_per_100km_rated != null ? `type approval ${fmt.n(e.l_per_100km_rated, 1)} l per 100 km (${e.cycle || 'WLTP'} test), plus ${Math.round((e.real_factor - 1) * 100)} % for real driving (ICCT)` : 'type approval (ASTRA TAS), real-world estimate';
+  return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.l_per_100km, 1)} l per 100 km and CHF ${e.chf_per_l.toFixed(2)} per litre: ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
     basis: `Consumption: ${cons}. ${e.kind === 'diesel' ? 'Diesel' : 'Petrol'} price: ${e.price_source || A('fuel_price')?.source || 'BFS'}.` };
 }
 /** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
@@ -4278,7 +4285,7 @@ function b3Blocks(M) {
     ['Price', noRef ? null : '0', n100(M.price), { sub: ev.purchase === 'used' ? `used, about ${ev.used_age_years || 4} years old` : 'new' }],
     ['Other upfront costs', noRef ? null : '0', n100(M.install), { sub: M.install ? 'home charging installation' : 'none' }],
     ['Sale of your current car', noRef ? null : '–', noRef ? '–' : n100(-M.sale), { sub: noRef ? null : ref.value_today_source === 'estimate' ? 'our estimate of its value today' : 'your value' }],
-    ['Net outlay today', noRef ? null : '0', n100(M.net), { strong: true, hi: true }],
+    ['Cash you need today', noRef ? null : '0', n100(M.net), { strong: true, hi: true, sub: noRef ? null : 'price + installation − sale of your car' }],
   ];
   const running = [
     ...ITEM_ROWS.filter(([k]) => (it(e, k) || 0) > 0 || (it(c, k) || 0) > 0).map(([k, l]) => [l, c ? n1(it(c, k)) : null, n1(it(e, k))]),

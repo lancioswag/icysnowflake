@@ -127,7 +127,8 @@ if (!noRef) {
   const consUser = num(cc.consumption);
   // 24 Nov (Amos/Martin): the gap between the NEDC test and real driving grew over the years (ICCT, From laboratory to road):
   // about +12 % for cars of 2005, +40 % from 2015. One factor of 1.39 for all NEDC cars overstated older cars.
-  const regYear = Number(String(cc.first_registration ?? '').slice(0, 4)) || null;
+  // the year the TYPE was approved decides the gap (a type approved in 2007 keeps its 2007 test value even if the car was registered in 2015)
+  const regYear = num(cc.approval_year) ?? (Number(String(cc.first_registration ?? '').slice(0, 4)) || null);
   const nedcF = regYear === null ? C.REAL.NEDC : regYear <= 2005 ? 1.12 : regYear <= 2009 ? 1.18 : regYear <= 2012 ? 1.27 : regYear <= 2014 ? 1.35 : 1.40;
   const realF = car.cycle === 'NEDC' ? nedcF : (C.REAL[car.cycle] ?? C.REAL.WLTP);
   const cons = consUser ?? (num(car.consumption) !== null ? car.consumption * realF : null);
@@ -404,7 +405,7 @@ if (ref) {
   assumptions.push(A('current_car_value_today', 'What your current car is worth today', r0(ref.V0), 'CHF',
     ref.V0_user ? 'your value' : `estimate: new price × 0.85 per year of age, minus 1 % of the new price per 10,000 km above 15,000 km a year`, null, 'current_car.value_today_chf', ref.V0_user));
   assumptions.push(A('current_car_consumption', 'Consumption of your current car', Math.round(ref.cons * 10) / 10, 'l/100 km',
-    ref.cons_user ? 'your value' : `ASTRA TAS type approval ${ref.cons_rated} l/100 km (${ref.cycle || 'WLTP'}) × real-world factor ${ref.realF} (ICCT, From laboratory to road)`, 'https://theicct.org/publication/from-laboratory-to-road-a-2018-update/', 'current_car.consumption', ref.cons_user));
+    ref.cons_user ? 'your value' : `ASTRA TAS type approval ${ref.cons_rated} l/100 km (${ref.cycle || 'WLTP'} test), plus ${Math.round((ref.realF - 1) * 100)} % for real driving (ICCT, From laboratory to road; gap by year of approval)`, 'https://theicct.org/publication/from-laboratory-to-road-a-2018-update/', 'current_car.consumption', ref.cons_user));
   if (!ref.V0_user) assumptions.push(A('current_car_new_price', 'New price of your current car (only for the value estimate)', ref.K, 'CHF',
     ref.K_user ? 'your value' : `Typical new price of a ${SIZE_WORD[ref.size].toLowerCase()} combustion car (BFE/EBP 2023, Table 4)`, ref.K_user ? null : BFE_EBP, 'current_car.new_price_chf', ref.K_user));
   assumptions.push(A('fuel_price', ref.fuel === 'diesel' ? 'Diesel price' : 'Petrol price', ref.fuelPrice, 'CHF/l',

@@ -1667,6 +1667,14 @@ a.dsname:hover, a.dsname:focus-visible { color: var(--accent); background-size: 
 .home .cta .talk.plain { border: 0; background: none; box-shadow: none; justify-content: center; color: var(--accent); min-height: 48px; }
 .page.chatmode .as-sugg.examples { flex-direction: column; flex-wrap: wrap; overflow: visible; gap: 8px; }
 .page.chatmode .as-sugg.examples button { flex: none; white-space: normal; text-align: left; border-radius: 16px; padding: 10px 14px; line-height: 1.4; font-weight: 600; }
+.home .bigtitle.hometitle { font-size: clamp(38px, 11vw, 50px); line-height: 1.04; letter-spacing: -0.035em; font-weight: 800; max-width: 9.5em; }
+.home .cta .btn.primary.block { justify-content: center; text-align: center; font-size: 17px; font-weight: 750; }
+.home .cta .compassbtn .two { display: grid; gap: 1px; line-height: 1.25; } .home .cta .compassbtn .two small { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.home .cta .compassbtn { height: auto; min-height: 62px; padding-block: 8px; }
+.landing { padding-inline: 14px; }
+.lp-claim { font-size: clamp(34px, 10.4vw, 64px); }
+.lp-about, .lp-q, .lp-src, .lp-brand { max-width: 31rem; } .lp-about { font-size: 16px; max-width: 30ch; }
+.lp-q b { font-size: 20px; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -1735,6 +1743,7 @@ function s(tag, attrs, ...kids) {
 const ICONS = {
   chev: 'M6 9l6 6 6-6',
   bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
+  fast: 'M4 12a8 8 0 1 1 16 0M12 12l4-4M2 8h3M3 4.5l2 1.5M19 6l2-1.5',
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z',
   plug: 'M9 2v4M15 2v4M7 6h10v4a5 5 0 0 1-10 0V6zM12 15v7',
@@ -2253,16 +2262,16 @@ function viewTopics() {
   dragSort(list, ord, (a, moved) => { ui.topicOrder = a; const on = new Set([...sel, moved]); set(a.filter((x) => on.has(x))); });
   return h('div', { class: 'flow home' },
     h('section', { class: 'hook' },
-      h('h1', { class: 'bigtitle' }, 'Discover if an electric car makes sense for you')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
-    h('h2', { class: 'pickhead' }, 'What would you like to check?'),
+      h('h1', { class: 'bigtitle hometitle' }, 'Is an electric car right for you?')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
+    h('h2', { class: 'pickhead' }, 'Choose what matters to you'),
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
       null),   // 23 Nov: no instruction text; the keys show what to do
     h('div', { class: 'cta' },
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
-        icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Check topics')),
+        allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Check topics')),
       anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
-      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('compass'), h('span', null, 'Not sure where to start? Keep it short')),
-      h('button', { class: 'linkbtn talk plain', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
+      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('fast'), h('span', { class: 'two' }, h('b', null, 'Not sure where to start?'), h('small', null, 'Straight to the point: 5 questions'))),
+      h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
       (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Delete my answers') : null));
 }
 /** Start page (23 Nov): which data the Navigator uses and what each source feeds. Only sources the TEST copy actually returns. */
@@ -4941,8 +4950,7 @@ const Assistant = {
     if (ChatNav.on) return ['Stop the check'];
     // 24 Nov (Simone): examples that show the use case: you describe your situation, the assistant fills in the answers for you
     if (!ChatNav.on && !Object.keys(store.results).length) return ['I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?',
-      'I rent a flat in 9000 St. Gallen with a parking space but no charger. Where could I charge?',
-      'Every summer the four of us drive to Tuscany. Which electric car could do that?'];
+      'What can the Navigator tell me?', 'How long does an electric car battery last?'];
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
     if (ui.view === 'result') return ['Explain this result in simple words.', 'What should I do next?', 'Which assumptions matter most?'];
     return ['What can the Navigator tell me?', 'Which topic should I start with?'];

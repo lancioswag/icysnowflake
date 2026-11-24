@@ -1751,6 +1751,31 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 @keyframes lpRound { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .lp-go-in, .lp-charge { display: none !important; }
 .lp-q span.dw, .lp-about span.dw, .lp-src span.dw { font: inherit; text-transform: inherit; color: inherit; letter-spacing: inherit; }
+
+/* 24 Nov, 23h: landing v4 – right column for the presentation and sources, question just above the button */
+.landing { gap: 0 !important; padding-bottom: 32px !important; }
+.lp-claim { margin: 26px 0 0 !important; font-size: clamp(30px, 9.2vw, 60px) !important; }
+.flagw { position: relative; display: inline-block; }
+.flagw::after { content: attr(data-l); position: absolute; left: 0; top: 0; -webkit-text-stroke: 0; color: transparent; pointer-events: none;
+  background: linear-gradient(#fff, #fff) 50% 52% / 46% 15% no-repeat, linear-gradient(#fff, #fff) 50% 52% / 13% 50% no-repeat, #d52b1e;
+  -webkit-background-clip: text; background-clip: text; }
+.lp-side { align-self: flex-end; width: min(82%, 26rem); margin-top: 30px; display: grid; gap: 14px; }
+.lp-about { margin: 0 !important; text-align: right !important; font-style: italic !important; font-size: 13px !important; line-height: 1.55 !important; color: var(--ink-2); max-width: none !important; }
+.lp-side .lp-src { max-width: none; }
+.lp-side .lp-src > summary { justify-content: flex-end !important; gap: 6px; font-size: 13px !important; padding: 2px 0 !important; }
+.lp-side .dsgrid li { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 10px; padding: 9px 0; }
+.lp-side .dsname { font-size: 13px; } .lp-side .dswhat { font-size: 12px; }
+.lp-side .dsdate { font-size: 10.5px !important; }
+.lp-end { margin-top: auto; padding-top: 40px; display: grid; gap: 18px; }
+.lp-q-in { font-size: 24px !important; line-height: 1.18 !important; }
+.lp-line-draw, .lp-line-hover { stroke-dasharray: none; }
+.lp-line-hover { opacity: 0; }
+.lp-go.ready:hover .lp-line-hover, .lp-go.ready:focus-visible .lp-line-hover { animation: none !important; }
+.lp-side { width: 100% !important; }
+.lp-side .lp-src { justify-self: end; width: min(84%, 24rem); }
+.lp-side .lp-src > summary span { flex: none !important; }
+.lp-side .lp-src > summary { min-height: 0 !important; }
+.lp-about { font-size: 12.5px !important; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2378,36 +2403,21 @@ function dataSources() {
 /* ---------- landing page (24 Nov, Simone): what the tool is, before the topics ---------- */
 const Landing = {
   start() { go('home'); window.scrollTo({ top: 0 }); },
-  /** Words appear one at a time; each one arrives scrambled and settles (departure-board effect). */
-  decode(el, delay = 0, step = 75, settle = 420) {
-    if (!el) return 0;
-    const text = el.textContent; el.setAttribute('aria-label', text);
-    const CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const words = text.split(/(\s+)/).map((w) => (/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'dw', 'aria-hidden': 'true' }, w)));
-    el.replaceChildren(...words);
-    const spans = words.filter((n) => n.nodeType === 1);
-    spans.forEach((sp, i) => {
-      const word = sp.textContent; sp.style.opacity = '0';
-      setTimeout(() => {
-        sp.style.opacity = '1'; const t0 = performance.now();
-        const tick = (ts) => { const p = Math.min(1, (ts - t0) / settle); const k = Math.floor(p * word.length);
-          sp.textContent = word.slice(0, k) + [...word.slice(k)].map((c) => (/[\w]/.test(c) ? CH[(Math.random() * CH.length) | 0] : c)).join('');
-          if (p < 1) requestAnimationFrame(tick); else sp.textContent = word; };
-        requestAnimationFrame(tick);
-      }, delay + i * step);
-    });
-    return delay + spans.length * step + settle;
-  },
-  /** The button: when it comes into view a line draws its outline; when the outline is closed the button fills it. */
-  button(btn, after) {
-    const svg = btn.querySelector('.lp-frame'); const w = btn.clientWidth, hh = btn.clientHeight;
+  /** The button outline in real pixels (a dash as long as the whole edge), so the line always closes on itself. */
+  frame(btn) {
+    const svg = btn.querySelector('.lp-frame'); const w = btn.clientWidth, hh = btn.clientHeight, P = 2 * (w - 3) + 2 * (hh - 3);
     svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
-    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); });
-    const run = () => {
-      btn.classList.add('drawing');
-      const a = svg.querySelector('.lp-line-draw').animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1600, easing: 'linear', fill: 'both' });
-      a.finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready'));
-    };
+    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); r.style.strokeDasharray = `${P} ${P}`; r.style.strokeDashoffset = String(P); });
+    return P;
+  },
+  button(btn, after, still) {
+    const P = Landing.frame(btn), draw = btn.querySelector('.lp-line-draw'), hov = btn.querySelector('.lp-line-hover');
+    let hovA = null;
+    const round = () => { if (!btn.classList.contains('ready')) return; hovA?.cancel(); hov.style.opacity = '1'; hovA = hov.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 3200, easing: 'linear', fill: 'forwards' }); };
+    const off = () => { hovA?.cancel(); hovA = null; hov.style.opacity = '0'; };
+    btn.addEventListener('pointerenter', round); btn.addEventListener('focus', round); btn.addEventListener('pointerleave', off); btn.addEventListener('blur', off);
+    if (still) { draw.style.strokeDashoffset = '0'; btn.classList.add('ready'); return; }
+    const run = () => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1600, easing: 'linear', fill: 'forwards' }).finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready'));
     const start = () => setTimeout(run, Math.max(0, after - performance.now()));
     if (!('IntersectionObserver' in window)) return start();
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); start(); } }, { threshold: 0.9 });
@@ -2416,32 +2426,33 @@ const Landing = {
   animate() {
     const root = document.querySelector('.landing'); if (!root) return;
     const btn = root.querySelector('.lp-go');
-    if (Motion.off()) { root.classList.add('lp-still'); btn.classList.add('ready'); return; }
-    const E = 'cubic-bezier(.16,1,.3,1)', t = performance.now();
+    if (Motion.off()) { root.classList.add('lp-still'); Landing.button(btn, 0, true); return; }
+    const E = 'cubic-bezier(.16,1,.3,1)', t = performance.now(), a = (el, kf, delay, duration = 1300) => el && el.animate(kf, { duration, delay, easing: E, fill: 'both' });
     root.classList.add('lp-anim');
-    root.querySelector('.lp-brand').animate([{ transform: 'translateY(110%)' }, { transform: 'none' }], { duration: 1100, delay: 100, easing: E, fill: 'both' });
-    root.querySelectorAll('.lp-word').forEach((w, i) => w.animate([{ transform: 'translateY(108%)' }, { transform: 'none' }], { duration: 1500, delay: 350 + i * 260, easing: E, fill: 'both' }));
-    let at = 350 + 2 * 260 + 1000;
-    at = Landing.decode(root.querySelector('.lp-about'), at, 55, 380);
-    at = Landing.decode(root.querySelector('.lp-q-l'), at + 100, 70, 380);
-    root.querySelector('.lp-q-in').animate([{ transform: 'translateY(105%)' }, { transform: 'none' }], { duration: 1400, delay: at, easing: E, fill: 'both' });
-    at = Landing.decode(root.querySelector('.lp-src > summary > span'), at + 700, 90, 380);
-    root.querySelector('.lp-src > summary > svg').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: at, fill: 'both' });
-    Landing.button(btn, t + at + 300);
+    a(root.querySelector('.lp-brand'), [{ transform: 'translateY(110%)' }, { transform: 'none' }], 100, 1100);
+    root.querySelectorAll('.lp-word').forEach((w, i) => a(w, [{ transform: 'translateY(108%)' }, { transform: 'none' }], 350 + i * 260, 1500));
+    const fromRight = [{ opacity: 0, transform: 'translateX(40px)' }, { opacity: 1, transform: 'none' }];
+    a(root.querySelector('.lp-about'), fromRight, 1650, 1400);
+    a(root.querySelector('.lp-src'), fromRight, 2050, 1400);
+    a(root.querySelector('.lp-q-in'), [{ transform: 'translateY(105%)' }, { transform: 'none' }], 2450, 1500);
+    Landing.button(btn, t + 3600);
   },
 };
 function viewLanding() {
-  const words = ['Better data.', 'Independent.', 'Swiss.'];
   const NS = 'http://www.w3.org/2000/svg';
   const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
-  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); r.setAttribute('pathLength', '1'); frame.append(r); }
+  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); frame.append(r); }
+  const line = (k, kids) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, ...kids));
   return h('div', { class: 'landing' },
     h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR'))),
-    h('h1', { class: 'lp-claim', 'aria-label': words.join(' ') }, words.map((w) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, w)))),
-    h('p', { class: 'lp-about' }, 'BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a more informed decision about electric vehicles.'),
-    h('div', { class: 'lp-q' }, h('p', { class: 'lp-q-l' }, 'You get an answer to your question'), h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should I keep my car or switch to an electric one?'))),
-    dataSources(),
-    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame));
+    h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Independent. Swiss.' },
+      line(1, ['Better data']), line(2, ['Independent']), line(3, ['S', h('span', { class: 'flagw', 'data-l': 'W' }, 'W'), 'iss'])),   // a small Swiss flag inside the W
+    h('div', { class: 'lp-side' },
+      h('p', { class: 'lp-about' }, 'BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.'),
+      dataSources()),
+    h('div', { class: 'lp-end' },
+      h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should you keep your car or switch to an electric vehicle?')),
+      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame)));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
@@ -2987,15 +2998,8 @@ function viewReset() {
 /* ---------- motion (Mobility selection: A01 + A04 first open, B03 + A06 question change, A14 progress, B08 summary) ---------- */
 const Motion = {
   off: () => !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches,
-  D: 1100, out: 260, stag: 120, ease: 'cubic-bezier(.16,1,.3,1)',
-  rise(el, delay = 0) {   // 24 Nov (Simone): straight, slow; titles come up out of a mask, the rest slides in from its own side
-    if (!el) return;
-    const title = el.matches('h1, h2, .qtitle, .bigtitle, .rhead');
-    const right = getComputedStyle(el).textAlign === 'right';
-    const kf = title ? [{ clipPath: 'inset(0 0 100% 0)', transform: 'translateY(40%)' }, { clipPath: 'inset(0 0 0 0)', transform: 'none' }]
-      : [{ opacity: 0, transform: `translateX(${right ? 36 : -36}px)` }, { opacity: 1, transform: 'none' }];
-    el.animate(kf, { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' });
-  },
+  D: 820, out: 260, stag: 150, ease: 'cubic-bezier(.25,.8,.25,1)',
+  rise(el, delay = 0) { if (el) el.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: Motion.D, delay, easing: Motion.ease, fill: 'backwards' }); },
   fog(el, o = {}) { Motion.rise(el, o.delay || 0); },
   enter(kind) {
     if (Motion.off()) return;
@@ -5084,7 +5088,7 @@ const Assistant = {
     if (ChatNav.on) return ['Stop the check'];
     // 24 Nov (Simone): examples that show the use case: you describe your situation, the assistant fills in the answers for you
     if (!ChatNav.on && !Object.keys(store.results).length) return ['I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?',
-      'What can the Navigator tell me?', 'How long does an electric car battery last?'];
+      'What does \u201cLifestyle match\u201d mean?', 'How long does an electric car battery last?'];
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
     if (ui.view === 'result') return ['Explain this result in simple words.', 'What should I do next?', 'Which assumptions matter most?'];
     return ['What can the Navigator tell me?', 'Which topic should I start with?'];

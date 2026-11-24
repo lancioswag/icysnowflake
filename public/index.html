@@ -1616,6 +1616,57 @@ p > svg:not([width]) { width: 1.05em; height: 1.05em; vertical-align: -0.17em; f
 .evedit { margin-left: auto; }
 .choicerow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); margin: 6px 0 10px; }
 .choicerow .small { flex: 1 1 100%; }
+
+/* ---------- landing page (24 Nov): kinetic type, same colours as the app ---------- */
+.lpmode .main { padding-top: 0; }
+.landing { min-height: 100svh; box-sizing: border-box; display: flex; flex-direction: column; gap: 26px; padding: 34px 2px 40px; }
+.lp-brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: .32em; color: var(--accent);
+  animation: lpFade .7s cubic-bezier(.2,.8,.2,1) both; }
+.lp-brand svg { width: 26px; height: 26px; }
+.lp-claim { margin: 18px 0 0; display: flex; flex-direction: column; gap: 2px; font-size: clamp(38px, 12.2vw, 76px); line-height: .98; font-weight: 800; letter-spacing: -0.045em; color: var(--ink); text-transform: uppercase; }
+.lp-line { display: block; overflow: hidden; padding: .04em 0 .08em; }
+.lp-word { display: inline-block; transform-origin: 0 100%; animation: lpDrop 1.05s cubic-bezier(.16,1.18,.3,1) both; animation-delay: var(--d); }
+.lp-line:nth-child(2) .lp-word { color: var(--accent); }
+.lp-line:nth-child(3) .lp-word { -webkit-text-stroke: 2px var(--ink); color: transparent; }
+@keyframes lpDrop { 0% { transform: translateY(-115%) rotate(-7deg); opacity: 0; filter: blur(6px); } 60% { opacity: 1; filter: blur(0); } 100% { transform: none; opacity: 1; filter: none; } }
+@keyframes lpFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.lp-about { margin: 6px 0 0; max-width: 34ch; font-size: 17px; line-height: 1.55; color: var(--ink-2); animation: lpFade .9s cubic-bezier(.2,.8,.2,1) 1.35s both; }
+.lp-about b { color: var(--ink); font-weight: 700; }
+.lp-q { display: grid; gap: 6px; padding: 18px 20px; border-radius: 20px; background: var(--wash); animation: lpFade .9s cubic-bezier(.2,.8,.2,1) 1.6s both; }
+.lp-q span { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lp-q b { font-size: 22px; line-height: 1.25; letter-spacing: -0.02em; color: var(--ink); }
+.lp-src { animation: lpFade .9s cubic-bezier(.2,.8,.2,1) 1.8s both; }
+.lp-src > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; list-style: none; cursor: pointer; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 16px; font-weight: 700; color: var(--ink); }
+.lp-src > summary::-webkit-details-marker { display: none; }
+.lp-src > summary svg { width: 20px; height: 20px; color: var(--accent); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+.lp-src[open] > summary svg { transform: rotate(180deg); }
+.dsgrid { list-style: none; margin: 4px 0 0; padding: 0; display: grid; }
+.dsgrid li { display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); align-items: baseline;
+  animation: lpFade .55s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 45ms); }
+.dsname { font-size: 14.5px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat; transition: color .25s, background-size .35s cubic-bezier(.2,.8,.2,1), text-shadow .25s; }
+a.dsname:hover, a.dsname:focus-visible { color: var(--accent); background-size: 100% 2px; text-shadow: 0 0 14px rgba(120,168,255,.55); outline: none; }
+.dswhat { font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.dsdate { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 14px 0 4px; font-size: 13.5px; color: var(--ink-2); }
+.dsdate b { color: var(--ink); }
+.dsmonthly { flex-basis: 100%; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent); }
+.dsmonthly::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(43,105,180,.5); animation: lpPulse 2.2s infinite; }
+@keyframes lpPulse { 0% { box-shadow: 0 0 0 0 rgba(43,105,180,.45); } 70% { box-shadow: 0 0 0 10px rgba(43,105,180,0); } 100% { box-shadow: 0 0 0 0 rgba(43,105,180,0); } }
+.lp-go { position: relative; overflow: hidden; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 72px; border: 0; border-radius: 22px;
+  background: var(--ink); color: #fff; font: inherit; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; cursor: pointer; box-shadow: 0 14px 30px rgba(16,41,75,.22);
+  animation: lpFade .9s cubic-bezier(.2,.8,.2,1) 2s both; transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s; }
+.lp-go > svg { position: relative; width: 24px; height: 24px; fill: #ffd84d; stroke: #ffd84d; }
+.lp-go > span:last-child { position: relative; }
+.lp-charge { position: absolute; inset: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(0); transform-origin: 0 50%; animation: lpCharge 3.2s cubic-bezier(.65,0,.35,1) 2.4s infinite; }
+@keyframes lpCharge { 0% { transform: scaleX(0); opacity: 1; } 55% { transform: scaleX(1); opacity: 1; } 75%, 100% { transform: scaleX(1); opacity: 0; } }
+.lp-go:hover { transform: translateY(-2px); box-shadow: 0 18px 36px rgba(16,41,75,.28); } .lp-go:active { transform: translateY(1px); }
+.lp-go:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
+@media (min-width: 900px) { .landing { padding-top: 56px; } }
+.lp-src[open] .dsname { animation: lpGlow 1.5s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 90ms + .25s); }
+@keyframes lpGlow { 0% { color: var(--ink); text-shadow: none; } 35% { color: var(--accent); text-shadow: 0 0 16px rgba(120,168,255,.8); } 100% { color: var(--ink); text-shadow: none; } }
+@media (prefers-reduced-motion: reduce) { .landing *, .landing { animation: none !important; transition: none !important; } }
+.home .cta .talk.plain { border: 0; background: none; box-shadow: none; justify-content: center; color: var(--accent); min-height: 48px; }
+.page.chatmode .as-sugg.examples { flex-direction: column; flex-wrap: wrap; overflow: visible; gap: 8px; }
+.page.chatmode .as-sugg.examples button { flex: none; white-space: normal; text-align: left; border-radius: 16px; padding: 10px 14px; line-height: 1.4; font-weight: 600; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -1683,6 +1734,7 @@ function s(tag, attrs, ...kids) {
 }
 const ICONS = {
   chev: 'M6 9l6 6 6-6',
+  bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z',
   plug: 'M9 2v4M15 2v4M7 6h10v4a5 5 0 0 1-10 0V6zM12 15v7',
@@ -2076,7 +2128,7 @@ function go(view) { if (ui.view === 'loading' || ui.view === 'batch') { store.re
 const Nav = {
   stack: [], last: null, restoring: false,
   key() {
-    if (ui.assistantOpen || ['loading', 'batch', 'error'].includes(ui.view)) return null;
+    if (ui.assistantOpen || ['loading', 'batch', 'error', 'landing'].includes(ui.view)) return null;
     if (ui.view === 'question') return 'q:' + ui.barrier + ':' + ui.flow?.current;
     if (ui.view === 'result') return 'r:' + ui.barrier;
     if (ui.view === 'edit') return 'e:' + ui.barrier;
@@ -2116,7 +2168,8 @@ function render() {
   const app = document.getElementById('app');
   app.className = 'app';
   const main = ui.assistantOpen ? Assistant.screen() : renderView();
-  app.replaceChildren(...[h('div', { class: 'page' + (ui.assistantOpen ? ' chatmode' : '') }, renderTopbar(), h('main', { class: 'main', id: 'main' }, main), renderFoot()), renderBubble()].filter(Boolean));
+  const lp = ui.view === 'landing' && !ui.assistantOpen;
+  app.replaceChildren(...[h('div', { class: 'page' + (ui.assistantOpen ? ' chatmode' : '') + (lp ? ' lpmode' : '') }, lp ? null : renderTopbar(), h('main', { class: 'main', id: 'main' }, main), lp ? null : renderFoot()), lp ? null : renderBubble()].filter(Boolean));
   if (ui.assistantOpen) Assistant.afterRender();
   queueMicrotask(() => document.querySelectorAll('[data-chart]').forEach((el) => el._draw && el._draw()));
   const kind = ui.anim; ui.anim = null;
@@ -2162,6 +2215,7 @@ function renderFoot() {
 }
 function renderView() {
   switch (ui.view) {
+    case 'landing': return viewLanding();
     case 'home': return viewTopics();
     case 'topics': return viewTopics();
     case 'orient': return viewOrient();
@@ -2199,25 +2253,16 @@ function viewTopics() {
   dragSort(list, ord, (a, moved) => { ui.topicOrder = a; const on = new Set([...sel, moved]); set(a.filter((x) => on.has(x))); });
   return h('div', { class: 'flow home' },
     h('section', { class: 'hook' },
-      h('h1', { class: 'bigtitle' }, 'Does an electric car make sense for you?'),
-      h('p', { class: 'lead strong' }, 'An independent check based on Swiss data, tailored to your trips, charging options and budget.'),
-      h('p', { class: 'whois' }, icon('check'), h('span', null, h('b', null, 'By a student team of the University of St. Gallen (HSG)'), ', in a project commissioned by Zurich Insurance. It sells nothing and uses no Zurich prices.')),
-      h('div', { class: 'whynot' }, h('h2', null, 'Why not just ask a chatbot?'),
-        h('ul', null,
-          h('li', null, icon('home'), h('span', null, h('b', null, 'Your local data: '), 'the tariff of your municipality, chargers near you, your car\u2019s type approval.')),
-          h('li', null, icon('calc'), h('span', null, h('b', null, 'Calculated, not guessed: '), 'fixed formulas; AI only writes the summary text.')),
-          h('li', null, icon('link'), h('span', null, h('b', null, 'Sources shown: '), 'next to every figure, and you can change any value.')))),
-      h('p', { class: 'promise' }, 'You get a clear answer: keep your car, switch, or which figure is still missing.')),
-    dataSources(),
+      h('h1', { class: 'bigtitle' }, 'Discover if an electric car makes sense for you')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
     h('h2', { class: 'pickhead' }, 'What would you like to check?'),
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
       null),   // 23 Nov: no instruction text; the keys show what to do
     h('div', { class: 'cta' },
       h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
-        icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Continue')),
+        icon(allDone ? 'refresh' : 'arrow'), h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Check topics')),
       anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
-      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('compass'), h('span', null, 'Not sure where to start? Five short questions')),
-      h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
+      h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('compass'), h('span', null, 'Not sure where to start? Keep it short')),
+      h('button', { class: 'linkbtn talk plain', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
       (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Delete my answers') : null));
 }
 /** Start page (23 Nov): which data the Navigator uses and what each source feeds. Only sources the TEST copy actually returns. */
@@ -2236,11 +2281,31 @@ const DATA_SOURCES = [
   ['EAFO (European Commission)', 'https://alternative-fuels-observatory.ec.europa.eu', 'charging abroad (Range, Charging)'],
   ['SBB, Mobility, KAYAK', 'https://www.sbb.ch', 'train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)'],
 ];
+const DATA_UPDATED = '23 November 2026';   // date of the last data check; change it with each monthly refresh
 function dataSources() {
-  return h('details', { class: 'datasrc' }, h('summary', null, icon('info'), h('span', null, 'See our data sources'), icon('chev')),
-    h('p', { class: 'small' }, 'Every figure in your results is marked: ', h('span', { class: 'srcpill src nolink' }, 'Source'), ' official or published data, ', h('span', { class: 'srcpill ours' }, 'Our assumption'), ' an estimate by the HSG team, ', h('span', { class: 'srcpill yours' }, 'Your value'), ' what you entered. You can change your values at any time.'),
-    h('ul', { class: 'dslist' }, DATA_SOURCES.map(([n, u, what]) => h('li', null, safeUrl(u) ? h('a', { href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('b', null, n), icon('link')) : h('b', null, n), h('span', null, what)))),
-    h('p', { class: 'small muted' }, 'Data checked in November 2026; electricity tariffs for 2027. Insurance is a typical premium, not a quote: enter your own in Costs. Purchase subsidies are not included yet.'));
+  return h('details', { class: 'datasrc lp-src' }, h('summary', null, h('span', null, 'See our data sources'), icon('chev')),
+    h('ul', { class: 'dsgrid' }, DATA_SOURCES.map(([n, u, what], i) => h('li', { style: { '--i': i } },
+      safeUrl(u) ? h('a', { class: 'dsname', href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, n) : h('span', { class: 'dsname' }, n),
+      h('span', { class: 'dswhat' }, what)))),
+    h('p', { class: 'dsdate' }, h('span', null, 'Data last updated'), h('b', null, DATA_UPDATED), h('span', { class: 'dsmonthly' }, 'Recurring monthly update')));
+}
+/* ---------- landing page (24 Nov, Simone): what the tool is, before the topics ---------- */
+const Landing = {
+  key: 'bev_landing_seen',
+  seen() { try { return sessionStorage.getItem(Landing.key) === '1'; } catch { return false; } },
+  start() { try { sessionStorage.setItem(Landing.key, '1'); } catch { } go('home'); window.scrollTo({ top: 0 }); },
+};
+function viewLanding() {
+  const words = ['Better data.', 'Independent.', 'Swiss.'];
+  return h('div', { class: 'landing' },
+    h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR')),
+    h('h1', { class: 'lp-claim', 'aria-label': words.join(' ') }, words.map((w, i) => h('span', { class: 'lp-line', 'aria-hidden': 'true' },
+      h('span', { class: 'lp-word', style: { '--d': (0.25 + i * 0.32) + 's' } }, w)))),
+    h('p', { class: 'lp-about' }, 'BEV Navigator is a project by the ', h('b', null, 'University of St. Gallen (HSG)'), ' and ', h('b', null, 'Zurich Insurance'),
+      '. It uses Swiss data and reliable sources, for a better informed choice about going electric.'),
+    h('div', { class: 'lp-q' }, h('span', null, 'You get an answer to your question'), h('b', null, 'Should I keep my car or switch to an electric one?')),
+    dataSources(),
+    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-charge', 'aria-hidden': 'true' }), icon('bolt'), h('span', null, 'Start my journey')));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
@@ -4871,9 +4936,13 @@ const Assistant = {
   screen() {
     return Assistant.panel();
   },
+  examples() { return !ChatNav.on && !Object.keys(store.results).length && !Assistant.msgs.length; },
   suggestions() {
     if (ChatNav.on) return ['Stop the check'];
-    if (!ChatNav.on && !Object.keys(store.results).length) return ['Do the whole check here in the chat', 'What can the Navigator tell me?'];
+    // 24 Nov (Simone): examples that show the use case: you describe your situation, the assistant fills in the answers for you
+    if (!ChatNav.on && !Object.keys(store.results).length) return ['I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?',
+      'I rent a flat in 9000 St. Gallen with a parking space but no charger. Where could I charge?',
+      'Every summer the four of us drive to Tuscany. Which electric car could do that?'];
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
     if (ui.view === 'result') return ['Explain this result in simple words.', 'What should I do next?', 'Which assumptions matter most?'];
     return ['What can the Navigator tell me?', 'Which topic should I start with?'];
@@ -4886,22 +4955,21 @@ const Assistant = {
     return { home: 'Start page', topics: 'Choosing topics', summary: 'Your results', orient: 'Choosing topics' }[ui.view] || 'The Navigator';
   },
   panel() {
-    const ta = h('textarea', { class: 'input', id: 'as-text', rows: 1, maxlength: 500, placeholder: ChatNav.on ? 'Or type your answer…' : 'Ask about this page…', 'aria-label': 'Your question' }, Assistant.prefill || '');
+    const ta = h('textarea', { class: 'input', id: 'as-text', rows: 1, maxlength: 500, placeholder: ChatNav.on ? 'Or type your answer…' : Assistant.examples() ? 'Describe your situation…' : 'Ask about this page…', 'aria-label': 'Your question' }, Assistant.prefill || '');
     Assistant.prefill = '';
     ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); Assistant.send(ta.value); } });
     const msgs = h('div', { class: 'as-msgs', id: 'as-msgs', 'aria-live': 'polite' },
-      h('div', { class: 'daychip' }, 'Today'),
-      Assistant.msgNode(Assistant.hello || (Assistant.hello = { role: 'bot', text: 'Hi! Ask me anything about this page or your results.' })),
+      Assistant.msgNode(Assistant.hello || (Assistant.hello = { role: 'bot', text: 'Hi! Tell me about your car, where you live and where you drive. I fill in the answers for you and you check them.' })),
       Assistant.msgs.map(Assistant.msgNode), Assistant.busy ? h('div', { class: 'msg bot' }, h('span', { class: 'typing' }, h('i'), h('i'), h('i'))) : null);
     return h('aside', { class: 'assistant', 'aria-label': 'Assistant' },
       msgs,
-      h('div', { class: 'as-sugg' }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.sendSugg(t) }, t))),
+      h('div', { class: 'as-sugg' + (Assistant.examples() ? ' examples' : '') }, Assistant.suggestions().map((t) => h('button', { type: 'button', onclick: () => Assistant.sendSugg(t) }, t))),
       h('form', { class: 'as-input', onsubmit: (e) => { e.preventDefault(); Assistant.send(ta.value); } }, ta, h('button', { class: 'sendbtn', type: 'submit', 'aria-label': 'Send', disabled: Assistant.busy }, icon('send'))));
   },
   afterRender() { if (!Assistant.msgs.length) return; requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight })); },
   msgNode(m) {
     m.at = m.at || Date.now();
-    const tm = h('span', { class: 'tm' }, new Date(m.at).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }));
+    const tm = null;   // 24 Nov (Simone): no times on messages
     if (m.role === 'user') return h('div', { class: 'msg user' }, m.text, tm);
     if (m.role === 'sys') return h('div', { class: 'msg sys' }, m.text);
     if (m.block || m.topics || m.summary) return ChatNav.card(m, tm);
@@ -5243,6 +5311,7 @@ Object.assign(Actions, {
 
 loadStore();
 Account.init();
+if (ui.view === 'home' && !Landing.seen() && !location.hash) ui.view = 'landing';
 render();
 
 /* 23 Nov: on a phone the chat bubble covered controls (e.g. the petrol price switch). It now slides away while you scroll

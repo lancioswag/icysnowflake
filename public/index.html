@@ -1726,6 +1726,7 @@ details.datasrc.lp-src > summary { min-height: 0; justify-content: center; paddi
 .bigfig .bigline { margin-bottom: 10px; }
 .bigfig > small + span { margin-top: 4px; }
 details.datasrc.lp-src > summary span { flex: none; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -1751,7 +1752,7 @@ const CONFIG = {
   apiBase: 'https://hsg-consultancy-project.app.n8n.cloud/webhook',   // n8n production webhooks
   // navigator: original "API Navigator" (POST /webhook/navigator → … → Respond to Webhook returns contract v2 on the same call).
   // Add ?api=test to the page URL to call "API Navigator copy" in folder Test Claude instead.
-  paths: { navigator: '/navigator-test', assist: '/assist-v2', action: '/action', summary: '/summary', feedback: '/feedback' },
+  paths: { navigator: '/navigator-test', assist: '/assist-claude', action: '/action', summary: '/summary', feedback: '/feedback' },
   timeoutMs: { navigator: 90000, assist: 25000, action: 20000, summary: 60000, feedback: 15000 },
   contract: '2.',            // accepted contract_version prefix
   assistLive: true,          // V8.9: /assist-v2 (n8n "Assist v2 – Navigator in chat", model selector; old /assist untouched)
@@ -2350,8 +2351,8 @@ function viewTopics() {
       'aria-label': picked ? `${BARRIERS[c].tile}, priority ${sel.indexOf(c) + 1}` : BARRIERS[c].tile, onclick: () => toggle(c) },
     icon(TOPIC_ICON[c]), h('span', { class: 'tt' }, BARRIERS[c].tile),
     picked && sel.length > 1 ? h('span', { class: 'prio' }, String(sel.indexOf(c) + 1)) : null,
-    h('span', { class: 'grip', title: 'Drag to change the order' }, icon('grip')));
-  const list = h('div', { class: 'topiclist all' }, ord.map((c) => btn(c, sel.includes(c))));
+    h('span', { class: 'grip', title: 'Drag to change the order (keyboard: Alt + arrow keys)' }, icon('grip')));
+  const list = h('div', { class: 'topiclist all', 'aria-describedby': 'ordhint' }, ord.map((c) => btn(c, sel.includes(c))), h('span', { id: 'ordhint', class: 'sr-only' }, 'Drag a topic, or press Alt and the arrow keys, to change the order.'));
   dragSort(list, ord, (a, moved) => { ui.topicOrder = a; const on = new Set([...sel, moved]); set(a.filter((x) => on.has(x))); });
   return h('div', { class: 'flow home' },
     h('section', { class: 'hook' },
@@ -2448,6 +2449,14 @@ function viewLanding() {
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {
+  // 25 Nov (Christian, M02): the order also changes with the keyboard: Alt + arrow up / down on a topic
+  box.addEventListener('keydown', (e) => {
+    if (!e.altKey || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+    const row = e.target.closest('.topicbtn'); const i = row ? items.indexOf(row.dataset.code) : -1; if (i < 0) return;
+    const to = Math.max(0, Math.min(items.length - 1, i + (e.key === 'ArrowUp' ? -1 : 1))); e.preventDefault(); if (to === i) return;
+    const a = items.slice(); a.splice(to, 0, a.splice(i, 1)[0]); const code = row.dataset.code; onchange(a, code);
+    requestAnimationFrame(() => document.querySelector(`.topicbtn[data-code="${code}"]`)?.focus());
+  });
   box.addEventListener('pointerdown', (e) => {
     const grip = e.target.closest('.grip'); if (!grip) return;
     const row = grip.closest('.topicbtn'); const i = items.indexOf(row.dataset.code); if (i < 0) return;
@@ -5080,7 +5089,7 @@ const ChatNav = {
       const md = br.filter((x) => U(x[1].replace(/\s*\(.*$/, '')) === U(p.car_model)) .length ? br.filter((x) => U(x[1].replace(/\s*\(.*$/, '')) === U(p.car_model)) : br.filter((x) => p.car_model && U(x[1]).startsWith(U(p.car_model)));
       const fu = md.filter((x) => !p.car_fuel || x[1].toLowerCase().includes('(' + String(p.car_fuel).toLowerCase() + ')'));
       const row = fu.length === 1 ? fu[0] : md.length === 1 ? md[0] : null;
-      if (row) { d.current_car.targa_id = row[2]; store.carLabels[row[2]] = `${row[0]} ${row[1]}`; n++; }
+      if (row) { d.current_car.targa_id = row[2]; store.carLabels[row[2]] = `${row[0]} ${row[1]}`; store.carAuto = store.carAuto || {}; store.carAuto[row[2]] = `${row[0]}|${row[1]}`; n++; }
     }
     const odo = num(p.car_mileage_km, 0, 600000); if (odo != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.odometer_km = odo; n++; }
     const yr = num(p.car_first_registration_year, 1995, new Date().getFullYear()); if (yr) { d.current_car.first_registration = `${yr}-${yr === new Date().getFullYear() ? '01' : '06'}`; n++; }

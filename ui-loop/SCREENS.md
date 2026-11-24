@@ -332,10 +332,7 @@ km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
 Expected selling price for your current car (optional)
 CHF
-Enter an offer or your own estimate. We’ll use it to work out how much cash you’d need to switch.
-Market estimate (AutoScout24):
-not available
-. Without your price we estimate the value from age and mileage.
+An offer or your own estimate. AutoScout24 estimate: not available. Empty: we estimate it.
 Next
 ```
 
@@ -344,10 +341,10 @@ Next
 Costs & resale value
 Question 1 of 1
 Which electric car are you looking at?
-Size
-Small
-Medium
-Large
+Type
+City car
+Sedan or estate
+Minivan
 Not sure
 New or used?
 New
@@ -355,7 +352,7 @@ Used
 Not sure
 Price of the electric car (optional)
 CHF
-The vehicle price from an offer or a listing, not your cash budget: the sale of your car is taken off separately. Without it we use typical Swiss prices for the size.
+From an offer or a listing. Leave empty for typical Swiss prices.
 Show my result
 ```
 
@@ -499,10 +496,7 @@ km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
 Expected selling price for your current car (optional)
 CHF
-Enter an offer or your own estimate. We’ll use it to work out how much cash you’d need to switch.
-Market estimate (AutoScout24):
-not available
-. Without your price we estimate the value from age and mileage.
+An offer or your own estimate. AutoScout24 estimate: not available. Empty: we estimate it.
 Show my result
 ```
 
@@ -770,8 +764,8 @@ more than keeping your VW Golf 1.5TSI
 Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km (your choice)
-Medium, 250+ km
+City car, 250+ km (your choice)
+Sedan or estate, 250+ km
 Buy
 New
 Used, 4 years old
@@ -804,7 +798,7 @@ What a year costs, on average
 Everything included, spread over the 6 years you keep the car.
 VW Golf 1.5TSI
 CHF 6’620
-Electric car, small, new
+Electric car, city car, new
 CHF 7’250
 Value loss
 Interest
@@ -922,8 +916,8 @@ more than keeping your VW Golf 1.5TSI
 Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km (your choice)
-Medium, 250+ km
+City car, 250+ km (your choice)
+Sedan or estate, 250+ km
 Buy
 New
 Used, 4 years old
@@ -956,7 +950,7 @@ What a year costs, on average
 Everything included, spread over the 6 years you keep the car.
 VW Golf 1.5TSI
 CHF 6’620
-Electric car, small, new
+Electric car, city car, new
 CHF 7’250
 Value loss
 Interest
@@ -1082,7 +1076,7 @@ Pays off: year 10
 Above zero the electric car has paid off: with your answers after about 10 years.
 Costs per year
 CHF per year
-Small
+City car
 250+ km
 Your car
 VW Golf
@@ -1205,9 +1199,9 @@ greenhouse gases than a new petrol car
 Compared with keeping your VW Golf 1.5TSI: switching now saves about 3.4 t CO2 a year.
 Compare
 Size
-Small
-Medium
-Large SUV
+City car
+Sedan or estate
+Minivan
 Range
 220 km
 317 km
@@ -1240,9 +1234,9 @@ greenhouse gases than a new petrol car
 Compared with keeping your VW Golf 1.5TSI: switching now saves about 3.4 t CO2 a year.
 Compare
 Size
-Small
-Medium
-Large SUV
+City car
+Sedan or estate
+Minivan
 Range
 220 km
 317 km
@@ -1260,7 +1254,7 @@ Full analysis
 Where the emissions come from
 New petrol car
 100 %
-Small electric car
+City car electric car
 36 %
 Vehicle production
 Battery
@@ -1312,13 +1306,13 @@ Your answers are kept.
 Lifestyle match
 Which electric car fits you?
 IN SHORT
-Small
+City car
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
 Your choice
 Class
-Small (250+ km)
+City car (250+ km)
 Seats
 4
 New price
@@ -1335,13 +1329,13 @@ Your answers are kept.
 Lifestyle match
 Which electric car fits you?
 IN SHORT
-Small
+City car
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
 Your choice
 Class
-Small (250+ km)
+City car (250+ km)
 Seats
 4
 New price
@@ -1379,8 +1373,8 @@ more than keeping your VW Golf 1.5TSI
 Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km (your choice)
-Medium, 250+ km
+City car, 250+ km (your choice)
+Sedan or estate, 250+ km
 Buy
 New
 Used, 4 years old
@@ -1413,7 +1407,7 @@ What a year costs, on average
 Everything included, spread over the 6 years you keep the car.
 VW Golf 1.5TSI
 CHF 6’620
-Electric car, small, new
+Electric car, city car, new
 CHF 7’250
 Value loss
 Interest
@@ -1539,7 +1533,7 @@ Pays off: year 10
 Above zero the electric car has paid off: with your answers after about 10 years.
 Costs per year
 CHF per year
-Small
+City car
 250+ km
 Your car
 VW Golf
@@ -1681,20 +1675,20 @@ Your answers are kept.
 ```
 BEV NAVIGATOR
 BETTER DATA
-INDEPENDENT
+NEUTRAL
 SWISS
 BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.
 See our data sources
 Should you keep your car or
 switch to an electric vehicle?
-START MY JOURNEY
+Start My Journey
 ```
 
 ## landing-sources
 ```
 BEV NAVIGATOR
 BETTER DATA
-INDEPENDENT
+NEUTRAL
 SWISS
 BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.
 See our data sources
@@ -1728,7 +1722,7 @@ Data last updated: 23 Nov 2026
 Recurring monthly update
 Should you keep your car or
 switch to an electric vehicle?
-START MY JOURNEY
+Start My Journey
 ```
 
 ## r-B2-email-site
@@ -1953,7 +1947,7 @@ What we found for you
 OUR VERDICT
 Keeping your current car is cheaper
 The electric car pays off only after about 10 years.
-Over 6 years, a new small electric car with at least 250 km range costs about CHF 3’800 more than keeping your VW Golf 1.5TSI; you pay CHF 18’100 upfront after selling it.
+Over 6 years, a new electric city car with at least 250 km range costs about CHF 3’800 more than keeping your VW Golf 1.5TSI; you pay CHF 18’100 upfront after selling it.
 Your trips need about 133 km of real range on 90 % of your driving days.
 Charging at home needs your landlord.
 Calculated from your results, without AI.
@@ -1981,7 +1975,7 @@ Climate impact
 −64 % greenhouse gases vs. petrol
 Lifestyle match
 ›
-Small, 250+ km range
+City car, 250+ km range
 Save or share
 One-page PDF
 Full report
@@ -1997,7 +1991,7 @@ What we found for you
 OUR VERDICT
 Keeping your current car is cheaper
 The electric car pays off only after about 10 years.
-Over 6 years, a new small electric car with at least 250 km range costs about CHF 3’800 more than keeping your VW Golf 1.5TSI; you pay CHF 18’100 upfront after selling it.
+Over 6 years, a new electric city car with at least 250 km range costs about CHF 3’800 more than keeping your VW Golf 1.5TSI; you pay CHF 18’100 upfront after selling it.
 Your trips need about 133 km of real range on 90 % of your driving days.
 Charging at home needs your landlord.
 Calculated from your results, without AI.
@@ -2025,7 +2019,7 @@ Climate impact
 −64 % greenhouse gases vs. petrol
 Lifestyle match
 ›
-Small, 250+ km range
+City car, 250+ km range
 Save or share
 One-page PDF
 Full report

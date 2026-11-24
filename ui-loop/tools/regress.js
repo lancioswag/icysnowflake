@@ -48,7 +48,7 @@ const log = (...a) => console.log(...a);
   await ev(() => { ui.barrier = 'B3'; store.session = { barrier: BARRIERS.B3.name }; ui.flow = { history: [], forced: null, current: null }; gotoBlock(9); }); await page.waitForTimeout(400);
   await page.screenshot({ path: OUT + '5_block9.png', fullPage: true });
   log('5 block9 next disabled before', await page.locator('#qnext').isDisabled());
-  await page.locator('.chips button', { hasText: 'Medium' }).click(); await page.locator('.chips button', { hasText: 'Used' }).click(); await page.fill('#ev-price', '24000'); await page.waitForTimeout(150);
+  await page.locator('.chips button', { hasText: 'Sedan or estate' }).click(); await page.locator('.chips button', { hasText: 'Used' }).click(); await page.fill('#ev-price', '24000'); await page.waitForTimeout(150);
   log('5 block9 next enabled after', await page.locator('#qnext').isEnabled(), JSON.stringify(await ev(() => ui.draft.target_ev)));
   log('errors', JSON.stringify(page.errors));
   await browser.close();

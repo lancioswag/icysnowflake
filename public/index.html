@@ -1720,6 +1720,37 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .home .cta .btn.block.compassbtn { gap: 10px; }
 .lp-go > svg.lp-frame { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); fill: none; stroke: none; z-index: 1; }
 .landing .dsdate { width: 100%; box-sizing: border-box; }
+
+/* 24 Nov late: landing v3 – fewer styles: small caps brand, heavy uppercase claim and button, one body style, one bold question */
+.lp-claim { font-size: clamp(28px, 8.4vw, 58px) !important; }
+.lp-line:nth-child(3) .lp-word { color: var(--bg) !important; -webkit-text-stroke: 4px var(--ink) !important; paint-order: stroke fill; }
+.lp-about { align-self: stretch; max-width: none !important; text-align: left !important; font-style: normal !important; font-size: 14px !important; line-height: 1.55 !important; color: var(--ink-2); }
+.lp-q { display: grid; gap: 4px !important; }
+.lp-q-l { margin: 0; font-size: 14px !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--ink-2) !important; }
+.lp-q-in { margin: 0; font-size: 23px; line-height: 1.2; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); max-width: 15em; }
+.lp-src > summary { font-size: 14px !important; font-weight: 600 !important; color: var(--accent) !important; }
+.dw { display: inline; }
+.dsname .ul { background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat !important; }
+.lp-src[open] .dsname .ul { animation: lpUl2 1.4s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 110ms + .15s); }
+@keyframes lpUl2 { 0% { background-size: 0 2px; color: var(--ink); } 50% { background-size: 100% 2px; color: var(--accent); text-shadow: 0 0 12px rgba(120,168,255,.6); } 100% { background-size: 100% 1px; color: var(--ink); text-shadow: none; } }
+a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); background-size: 100% 2px !important; animation: none; }
+.lp-src .dsdate { margin: 12px 0 2px !important; }
+/* button: outline first, then the fill; hover: a darker line runs round, slowly and at constant speed */
+.lp-go { display: block !important; position: relative; width: 100% !important; height: 72px !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; cursor: pointer; overflow: visible !important; }
+.lp-go > svg.lp-frame { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: none; z-index: 2; pointer-events: none; }
+.lp-frame rect { fill: none; stroke-width: 3; stroke-dasharray: 1 1; }
+.lp-line-draw { stroke: var(--accent); stroke-dashoffset: 1; }
+.lp-line-hover { stroke: var(--ink); stroke-dashoffset: 1; opacity: 0; }
+.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: clamp(19px, 6vw, 28px); font-weight: 800; letter-spacing: -0.035em; text-transform: uppercase;
+  clip-path: inset(0 100% 0 0); transition: clip-path .7s cubic-bezier(.65,0,.35,1), background .4s; }
+.lp-go.ready .lp-go-fill, .lp-still .lp-go-fill { clip-path: inset(0 0 0 0); }
+.lp-still .lp-line-draw { stroke-dashoffset: 0; }
+.lp-go.ready:hover .lp-line-hover, .lp-go.ready:focus-visible .lp-line-hover { opacity: 1; animation: lpRound 3.2s linear forwards; }
+.lp-go.ready:hover .lp-go-fill { background: #245d9f; }
+.lp-go:active .lp-go-fill { background: var(--ink); }
+@keyframes lpRound { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.lp-go-in, .lp-charge { display: none !important; }
+.lp-q span.dw, .lp-about span.dw, .lp-src span.dw { font: inherit; text-transform: inherit; color: inherit; letter-spacing: inherit; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2308,8 +2339,8 @@ function viewTopics() {
   dragSort(list, ord, (a, moved) => { ui.topicOrder = a; const on = new Set([...sel, moved]); set(a.filter((x) => on.has(x))); });
   return h('div', { class: 'flow home' },
     h('section', { class: 'hook' },
-      h('h1', { class: 'bigtitle hometitle' }, 'Is an electric car right for you?')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
-    h('h2', { class: 'pickhead' }, 'Choose what matters to you'),
+      h('h1', { class: 'bigtitle hometitle' }, 'Find out if you want electric')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
+    h('h2', { class: 'pickhead' }, 'What\u2019s holding you back?'),
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
       null),   // 23 Nov: no instruction text; the keys show what to do
     h('div', { class: 'cta' },
@@ -2342,56 +2373,75 @@ function dataSources() {
     h('ul', { class: 'dsgrid' }, DATA_SOURCES.map(([n, u, what], i) => h('li', { style: { '--i': i } },
       safeUrl(u) ? h('a', { class: 'dsname', href: safeUrl(u), target: '_blank', rel: 'noopener noreferrer' }, h('span', { class: 'ul' }, n)) : h('span', { class: 'dsname' }, h('span', { class: 'ul' }, n)),
       h('span', { class: 'dswhat' }, what)))),
-    null);
+    h('p', { class: 'dsdate' }, h('span', null, 'Data last updated: ', h('b', null, DATA_UPDATED)), h('span', { class: 'dsmonthly' }, 'Recurring monthly update')));
 }
 /* ---------- landing page (24 Nov, Simone): what the tool is, before the topics ---------- */
 const Landing = {
   start() { go('home'); window.scrollTo({ top: 0 }); },
-  /** Scramble: characters spin like a departure board, then settle left to right (text nodes only, so bold words stay bold). */
-  scramble(el, dur = 1400, delay = 0) {
-    const nodes = []; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim()) nodes.push([n, n.nodeValue]);
+  /** Words appear one at a time; each one arrives scrambled and settles (departure-board effect). */
+  decode(el, delay = 0, step = 75, settle = 420) {
+    if (!el) return 0;
+    const text = el.textContent; el.setAttribute('aria-label', text);
     const CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const total = nodes.reduce((a, [, t]) => a + t.length, 0); let t0 = null;
-    const tick = (ts) => {
-      if (t0 === null) t0 = ts; const p = Math.max(0, Math.min(1, (ts - t0 - delay) / dur)); let k = Math.floor(p * total);
-      for (const [node, txt] of nodes) { const keep = Math.max(0, Math.min(txt.length, k)); k -= txt.length;
-        node.nodeValue = txt.slice(0, keep) + [...txt.slice(keep)].map((c) => (c === ' ' || p === 0 ? c : CH[(Math.random() * CH.length) | 0])).join(''); }
-      if (p < 1) requestAnimationFrame(tick); else nodes.forEach(([node, txt]) => { node.nodeValue = txt; });
+    const words = text.split(/(\s+)/).map((w) => (/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'dw', 'aria-hidden': 'true' }, w)));
+    el.replaceChildren(...words);
+    const spans = words.filter((n) => n.nodeType === 1);
+    spans.forEach((sp, i) => {
+      const word = sp.textContent; sp.style.opacity = '0';
+      setTimeout(() => {
+        sp.style.opacity = '1'; const t0 = performance.now();
+        const tick = (ts) => { const p = Math.min(1, (ts - t0) / settle); const k = Math.floor(p * word.length);
+          sp.textContent = word.slice(0, k) + [...word.slice(k)].map((c) => (/[\w]/.test(c) ? CH[(Math.random() * CH.length) | 0] : c)).join('');
+          if (p < 1) requestAnimationFrame(tick); else sp.textContent = word; };
+        requestAnimationFrame(tick);
+      }, delay + i * step);
+    });
+    return delay + spans.length * step + settle;
+  },
+  /** The button: when it comes into view a line draws its outline; when the outline is closed the button fills it. */
+  button(btn, after) {
+    const svg = btn.querySelector('.lp-frame'); const w = btn.clientWidth, hh = btn.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
+    svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); });
+    const run = () => {
+      btn.classList.add('drawing');
+      const a = svg.querySelector('.lp-line-draw').animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1600, easing: 'linear', fill: 'both' });
+      a.finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready'));
     };
-    requestAnimationFrame(tick);
+    const start = () => setTimeout(run, Math.max(0, after - performance.now()));
+    if (!('IntersectionObserver' in window)) return start();
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); start(); } }, { threshold: 0.9 });
+    io.observe(btn);
   },
   animate() {
-    const root = document.querySelector('.landing'); if (!root || Motion.off()) { root?.classList.add('lp-done'); return; }
-    const E = 'cubic-bezier(.16,1,.3,1)', go = (el, kf, o) => el && el.animate(kf, { fill: 'both', easing: E, ...o });
+    const root = document.querySelector('.landing'); if (!root) return;
+    const btn = root.querySelector('.lp-go');
+    if (Motion.off()) { root.classList.add('lp-still'); btn.classList.add('ready'); return; }
+    const E = 'cubic-bezier(.16,1,.3,1)', t = performance.now();
     root.classList.add('lp-anim');
-    go(root.querySelector('.lp-brand'), [{ transform: 'translateY(110%)' }, { transform: 'none' }], { duration: 1100, delay: 100 });
-    root.querySelectorAll('.lp-word').forEach((w, i) => go(w, [{ transform: 'translateY(108%)' }, { transform: 'none' }], { duration: 1500, delay: 350 + i * 260 }));
-    const t1 = 350 + 2 * 260 + 1100;   // claim done
-    const about = root.querySelector('.lp-about'); go(about, [{ opacity: 0, transform: 'translateX(48px)' }, { opacity: 1, transform: 'none' }], { duration: 1300, delay: t1 }); Landing.scramble(about, 1500, t1);
-    const ql = root.querySelector('.lp-q-l'), qq = root.querySelector('.lp-q-q');
-    go(ql, [{ opacity: 0, transform: 'translateX(-40px)' }, { opacity: 1, transform: 'none' }], { duration: 1100, delay: t1 + 650 }); Landing.scramble(ql, 900, t1 + 650);
-    qq?.classList.add('wipe'); qq?.style.setProperty('--wd', (t1 + 950) + 'ms');
-    const src = root.querySelector('.lp-src > summary'); go(src, [{ opacity: 0, transform: 'translateX(-40px)' }, { opacity: 1, transform: 'none' }], { duration: 1100, delay: t1 + 1500 }); Landing.scramble(src.querySelector('span'), 900, t1 + 1500);
-    const ds = root.querySelector('.dsdate'); go(ds, [{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: t1 + 1900 });
-    // the button: first its outline is drawn, then the button itself appears
-    const btn = root.querySelector('.lp-go'), line = btn.querySelector('.lp-line-draw');
-    go(line, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 1500, delay: t1 + 2200, easing: 'cubic-bezier(.65,0,.35,1)' });
-    go(btn.querySelector('.lp-go-in'), [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: t1 + 3700 });
+    root.querySelector('.lp-brand').animate([{ transform: 'translateY(110%)' }, { transform: 'none' }], { duration: 1100, delay: 100, easing: E, fill: 'both' });
+    root.querySelectorAll('.lp-word').forEach((w, i) => w.animate([{ transform: 'translateY(108%)' }, { transform: 'none' }], { duration: 1500, delay: 350 + i * 260, easing: E, fill: 'both' }));
+    let at = 350 + 2 * 260 + 1000;
+    at = Landing.decode(root.querySelector('.lp-about'), at, 55, 380);
+    at = Landing.decode(root.querySelector('.lp-q-l'), at + 100, 70, 380);
+    root.querySelector('.lp-q-in').animate([{ transform: 'translateY(105%)' }, { transform: 'none' }], { duration: 1400, delay: at, easing: E, fill: 'both' });
+    at = Landing.decode(root.querySelector('.lp-src > summary > span'), at + 700, 90, 380);
+    root.querySelector('.lp-src > summary > svg').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: at, fill: 'both' });
+    Landing.button(btn, t + at + 300);
   },
 };
 function viewLanding() {
   const words = ['Better data.', 'Independent.', 'Swiss.'];
   const NS = 'http://www.w3.org/2000/svg';
-  const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true');
-  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); r.setAttribute('x', '0'); r.setAttribute('y', '0'); r.setAttribute('width', '100%'); r.setAttribute('height', '100%'); r.setAttribute('pathLength', '1'); frame.append(r); }
+  const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
+  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); r.setAttribute('pathLength', '1'); frame.append(r); }
   return h('div', { class: 'landing' },
     h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR'))),
     h('h1', { class: 'lp-claim', 'aria-label': words.join(' ') }, words.map((w) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, w)))),
-    h('p', { class: 'lp-about' }, 'BEV Navigator is a project developed by the University of St. Gallen and Zurich Insurance. It uses Swiss data, reliable sources and AI to guide you towards a more informed decision about electric vehicles.'),
-    h('div', { class: 'lp-q' }, h('span', { class: 'lp-q-l' }, 'You get an answer to your question'), h('p', { class: 'lp-q-q' }, 'Should I keep my car or switch to an electric one?')),
+    h('p', { class: 'lp-about' }, 'BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a more informed decision about electric vehicles.'),
+    h('div', { class: 'lp-q' }, h('p', { class: 'lp-q-l' }, 'You get an answer to your question'), h('div', { class: 'lp-mask' }, h('p', { class: 'lp-q-in' }, 'Should I keep my car or switch to an electric one?'))),
     dataSources(),
-    h('p', { class: 'dsdate' }, h('span', null, 'Data last updated: ', h('b', null, DATA_UPDATED)), h('span', { class: 'dsmonthly' }, 'Recurring monthly update')),
-    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, frame, h('span', { class: 'lp-go-in' }, 'Start My Journey')));
+    h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {

@@ -125,7 +125,12 @@ else if (!car.found || !FUEL_OF[car.fuel]) noRef = 'out_of_scope';
 if (!noRef) {
   const fuel = FUEL_OF[car.fuel];
   const consUser = num(cc.consumption);
-  const cons = consUser ?? (num(car.consumption) !== null ? car.consumption * (C.REAL[car.cycle] ?? C.REAL.WLTP) : null);
+  // 24 Nov (Amos/Martin): the gap between the NEDC test and real driving grew over the years (ICCT, From laboratory to road):
+  // about +12 % for cars of 2005, +40 % from 2015. One factor of 1.39 for all NEDC cars overstated older cars.
+  const regYear = Number(String(cc.first_registration ?? '').slice(0, 4)) || null;
+  const nedcF = regYear === null ? C.REAL.NEDC : regYear <= 2005 ? 1.12 : regYear <= 2009 ? 1.18 : regYear <= 2012 ? 1.27 : regYear <= 2014 ? 1.35 : 1.40;
+  const realF = car.cycle === 'NEDC' ? nedcF : (C.REAL[car.cycle] ?? C.REAL.WLTP);
+  const cons = consUser ?? (num(car.consumption) !== null ? car.consumption * realF : null);
   const fuelRow = constant(`fuel_${fuel}_chf_l`);
   const fuelUser = num(ca.fuel_price_chf_l);
   const fuelPrice = fuelUser ?? num(fuelRow?.value);
@@ -146,7 +151,7 @@ if (!noRef) {
     const value = (t) => Math.max(0, V0 * C.KEEP_YEAR ** t * Math.max(0.3, 1 - kmLoss * t));
     const energy = trips.reduce((s, t) => s + t.days_per_year * 2 * t.km * (cons / 100) * (C.TRAILER[t.trailer] ?? 1) * fuelPrice, 0);
     const repairF = Math.min(C.OLD_REPAIR_MAX, 1 + C.OLD_REPAIR * Math.max(0, age0 - C.OLD_REPAIR_FROM));
-    ref = { fuel, cons, cons_user: consUser !== null, fuelPrice, fuelRow, fuel_user: fuelUser !== null, size, K, K_user: num(cc.new_price_chf) !== null,
+    ref = { fuel, cons, cons_rated: num(car.consumption), cycle: car.cycle ?? null, realF, cons_user: consUser !== null, fuelPrice, fuelRow, fuel_user: fuelUser !== null, size, K, K_user: num(cc.new_price_chf) !== null,
       V0, V0_user: vUser !== null, age0, km0, annual, value, energy, repairF, tax: taxRow('ice', size), ins: insRow('ice', size), name: car.label || 'current car' };
   }
 }
@@ -348,7 +353,8 @@ if (ref) {
   lines.push({ line_id: 'current_car', kind: 'current_car', label: ref.name, class_id: null, size_label: SIZE_WORD[ref.size], min_wltp_km: null, selected: false,
     value_today_chf: r0(ref.V0), value_today_source: ref.V0_user ? 'user' : 'estimate', age_years: Math.round(ref.age0 * 10) / 10,
     cash_need_today_chf: null,
-    energy_detail: { kind: ref.fuel, km_per_year: ref.annual, l_per_100km: ref.annual ? Math.round((ref.energy / ref.fuelPrice / ref.annual) * 1000) / 10 : null, chf_per_l: ref.fuelPrice },
+    energy_detail: { kind: ref.fuel, km_per_year: ref.annual, l_per_100km: ref.annual ? Math.round((ref.energy / ref.fuelPrice / ref.annual) * 1000) / 10 : null, chf_per_l: ref.fuelPrice,
+      l_per_100km_rated: ref.cons_user ? null : ref.cons_rated, cycle: ref.cycle, real_factor: ref.cons_user ? null : ref.realF, consumption_source: ref.cons_user ? 'user' : 'tas', price_source: ref.fuel_user ? 'your value' : (ref.fuelRow?.source ?? 'BFS'), price_url: ref.fuel_user ? null : (ref.fuelRow?.url ?? null) },
     years, bridging: [] });
 }
 
@@ -398,7 +404,7 @@ if (ref) {
   assumptions.push(A('current_car_value_today', 'What your current car is worth today', r0(ref.V0), 'CHF',
     ref.V0_user ? 'your value' : `estimate: new price × 0.85 per year of age, minus 1 % of the new price per 10,000 km above 15,000 km a year`, null, 'current_car.value_today_chf', ref.V0_user));
   assumptions.push(A('current_car_consumption', 'Consumption of your current car', Math.round(ref.cons * 10) / 10, 'l/100 km',
-    ref.cons_user ? 'your value' : 'ASTRA TAS type approval × real-world factor (ICCT: WLTP ×1.19, NEDC ×1.39)', null, 'current_car.consumption', ref.cons_user));
+    ref.cons_user ? 'your value' : `ASTRA TAS type approval ${ref.cons_rated} l/100 km (${ref.cycle || 'WLTP'}) × real-world factor ${ref.realF} (ICCT, From laboratory to road)`, 'https://theicct.org/publication/from-laboratory-to-road-a-2018-update/', 'current_car.consumption', ref.cons_user));
   if (!ref.V0_user) assumptions.push(A('current_car_new_price', 'New price of your current car (only for the value estimate)', ref.K, 'CHF',
     ref.K_user ? 'your value' : `Typical new price of a ${SIZE_WORD[ref.size].toLowerCase()} combustion car (BFE/EBP 2023, Table 4)`, ref.K_user ? null : BFE_EBP, 'current_car.new_price_chf', ref.K_user));
   assumptions.push(A('fuel_price', ref.fuel === 'diesel' ? 'Diesel price' : 'Petrol price', ref.fuelPrice, 'CHF/l',

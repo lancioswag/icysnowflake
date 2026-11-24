@@ -5,23 +5,15 @@ Screenshots: https://bev-navigator.ricordatilamail18.workers.dev/map/ · ids as 
 ## home-empty
 ```
 BEV Navigator
-Does an electric car make sense for you?
-An independent check based on Swiss data, tailored to your trips, charging options and budget.
-By a student team of the University of St. Gallen (HSG), in a project commissioned by Zurich Insurance. It sells nothing and uses no Zurich prices.
-Why not just ask a chatbot?
-Your local data: the tariff of your municipality, chargers near you, your car’s type approval.
-Calculated, not guessed: fixed formulas; AI only writes the summary text.
-Sources shown: next to every figure, and you can change any value.
-You get a clear answer: keep your car, switch, or which figure is still missing.
-See our data sources
-What would you like to check?
+Find out if you want electric
+What’s holding you back?
 Range & battery life
 Charging access
 Costs & resale value
 Climate impact
 Lifestyle match
-Tap the topics you want. Drag them to set the order – we start at the top.
 Check all topics
+Keep it short with 5 questions
 Tell us in your own words
 Delete my answers
 ```
@@ -29,16 +21,8 @@ Delete my answers
 ## home-picked
 ```
 BEV Navigator
-Does an electric car make sense for you?
-An independent check based on Swiss data, tailored to your trips, charging options and budget.
-By a student team of the University of St. Gallen (HSG), in a project commissioned by Zurich Insurance. It sells nothing and uses no Zurich prices.
-Why not just ask a chatbot?
-Your local data: the tariff of your municipality, chargers near you, your car’s type approval.
-Calculated, not guessed: fixed formulas; AI only writes the summary text.
-Sources shown: next to every figure, and you can change any value.
-You get a clear answer: keep your car, switch, or which figure is still missing.
-See our data sources
-What would you like to check?
+Find out if you want electric
+What’s holding you back?
 Charging access
 1
 Range & battery life
@@ -47,8 +31,8 @@ Costs & resale value
 3
 Climate impact
 Lifestyle match
-Tap the topics you want. Drag them to set the order – we start at the top.
-Continue
+Check topics
+Keep it short with 5 questions
 Tell us in your own words
 Delete my answers
 ```
@@ -56,27 +40,20 @@ Delete my answers
 ## assistant
 ```
 Assistant
-Today
-Hi! Ask me anything about this page or your results.
-18:23
+Hi! Tell me about your car, where you live and where you drive. I fill in the answers for you and you check them.
 Can I charge at work?
-18:23
 Yes. Your employer has no charger yet, but 3 public stations are within 500 m of your office. A normal charger there costs about CHF 7 per 100 km.
-18:23
-Do the whole check here in the chat
-What can the Navigator tell me?
+I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?
+What does “Lifestyle match” mean?
+How long does an electric car battery last?
 ```
 
 ## assistant-check
 ```
 Assistant
-Today
-Hi! Ask me anything about this page or your results.
-18:23
+Hi! Tell me about your car, where you live and where you drive. I fill in the answers for you and you check them.
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:23
 I'll ask a few short questions here in the chat.
-18:23
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8001. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today?
@@ -86,30 +63,87 @@ I know the type-approval number
 I don't have a car
 Next
 Or write your answer below.
-18:23
 Stop the check
 ```
 
 ## assistant-done
 ```
 Assistant
-Today
-Hi! Ask me anything about this page or your results.
-18:23
+Hi! Tell me about your car, where you live and where you drive. I fill in the answers for you and you check them.
 I want to know my ideal car. I drive 80 km a day to work and live in Tesserete.
-18:23
 I'll ask a few short questions here in the chat.
-18:23
 Noted: home 6950 Tesserete (Capriasca) TI, commute 80 km one way, work 8001. You can change it later.
 Checking: Lifestyle match
 Which car do you drive today? ✓
-18:23
 Your results are ready.
-18:23
 Open your summary
-18:23
-Do the whole check here in the chat
-What can the Navigator tell me?
+I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?
+What does “Lifestyle match” mean?
+How long does an electric car battery last?
+```
+
+## compass-1
+```
+Where to start
+Step 1 of 5
+Where are you starting from?
+Choose the closest description. You do not need to be ready to buy.
+I am curious, but not looking to change yet
+I am considering it, but something holds me back
+I may need to replace my car soon
+I would rather wait for now
+I do not want to switch at the moment
+Continue
+Skip this question
+```
+
+## compass-3
+```
+Where to start
+Step 3 of 5
+Which thought comes closest to your hesitation?
+Pick the one to look at first. It is your description, not a label.
+“I cannot yet picture how it would work for me.”
+“I might lose something I value about driving today.”
+“I could make an expensive decision I later regret.”
+“If I wait, I may make a better decision.”
+“I am not sure it is the right choice for me.”
+“There is too much conflicting information.”
+“Nothing in particular, I see no reason to change.”
+Continue
+Back
+Skip this question
+```
+
+## compass-4
+```
+Where to start
+Step 4 of 5
+What would you need to feel clearer about?
+Choose the most important question for now.
+What a wrong choice could cost me
+Which risks I can limit (battery, resale value)
+How it compares fairly with keeping my car
+Continue
+Back
+Skip this question
+```
+
+## compass-card
+```
+Where to start
+Your starting point
+Your main question
+How it compares fairly with keeping my car
+Where you are
+I am considering it, but something holds me back
+What you want to keep
+Feeling financially secure; The freedom to set off spontaneously
+Help you trust
+A fair comparison of switching and keeping my car
+We will look at: Costs & resale value, Range & battery life. Every figure comes with its source; you can stop at any time, and deciding not to switch is a fine outcome.
+Start with Costs & resale value
+Change my answers
 ```
 
 ## q1
@@ -296,9 +330,12 @@ Year
 Mileage today
 km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
-What would you get if you sold it today? (optional)
+Expected selling price for your current car (optional)
 CHF
-A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.
+Enter an offer or your own estimate. We’ll use it to work out how much cash you’d need to switch.
+Market estimate (AutoScout24):
+not available
+. Without your price we estimate the value from age and mileage.
 Next
 ```
 
@@ -306,7 +343,7 @@ Next
 ```
 Costs & resale value
 Question 1 of 1
-What would you like to drive?
+Which electric car are you looking at?
 Size
 Small
 Medium
@@ -316,9 +353,9 @@ New or used?
 New
 Used
 Not sure
-Price you would pay (optional)
+Price of the electric car (optional)
 CHF
-An offer or a listing price is best. Without it we use typical Swiss prices for the size (Our assumption).
+The vehicle price from an offer or a listing, not your cash budget: the sale of your car is taken off separately. Without it we use typical Swiss prices for the size.
 Show my result
 ```
 
@@ -402,19 +439,6 @@ km
 Show my result
 ```
 
-## q13
-```
-Lifestyle match
-Question 1 of 1
-What is your budget to buy the car?
-Up to CHF 30’000
-CHF 30’000 – 45’000
-CHF 45’000 – 60’000
-More than CHF 60’000
-Not sure yet
-Show my result
-```
-
 ## q-missing
 ```
 Costs & resale value
@@ -473,9 +497,12 @@ Year
 Mileage today
 km
 Not sure about the date? Leave it empty, we estimate the age from the mileage.
-What would you get if you sold it today? (optional)
+Expected selling price for your current car (optional)
 CHF
-A dealer offer or a similar car on AutoScout24 is a good guide. Without it we estimate the value from age and mileage.
+Enter an offer or your own estimate. We’ll use it to work out how much cash you’d need to switch.
+Market estimate (AutoScout24):
+not available
+. Without your price we estimate the value from age and mileage.
 Show my result
 ```
 
@@ -599,7 +626,8 @@ At home
 Ask your landlord
 CHF 5.37
 / 100 km
-Source ElCom 2027, 31.6 Rp/kWh
+Source
+ ElCom 2027, 31.6 Rp/kWh
 At work
 Ask your employer
 No price data
@@ -623,7 +651,8 @@ Extra per month
 about CHF 45
 Electricity if installed
 CHF 5.37 / 100 km
-31.6 Rp/kWh , Source ElCom 2027
+31.6 Rp/kWh , Source
+ ElCom 2027
 Subsidy for your postal code
 Charging stations
 Stadt St. Gallen
@@ -738,10 +767,10 @@ CHF 3’800
 over 6 years
 about CHF 630 a year
 more than keeping your VW Golf 1.5TSI
-It pays off after about 10 years.
+Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -769,8 +798,22 @@ CHF 3’800 more
 When does it pay off?
 after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
-We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
+Your VW Golf 1.5TSI is worth about CHF 14’400 today (our estimate). Got an offer? Enter it.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -787,7 +830,8 @@ Sale of your current car
 our estimate of its value today
 –
 −14’400
-Net outlay today
+Cash you need today
+price + installation − sale of your car
 0
 18’100
 Running costs
@@ -800,7 +844,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -812,7 +856,12 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+How we calculate energy
+Your VW Golf 1.5TSI: 19’653 km a year at 7.1 l per 100 km and CHF 1.83 per litre: CHF 2’550 a year
+Consumption: type approval (ASTRA TAS), real-world estimate. Petrol price: BFS, LIK average prices energy and fuel, monthly values (su-d-05.02.91), mean Nov 2025–Oct 2026 (1.829).
+Electric car: 18’400 km a year at 18.8 kWh per 100 km and CHF 0.32 per kWh: CHF 1’110 a year
+Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ElCom electricity tariffs (LINDAS), household profile H4, standard product, 2027, St. Gallen.
+Trips the electric car cannot do: about 1’253 km a year by rental car or train, CHF 262 a year, shown on its own line (Other transport).
 Depreciation and total cost
 CHF
 Keep your car
@@ -870,10 +919,10 @@ CHF 3’800
 over 6 years
 about CHF 630 a year
 more than keeping your VW Golf 1.5TSI
-It pays off after about 10 years.
+Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -901,8 +950,22 @@ CHF 3’800 more
 When does it pay off?
 after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
-We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
+Your VW Golf 1.5TSI is worth about CHF 14’400 today (our estimate). Got an offer? Enter it.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -919,7 +982,8 @@ Sale of your current car
 our estimate of its value today
 –
 −14’400
-Net outlay today
+Cash you need today
+price + installation − sale of your car
 0
 18’100
 Running costs
@@ -932,7 +996,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -944,7 +1008,12 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+How we calculate energy
+Your VW Golf 1.5TSI: 19’653 km a year at 7.1 l per 100 km and CHF 1.83 per litre: CHF 2’550 a year
+Consumption: type approval (ASTRA TAS), real-world estimate. Petrol price: BFS, LIK average prices energy and fuel, monthly values (su-d-05.02.91), mean Nov 2025–Oct 2026 (1.829).
+Electric car: 18’400 km a year at 18.8 kWh per 100 km and CHF 0.32 per kWh: CHF 1’110 a year
+Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ElCom electricity tariffs (LINDAS), household profile H4, standard product, 2027, St. Gallen.
+Trips the electric car cannot do: about 1’253 km a year by rental car or train, CHF 262 a year, shown on its own line (Other transport).
 Depreciation and total cost
 CHF
 Keep your car
@@ -986,6 +1055,8 @@ Replacement, a separate scenario: about CHF 12’300 for a 49 kWh battery. It 
 All amounts in CHF. Rounded to CHF 100; running costs per year to CHF 1. We calculate with unrounded values, so lines can differ slightly from their sum.
 Full analysis
 When does it pay off?
+Pays off in year 10
+Values after year 8 are extrapolated, so this is uncertain.
 -10k
 -5k
 0k
@@ -1027,11 +1098,11 @@ Energy
 Km a year, consumption, price.
 1’089
 18’400 km a year
-19 kWh per 100 km
+18.8 kWh per 100 km
 CHF 0.32 per kWh
 2’550
 19’653 km a year
-7 l per 100 km
+7.1 l per 100 km
 CHF 1.83 per litre
 Tax
 351
@@ -1067,6 +1138,8 @@ Electric car
 831 km
 Your VW Golf 1.5TSI
 385 km
+831 km
+385 km
 +
 −
  Leaflet | © OpenStreetMap contributors
@@ -1086,7 +1159,7 @@ Resale values of combustion cars may fall as more people switch.
 Leasing
 Leasing or a car subscription shifts the value risk to the provider.
 Insurance
-Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.
+Typical Comparis premiums: full cover for a car under 5 years old, then liability. Enter your own quote for a sharper result.
 Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
@@ -1243,7 +1316,7 @@ Small
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
-Your car
+Your choice
 Class
 Small (250+ km)
 Seats
@@ -1266,7 +1339,7 @@ Small
 covers 230 of 231 driving days
 250+ km range
 For the rest: 1 day rental car.
-Your car
+Your choice
 Class
 Small (250+ km)
 Seats
@@ -1277,7 +1350,7 @@ Full analysis
 Compare the car classes
 	
 Small
-Yours
+Your choice
 	
 Medium
 Choose
@@ -1303,10 +1376,10 @@ CHF 3’800
 over 6 years
 about CHF 630 a year
 more than keeping your VW Golf 1.5TSI
-It pays off after about 10 years.
+Pays off in year 10.
 Your comparison
 Size
-Small, 250+ km
+Small, 250+ km (your choice)
 Medium, 250+ km
 Buy
 New
@@ -1334,8 +1407,22 @@ CHF 3’800 more
 When does it pay off?
 after about 10 years
 Your VW Golf 1.5TSI is a medium car. Tap to compare with a used medium electric car.
-We estimated what your VW Golf 1.5TSI is worth today. Your own value (for example a dealer offer) makes the result much more accurate.
+Your VW Golf 1.5TSI is worth about CHF 14’400 today (our estimate). Got an offer? Enter it.
 Keep or switch, over 6 years
+What a year costs, on average
+Everything included, spread over the 6 years you keep the car.
+VW Golf 1.5TSI
+CHF 6’620
+Electric car, small, new
+CHF 7’250
+Value loss
+Interest
+Energy
+Tax
+Insurance
+Maintenance and tyres
+Other transport
+Charging installation
 Upfront cost
 CHF
 Keep your car
@@ -1352,7 +1439,8 @@ Sale of your current car
 our estimate of its value today
 –
 −14’400
-Net outlay today
+Cash you need today
+price + installation − sale of your car
 0
 18’100
 Running costs
@@ -1365,7 +1453,7 @@ Energy
 Motor vehicle tax
 515
 351
-Insurance (liability)
+Insurance
 175
 155
 Maintenance and tyres
@@ -1377,7 +1465,12 @@ Other transport for rare trips
 Running costs per year
 4’795
 2’772
-Energy, electric car: 18’400 km a year, 19 kWh per 100 km, CHF 0.32 per kWh. Your car: 19’653 km a year, 7 l per 100 km, CHF 1.83 per litre.
+How we calculate energy
+Your VW Golf 1.5TSI: 19’653 km a year at 7.1 l per 100 km and CHF 1.83 per litre: CHF 2’550 a year
+Consumption: type approval (ASTRA TAS), real-world estimate. Petrol price: BFS, LIK average prices energy and fuel, monthly values (su-d-05.02.91), mean Nov 2025–Oct 2026 (1.829).
+Electric car: 18’400 km a year at 18.8 kWh per 100 km and CHF 0.32 per kWh: CHF 1’110 a year
+Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ElCom electricity tariffs (LINDAS), household profile H4, standard product, 2027, St. Gallen.
+Trips the electric car cannot do: about 1’253 km a year by rental car or train, CHF 262 a year, shown on its own line (Other transport).
 Depreciation and total cost
 CHF
 Keep your car
@@ -1419,6 +1512,8 @@ Replacement, a separate scenario: about CHF 12’300 for a 49 kWh battery. It 
 All amounts in CHF. Rounded to CHF 100; running costs per year to CHF 1. We calculate with unrounded values, so lines can differ slightly from their sum.
 Full analysis
 When does it pay off?
+Pays off in year 10
+Values after year 8 are extrapolated, so this is uncertain.
 -10k
 -5k
 0k
@@ -1460,11 +1555,11 @@ Energy
 Km a year, consumption, price.
 1’089
 18’400 km a year
-19 kWh per 100 km
+18.8 kWh per 100 km
 CHF 0.32 per kWh
 2’550
 19’653 km a year
-7 l per 100 km
+7.1 l per 100 km
 CHF 1.83 per litre
 Tax
 351
@@ -1500,6 +1595,8 @@ Electric car
 831 km
 Your VW Golf 1.5TSI
 385 km
+831 km
+385 km
 +
 −
  Leaflet | © OpenStreetMap contributors
@@ -1510,21 +1607,21 @@ How we calculated
 We compare what each choice costs you over the same number of years (total cost of ownership).
 From the upfront cost to the difference over 6 years
 Net outlay today (price + installation − sale of your car)
-− CHF 18’100
+− CHF 18’110
 Value at the end: electric car minus your car
 + CHF 2’900
 Lower running costs over 6 years
-+ CHF 12’100
++ CHF 12’140
 Interest over 6 years
-− CHF 700
+− CHF 680
 =
 Difference over 6 years
-− CHF 3’800
-Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Rounding can make the lines differ by up to CHF 100.
+− CHF 3’760
+Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Each car's value loss is its value today minus its value at the end, so nothing is counted twice. Lines rounded to CHF 10; yearly items are rounded before they are added up, so the sum can differ from the difference by a few francs.
 Value loss, not the full price. The electric car counts with its price today minus its value at the end. Your car counts with its value today minus its value at the end.
 Interest on the money tied up in the car (1.25 % a year).
 Energy: your kilometres, consumption and price (electricity at home from ElCom for your postal code, fuel price from BFS).
-Tax, insurance (liability only, a rough placeholder), maintenance and tyres. Older cars need more repairs: +5 % per year of age above 5 years.
+Tax, insurance, maintenance and tyres. Insurance: typical Comparis premiums, full cover while a car is under 5 years old, then liability. Older cars need more repairs: +5 % per year of age above 5 years. You can enter your own values.
 Where the values at the end come from
 Electric car: BFE/EBP 2023, Figure 2 (Eurotax retail values of EVs, share of new price), ages 1–8 for small and medium cars; large cars use the medium curve; beyond 8 years extrapolated with −20 % per year; ±2 percentage points per 10,000 km above or below 15,000 km a year, at most down to 40 % and up to 125 % of the typical value; the value never rises with time
 Used electric car: used EV bought at age 4: price = new price times value share at that age; its value later = new price times share at age 4 + years kept (so from about 5 years kept the curve is extrapolated)
@@ -1544,7 +1641,7 @@ Resale values of combustion cars may fall as more people switch.
 Leasing
 Leasing or a car subscription shifts the value risk to the provider.
 Insurance
-Comprehensive cover for EVs was cheaper in 70 % of cases (comparis 2025). We count liability only.
+Typical Comparis premiums: full cover for a car under 5 years old, then liability. Enter your own quote for a sharper result.
 Subsidies can change
 Cantonal tax rebates and purchase subsidies are reviewed regularly.
 Battery and resale
@@ -1580,19 +1677,27 @@ Check another topic
 Your answers are kept.
 ```
 
-## home-sources
+## landing
 ```
-BEV Navigator
-Does an electric car make sense for you?
-An independent check based on Swiss data, tailored to your trips, charging options and budget.
-By a student team of the University of St. Gallen (HSG), in a project commissioned by Zurich Insurance. It sells nothing and uses no Zurich prices.
-Why not just ask a chatbot?
-Your local data: the tariff of your municipality, chargers near you, your car’s type approval.
-Calculated, not guessed: fixed formulas; AI only writes the summary text.
-Sources shown: next to every figure, and you can change any value.
-You get a clear answer: keep your car, switch, or which figure is still missing.
+BEV NAVIGATOR
+BETTER DATA
+INDEPENDENT
+SWISS
+BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.
 See our data sources
-Every figure in your results is marked: Source official or published data, Our assumption an estimate by the HSG team, Your value what you entered. You can change your values at any time.
+Should you keep your car or
+switch to an electric vehicle?
+START MY JOURNEY
+```
+
+## landing-sources
+```
+BEV NAVIGATOR
+BETTER DATA
+INDEPENDENT
+SWISS
+BEV Navigator is an independent project by the University of St. Gallen (HSG) and Zurich Insurance. It combines Swiss data, reliable sources and AI to guide you to a better informed choice about EVs.
+See our data sources
 ElCom electricity tariffs
 your electricity price at home, by postal code (Charging, Costs)
 BFE charging map (ich-tanke-strom)
@@ -1607,6 +1712,8 @@ BFE/EBP study 2023 (Eurotax values)
 what an electric car is worth after 1 to 8 years, maintenance costs (Costs, Battery & resale)
 TCS
 motor vehicle tax by canton (Costs)
+Comparis insurance calculator (2025)
+insurance premiums by car class, full cover or liability (Costs)
 swisstopo and openrouteservice
 your address on the map and the distance of your trips (Range, Charging)
 Paul Scherrer Institut (carculator), BFE
@@ -1617,21 +1724,11 @@ EAFO (European Commission)
 charging abroad (Range, Charging)
 SBB, Mobility, KAYAK
 train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)
-Data checked in November 2026; electricity tariffs for 2027. Insurance is a rough placeholder (liability only), not a quote. Purchase subsidies are not included yet.
-What would you like to check?
-Charging access
-1
-Range & battery life
-2
-Costs & resale value
-3
-Climate impact
-Lifestyle match
-Tap the topics you want. Drag them to set the order – we start at the top.
-Recalculate
-Your results
-Tell us in your own words
-Delete my answers
+Data last updated: 23 Nov 2026
+Recurring monthly update
+Should you keep your car or
+switch to an electric vehicle?
+START MY JOURNEY
 ```
 
 ## r-B2-email-site
@@ -1687,7 +1784,8 @@ At home
 Ask your landlord
 CHF 5.37
 / 100 km
-Source ElCom 2027, 31.6 Rp/kWh
+Source
+ ElCom 2027, 31.6 Rp/kWh
 At work
 Ask your employer
 No price data
@@ -1711,7 +1809,8 @@ Extra per month
 about CHF 45
 Electricity if installed
 CHF 5.37 / 100 km
-31.6 Rp/kWh , Source ElCom 2027
+31.6 Rp/kWh , Source
+ ElCom 2027
 Subsidy for your postal code
 Charging stations
 Stadt St. Gallen
@@ -1836,34 +1935,9 @@ Your answers are kept.
 ## r-B6-used
 ```
 Battery details
-Battery life
-IN SHORT
-Battery health today: about 87 %.
-Good for its age – still have it tested before you buy.
-Battery health
-87 %
-50
-60
-70
-80
-90
-100
-below warranty limit
-70–80 %
-over 80 %
-Age
-5.7 years
-Mileage
-68’000 km
-Per year
-12’000 km
-This is our estimate for a typical car of this age and mileage. Before you buy, have the battery checked and find out which manufacturer warranty still applies. Many manufacturers guarantee at least 70 % battery health for 8 years or 160’000 km; in practice batteries are usually in better condition – which is why a test is worth it. TCS recommends asking the seller for a battery certificate.
-Full analysis
-Edit your inputs
-›
-Continue with Costs & resale value
-Check another topic
-Your answers are kept.
+Something went wrong
+Try again
+Back
 ```
 
 ## summary-loading
@@ -1883,6 +1957,11 @@ Over 6 years, a new small electric car with at least 250 km range costs about 
 Your trips need about 133 km of real range on 90 % of your driving days.
 Charging at home needs your landlord.
 Calculated from your results, without AI.
+What would you like to check or try before deciding?
+Check my costs with my own figures
+Plan a typical long trip
+Take a test drive and try charging
+Decide later
 The text summary is not available right now. All figures on this page are complete.
 Your topics
 Charging access
@@ -1922,6 +2001,11 @@ Over 6 years, a new small electric car with at least 250 km range costs about 
 Your trips need about 133 km of real range on 90 % of your driving days.
 Charging at home needs your landlord.
 Calculated from your results, without AI.
+What would you like to check or try before deciding?
+Check my costs with my own figures
+Plan a typical long trip
+Take a test drive and try charging
+Decide later
 In words, by AI
 Your topics
 Charging access
@@ -1952,16 +2036,8 @@ Save your answers
 ## home-results
 ```
 BEV Navigator
-Does an electric car make sense for you?
-An independent check based on Swiss data, tailored to your trips, charging options and budget.
-By a student team of the University of St. Gallen (HSG), in a project commissioned by Zurich Insurance. It sells nothing and uses no Zurich prices.
-Why not just ask a chatbot?
-Your local data: the tariff of your municipality, chargers near you, your car’s type approval.
-Calculated, not guessed: fixed formulas; AI only writes the summary text.
-Sources shown: next to every figure, and you can change any value.
-You get a clear answer: keep your car, switch, or which figure is still missing.
-See our data sources
-What would you like to check?
+Find out if you want electric
+What’s holding you back?
 Charging access
 1
 Range & battery life
@@ -1970,9 +2046,9 @@ Costs & resale value
 3
 Climate impact
 Lifestyle match
-Tap the topics you want. Drag them to set the order – we start at the top.
 Recalculate
 Your results
+Keep it short with 5 questions
 Tell us in your own words
 Delete my answers
 ```

@@ -2367,7 +2367,7 @@ function whyNotChat() {
   const pts = [['Better data', 'The tariff of your municipality (ElCom), chargers near you (BFE), your car\u2019s type approval (ASTRA). A chatbot does not have them.'],
     ['More reliable', 'Fixed formulas calculate every figure, and each one shows its source. AI only puts the result into words.'],
     ['Independent', 'It sells nothing: no cars, no chargers, no ads.'],
-    ['Swiss', 'Made in Switzerland for Swiss drivers, with Swiss public data. No account needed: your answers are kept in your browser and only sent to calculate your results.']];
+    ['Swiss', 'Made in Switzerland for Swiss drivers, with Swiss public data. No account needed: without one, your answers stay in your browser and are only sent out to calculate your results.']];
   const btn = h('button', { class: 'btn primary block', type: 'button', onclick: close }, 'Got it');
   const wrap = h('div', { class: 'modalwrap', role: 'presentation', onclick: (e) => { if (e.target === wrap) close(); } },
     h('div', { class: 'modalcard', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'wnc-t' },
@@ -2949,7 +2949,7 @@ function profileLines(p) {
   if (p.charging_at_work) L.push(['Work', p.charging_at_work === 'no_car_commute' ? 'No commute by car' : [`${c?.freq_n || '–'} days a week`, p.work_postal_code, { charger_available: 'can charge there', parking_no_charger: 'parking, no charger', no_parking: 'no parking' }[p.charging_at_work]].filter(Boolean).join(', ')]);
   if (p.trips.length) L.push(['Trips', p.trips.map((t) => t.label || 'Trip').join(', ')]);
   if (p.home_charging_status) L.push(['Charging at home', { yes: 'Yes', no: 'No', unknown: "Don't know" }[p.home_charging_status]]);
-  if (p.current_car.targa_id) L.push(['Your car', p.current_car.targa_id === 'skipped' ? 'No car' : carName(p.current_car.targa_id)]);
+  if (p.current_car.targa_id) L.push(['Your car', p.current_car.targa_id === 'skipped' ? 'No car' : carName(p.current_car.targa_id) + (p.current_car.value_today_chf != null ? `, selling price ${fmt.chf(p.current_car.value_today_chf)}` : '')]);
   if (p.target_ev?.size) L.push(['Electric car', evChoiceText(p)]);
   return L;
 }
@@ -5401,9 +5401,9 @@ const Report = {
     const out = [{ text: `${evName(M.ev, true)}${two ? ` against keeping your ${M.refName}` : ''}, kept ${yrs}`, bold: true, margin: [0, 0, 0, 4] },
       R.h3('Upfront cost (CHF)'), tbl(B.upfront, 'CHF'),
       R.h3('Running costs (CHF per year)'), tbl(B.running, 'CHF per year'),
-      energyText(M.ev) ? { text: `Energy, electric car: ${energyText(M.ev)}.${two && energyText(M.ref) ? ` Your car: ${energyText(M.ref)}.` : ''}`, fontSize: 8.5, color: C.ink2, margin: [0, 2, 0, 0] } : null,
+      energyText(M.ev) ? { text: [two && energyFormula(M.ref, r.assumptions || []) ? `Energy, your car: ${energyFormula(M.ref, r.assumptions || []).calc}. ${energyFormula(M.ref, r.assumptions || []).basis}` : null, `Energy, electric car: ${energyFormula(M.ev, r.assumptions || [])?.calc || energyText(M.ev)}.`].filter(Boolean).join(' '), fontSize: 8.5, color: C.ink2, margin: [0, 2, 0, 0] } : null,
       R.h3(`Depreciation and total cost over ${yrs} (CHF)`), tbl(B.dep, 'CHF')];
-    if (two && M.saving != null) out.push({ text: `Difference over ${yrs}: ${diff(M.saving)}. ${M.payback ? `Pays off after about ${yrsTxt(M.payback)}.` : `Does not pay off within ${M.lastYear || M.H} years.`}`, bold: true, margin: [0, 6, 0, 0] });
+    if (two && M.saving != null) out.push({ text: `Difference over ${yrs}: ${diff(M.saving)}. ${M.payback ? `Pays off in year ${M.payback}.` : M.gapYears?.length ? 'Not enough data to estimate payback.' : `Does not pay off within ${M.lastYear || M.H} years.`}`, bold: true, margin: [0, 6, 0, 0] });
     const eb = M.e?.value_after_band, cb = M.c?.value_after_band;
     if (M.extrap) out.push({ text: `After ${yrs} the values are uncertain (our value curve has market data for ages 1 to 8). Electric car ${bandTxt(eb) || '–'}${cb ? `, your car ${bandTxt(cb)}` : ''}.`, fontSize: 9, margin: [0, 4, 0, 0] });
     if (two && M.scen && (M.scen.flips || M.extrap)) out.push(R.kv([['Low case (electric car worth less, your car worth more)', diff(M.scen.low)], ['Our estimate', diff(M.scen.mid)], ['High case (the other way round)', diff(M.scen.high)]]),

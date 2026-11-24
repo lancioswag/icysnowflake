@@ -1786,6 +1786,18 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .flagw::after { background: #d52b1e !important; -webkit-background-clip: text !important; background-clip: text !important; }
 .flagw::before { content: ''; position: absolute; z-index: 1; left: 50%; top: 52%; width: .34em; height: .34em; transform: translate(-50%, -50%);
   background: linear-gradient(#fff, #fff) 50% 50% / 62% 20% no-repeat, linear-gradient(#fff, #fff) 50% 50% / 20% 62% no-repeat, #d52b1e; box-shadow: 0 0 0 2px var(--ink); }
+
+.enbox { margin: 10px 0 4px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); display: grid; gap: 8px; }
+.enbox h4 { margin: 0; font-size: 14px; } .enbox p { margin: 0; font-size: 13.5px; line-height: 1.45; } .enbox small { color: var(--ink-2); font-size: 12.5px; }
+.pbanswer { margin: 4px 0 8px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; } .pbanswer.good { color: var(--good, #15803d); } .pbanswer.bad { color: var(--ink); } .pbanswer.open { color: var(--ink-2); }
+.pbanswer small { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); letter-spacing: 0; }
+.hint.mkt b { color: var(--ink); }
+.modalwrap { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 20px; background: rgba(16,41,75,.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: lpFade .35s ease both; }
+.modalcard { width: min(100%, 420px); max-height: 85vh; overflow: auto; background: var(--surface); border-radius: 20px; padding: 22px 20px 18px; box-shadow: 0 24px 60px rgba(16,41,75,.25); }
+.modalcard h2 { margin: 0 0 12px; font-size: 21px; letter-spacing: -0.02em; }
+.modalcard ul { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 12px; }
+.modalcard li { display: grid; gap: 2px; font-size: 14px; line-height: 1.45; } .modalcard li span { color: var(--ink-2); }
+.nextcheck .chips { flex-wrap: wrap; }
 </style>
 <script>/* accent theme before first paint: ?theme=zurich|mbp|duo|pine|ink|petrol|blue */
 (function () { try { var q = new URLSearchParams(location.search).get('theme'); if (q) localStorage.setItem('bevnav.theme86', q); var t = localStorage.getItem('bevnav.theme86'); if (t && t !== 'blue') document.documentElement.setAttribute('data-accent', t); } catch (e) { } })();</script>
@@ -2016,7 +2028,7 @@ function loadStore() {
     store.profile = sanitizeProfile(d.profile);
     store.queue = Array.isArray(d.queue) ? d.queue.filter((c) => BARRIERS[c]) : [];
     store.visited = Array.isArray(d.visited) ? d.visited.filter((c) => BARRIERS[c]) : [];
-    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {};
+    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {}; store.carAuto = d.carAuto || {}; store.carAutoNote = d.carAutoNote || {};
     store.compass = d.compass && typeof d.compass === 'object' ? d.compass : null;
     if (d.settings) store.settings = { ...store.settings, ...d.settings };
     store.settings.demo = !!window.BEV_PREVIEW;
@@ -2027,7 +2039,7 @@ function loadStore() {
 }
 function saveStore() {
   if (typeof Account !== 'undefined') Account.queueSave();
-  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, settings: store.settings, compass: store.compass || null })); } catch { /* ignore */ }
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, carAuto: store.carAuto || {}, carAutoNote: store.carAutoNote || {}, settings: store.settings, compass: store.compass || null })); } catch { /* ignore */ }
 }
 function resetAll() {
   store.rev++;                       // answers of requests still running are ignored
@@ -2051,6 +2063,18 @@ const ui = {
 
 /* ---------- profile rules (section 3.5) applied when a draft is committed ---------- */
 const commuteOf = (p) => p.trips.find((t) => t.trip_type === 'commute');
+/** 24 Nov (Amos): "I don't know – use a typical one" picked any version of the model (a 2015 BMW 530xd got a 2005 approval and
+    its much higher consumption). Once the first registration is known, take the version approved closest to that year. */
+function refineCarVersion(p) {
+  const cc = p.current_car, key = cc && store.carAuto?.[cc.targa_id]; const yr = Number(String(cc?.first_registration || '').slice(0, 4));
+  if (!key || !yr || !CARS.data) return;
+  const [b, m] = key.split('|'); const vers = CARS.versions(b, m) || []; if (vers.length < 2) return;
+  const y0 = (lab) => { const mm = String(lab).match(/approved (\d{4})(?:\D(\d{4}))?/); return mm ? [Number(mm[1]), Number(mm[2] || mm[1])] : null; };
+  const score = ([lab]) => { const r = y0(lab); if (!r) return 99; return yr < r[0] ? (r[0] - yr) * 1.5 : yr > r[1] ? yr - r[1] : 0; };
+  const best = vers.slice().sort((a, c) => score(a) - score(c))[0];
+  if (best && best[1] !== cc.targa_id) { delete store.carAuto[cc.targa_id]; cc.targa_id = best[1]; store.carAuto[best[1]] = key; store.carLabels[best[1]] = `${b} ${m}`; }
+  store.carAutoNote = store.carAutoNote || {}; const r = y0(best?.[0]); store.carAutoNote[cc.targa_id] = r && yr - r[1] >= 4 ? r[1] : null;
+}
 function commitDraft(draft) {
   const old = store.profile, nw = clone(draft);
   // rule 7: car changed → its details go
@@ -2072,6 +2096,7 @@ function commitDraft(draft) {
     if (homeMoved && (t.dest_location || t.trip_type === 'commute')) delete t.routing;
     if (workMoved && t.trip_type === 'commute') delete t.routing;
   });
+  refineCarVersion(nw);
   store.profile = sanitizeProfile(nw);
   dropStaleResults(); saveResults();
   saveStore();
@@ -2327,10 +2352,27 @@ function renderBubble() {
   if (ui.assistantOpen || ['loading', 'batch', 'error', 'mail'].includes(ui.view)) return null;
   return h('button', { class: 'bubble' + (['question', 'edit'].includes(ui.view) ? ' up' : ''), type: 'button', 'aria-label': 'Open assistant', onclick: () => Assistant.open() }, icon('chat'));
 }
+/** 24 Nov (Christian C02, Simone): the chatbot comparison as a small pop-up from the footer; the page behind is blurred. */
+function whyNotChat() {
+  const close = () => { wrap.remove(); document.removeEventListener('keydown', esc); last?.focus?.(); };
+  const esc = (e) => { if (e.key === 'Escape') close(); };
+  const last = document.activeElement;
+  const pts = [['Better data', 'The tariff of your municipality (ElCom), chargers near you (BFE), your car\u2019s type approval (ASTRA). A chatbot does not have them.'],
+    ['More reliable', 'Fixed formulas calculate every figure, and each one shows its source. AI only puts the result into words.'],
+    ['Independent', 'It sells nothing: no cars, no chargers, no ads.'],
+    ['Swiss', 'Built for Swiss drivers with Swiss data. No account needed; your answers stay in your browser unless you log in.']];
+  const btn = h('button', { class: 'btn primary block', type: 'button', onclick: close }, 'Got it');
+  const wrap = h('div', { class: 'modalwrap', role: 'presentation', onclick: (e) => { if (e.target === wrap) close(); } },
+    h('div', { class: 'modalcard', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'wnc-t' },
+      h('h2', { id: 'wnc-t' }, 'Why not just ask ChatGPT?'),
+      h('ul', null, pts.map(([t, d]) => h('li', null, h('b', null, t), h('span', null, d)))), btn));
+  document.body.append(wrap); document.addEventListener('keydown', esc); btn.focus();
+}
 function renderFoot() {
   if (ui.assistantOpen) return null;
   return h('footer', { class: 'sitefoot' },
     h('p', null, h('b', null, 'Independent tool by the University of St. Gallen (HSG).')),
+    h('button', { class: 'linkbtn fblink', type: 'button', onclick: () => whyNotChat() }, 'Better than ChatGPT?'),
     h('button', { class: 'linkbtn fblink', type: 'button', onclick: () => askFeedback(true) }, 'Give feedback'),
     null);
 }
@@ -2842,6 +2884,18 @@ function verdictCard(v) {
     v.todo ? h('button', { class: 'btn small', type: 'button', onclick: () => (store.results[v.todo] ? showResult(v.todo) : startBarrier(v.todo)) }, icon('arrow'), h('span', null, store.results[v.todo] ? 'Open Costs' : 'Check costs')) : null,
     h('p', { class: 'small muted' }, 'Calculated from your results, without AI.'));
 }
+/** 24 Nov (Christian, decision confidence): name one concrete thing to check or try before deciding. */
+function nextCheck() {
+  const pick = ui.nextCheck || null;
+  const OPTS = [['costs', 'Check my costs with my own figures', () => { ui.deep = { B3: true }; showResult('B3'); }],
+    ['trip', 'Plan a typical long trip', () => startBarrier('B1')],
+    ['drive', 'Take a test drive and try charging', null],
+    ['later', 'Decide later', null]];
+  return h('section', { class: 'rsec nextcheck' }, h('h2', null, 'What would you like to check or try before deciding?'),
+    h('div', { class: 'chips' }, OPTS.map(([k, l, go]) => chip(l, pick === k, () => { ui.nextCheck = k; if (go) go(); else render(); }))),
+    pick === 'drive' ? h('p', { class: 'small' }, 'Most dealers lend a car for a day. Drive your usual route and charge once at a public charger near you (see Charging).') : null,
+    pick === 'later' ? h('p', { class: 'small' }, 'That is a fine outcome. Your answers stay saved in this browser; come back when your car needs replacing or prices change.') : null);
+}
 function viewSummary() {
   const st = Summary.style, sm = Summary.get(st);
   const codes = Summary.codes();
@@ -2855,6 +2909,7 @@ function viewSummary() {
     h('div', { class: 'shead' }, h('h1', null, 'What we found for you'), h('span', { class: 'frac' }, `${done} of ${QUICK_CODES.length} topics`)),
     codes.length ? evChoiceLine() : null,
     codes.length ? verdictCard(overallVerdict()) : null,
+    codes.length ? nextCheck() : null,
     loading ? h('section', { class: 'aibox', role: 'status', 'aria-label': 'Writing your summary in words' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
     ok ? h('section', { class: 'aibox' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('p', { class: 'sumk' }, ...highlight(takeaway(sm)))) : null,
     sm?.failed ? h('p', { class: 'small muted' }, 'The text summary is not available right now. All figures on this page are complete.') : null,
@@ -3274,7 +3329,7 @@ function vehicleInput(which, allowNone) {
   const setBase = (b) => { st.base = b || ''; st.ver = ''; const f = st.base ? rows.filter((x) => split(x[1])[0] === st.base) : []; st.model = f.length === 1 ? f[0][1] : ''; };
   const set = () => {
     if (numOk(st.num)) car.targa_id = st.num;
-    else if (st.brand && st.model) { const row = B.find((x) => x[0] === st.brand && x[1] === st.model); const n = st.ver || row?.[2]; car.targa_id = n || null; if (n) store.carLabels[n] = `${st.brand} ${st.model}`; }
+    else if (st.brand && st.model) { const row = B.find((x) => x[0] === st.brand && x[1] === st.model); const n = st.ver || row?.[2]; car.targa_id = n || null; if (n) { store.carLabels[n] = `${st.brand} ${st.model}`; store.carAuto = store.carAuto || {}; if (st.ver) delete store.carAuto[n]; else store.carAuto[n] = `${st.brand}|${st.model}`; } }
     else if (car.targa_id !== 'skipped') car.targa_id = null;
     refreshNav();
   };
@@ -3415,9 +3470,11 @@ const BLOCKS = {
   8: { title: null, why: 'Age and mileage decide what your car is worth today.',
     heading: (d) => store.carLabels[d.current_car.targa_id] && store.carLabels[d.current_car.targa_id] !== 'your car' ? 'Your ' + store.carLabels[d.current_car.targa_id] : 'Your car',
     render: (d) => [h('p', { class: 'qsub' }, `Type approval ${d.current_car.targa_id}`), ...[].concat(regFields('cc', d.current_car, 1995, 600000)),
-      // 23 Nov (Simone): few people know what their car is worth, so we estimate it; the offer field only appears when you change answers later
-      ...(ui.barrier === 'EDIT' || ui.view === 'edit' || d.current_car.value_today_chf != null ? [chfField('cc-val', 'Offer for your car (optional)', d.current_car.value_today_chf, (v) => { d.current_car.value_today_chf = v; refreshNav(); }, 400000),
-        h('p', { class: 'hint' }, 'From a dealer or a similar car on AutoScout24. Empty: we estimate it from age and mileage.')] : [])],
+      // 24 Nov (Christian C03): optional selling price right here; one value shared with Costs, edit inputs and the chat.
+      // Market estimate: the AutoScout24 CH API needs partner credentials we do not have, so it shows "not available".
+      chfField('cc-val', 'Expected selling price for your current car (optional)', d.current_car.value_today_chf, (v) => { d.current_car.value_today_chf = v; refreshNav(); }, 400000),
+      h('p', { class: 'hint' }, 'Enter an offer or your own estimate. We\u2019ll use it to work out how much cash you\u2019d need to switch.'),
+      h('p', { class: 'hint mkt' }, h('span', null, 'Market estimate (AutoScout24): '), h('b', null, 'not available'), h('span', null, '. Without your price we estimate the value from age and mileage.'))],
     valid: (d) => V.int(d.current_car.odometer_km, 0, 600000) && (!d.current_car.first_registration || V.monthYear(d.current_car.first_registration, 1995)) && (d.current_car.value_today_chf == null || V.int(d.current_car.value_today_chf, 0, 400000)),
     why_not: (d) => (V.int(d.current_car.odometer_km, 0, 600000) ? '' : 'Please enter the mileage of your car.') },
   // 23 Nov (evening): one question for "the electric car you are looking at". Its price is also your budget (the old budget
@@ -3427,8 +3484,8 @@ const BLOCKS = {
       const t = d.target_ev; if (!d.second_car.targa_id) d.second_car.targa_id = 'none';
       return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Size'), h('div', { class: 'chips' }, [['S', 'Small'], ['M', 'Medium'], ['L', 'Large'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.size === k, () => { t.size = t.size === k ? null : k; render(); })))),
         h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'New or used?'), h('div', { class: 'chips' }, [['new', 'New'], ['used', 'Used'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.purchase === k, () => { t.purchase = t.purchase === k ? null : k; render(); })))),
-        chfField('ev-price', 'About how much would you pay? (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
-        h('p', { class: 'hint' }, icon('info'), 'An offer, a listing or simply your budget. Without it we use typical Swiss prices for the size.')];
+        chfField('ev-price', 'Price of the electric car (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
+        h('p', { class: 'hint' }, icon('info'), 'The vehicle price from an offer or a listing, not your cash budget: the sale of your car is taken off separately. Without it we use typical Swiss prices for the size.')];
     },
     valid: (d) => !!d.target_ev.size && (d.target_ev.price_chf == null || V.int(d.target_ev.price_chf, 3000, 300000)) },
   10: { title: 'How many people are in the car?', why: 'Seats and trailers decide the car size.',
@@ -4114,6 +4171,23 @@ function energyParts(l) {
   return e.l_per_100km != null && e.chf_per_l != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.l_per_100km, 1)} l per 100 km`, `CHF ${e.chf_per_l.toFixed(2)} per litre`] : null;
 }
 const energyText = (l) => energyParts(l)?.join(', ') || null;
+/** 24 Nov (Martin M01, Amos): energy as distance × consumption × price, with units, source and date for each car. */
+function energyFormula(l, asm = []) {
+  const e = l?.energy_detail; if (!e || !e.km_per_year) return null;
+  const A = (k) => asm.find((a) => a.key === k);
+  if (e.kind === 'electricity') {
+    if (e.kwh_per_100km == null || e.chf_per_kwh == null) return null;
+    const tot = e.km_per_year * e.kwh_per_100km / 100 * e.chf_per_kwh;
+    const pk = { private_ac: 'p_home', public_ac: 'p_public_ac', public_dc: 'p_dc' }[e.everyday] || 'p_home';
+    return { calc: `${fmt.n(e.km_per_year)} km × ${fmt.n(e.kwh_per_100km, 1)} kWh/100 km × CHF ${e.chf_per_kwh.toFixed(2)}/kWh = ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+      basis: `Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ${A(pk)?.source || 'tariff where you charge'}.` };
+  }
+  if (e.l_per_100km == null || e.chf_per_l == null) return null;
+  const tot = e.km_per_year * e.l_per_100km / 100 * e.chf_per_l;
+  const cons = e.consumption_source === 'user' ? 'your value' : e.l_per_100km_rated != null ? `type approval ${fmt.n(e.l_per_100km_rated, 1)} l/100 km (${e.cycle || 'WLTP'}) × ${e.real_factor} for real driving (ICCT)` : 'type approval (ASTRA TAS), real-world estimate';
+  return { calc: `${fmt.n(e.km_per_year)} km × ${fmt.n(e.l_per_100km, 1)} l/100 km × CHF ${e.chf_per_l.toFixed(2)}/l = ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+    basis: `Consumption: ${cons}. ${e.kind === 'diesel' ? 'Diesel' : 'Petrol'} price: ${e.price_source || A('fuel_price')?.source || 'BFS'}.` };
+}
 /** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
 function rangeFor50(ev, ref, refName) {
   const e = ev.energy_detail, c = ref.energy_detail;
@@ -4251,6 +4325,16 @@ function costBars(M) {
         used.map(([k, l, col]) => r.v[k] > 0.5 ? h('i', { style: { width: (r.v[k] / r.tot * 100).toFixed(2) + '%', background: col }, title: `${l}: CHF ${fmt.n(Math.round(r.v[k]))}` }) : null))))),
     h('div', { class: 'cblegend' }, used.map(([k, l, col]) => h('span', null, h('i', { style: { background: col } }), l))));
 }
+function energyBox(ev, ref, asm, refName) {
+  const fe = energyFormula(ev, asm), fr = ref ? energyFormula(ref, asm) : null; if (!fe && !fr) return null;
+  const br = ev?.years?.[0]?.items?.bridging || 0;
+  const kmGap = ref?.energy_detail?.km_per_year && ev?.energy_detail?.km_per_year ? ref.energy_detail.km_per_year - ev.energy_detail.km_per_year : 0;
+  return h('div', { class: 'enbox' }, h('h4', null, 'How we calculate energy'),
+    fr ? h('p', null, h('b', null, `Your ${refName}: `), fr.calc, h('br'), h('small', null, fr.basis),
+      (() => { const y = store.carAutoNote?.[store.profile.current_car.targa_id]; return y ? h('small', { class: 'warnline' }, h('br'), `We only have versions of this model approved up to ${y}, so consumption may be off. If you know your real consumption, change it under Assumptions and sources.`) : null; })()) : null,
+    fe ? h('p', null, h('b', null, 'Electric car: '), fe.calc, h('br'), h('small', null, fe.basis)) : null,
+    br > 0 || kmGap > 100 ? h('p', null, h('b', null, 'Trips the electric car cannot do: '), `${kmGap > 100 ? `about ${fmt.n(kmGap)} km a year by rental car or train, ` : ''}${fmt.chf(br)} a year, shown on its own line (Other transport).`) : null);
+}
 function renderB3(r) {
   const M = b3Model(r); const { P, ev, ref, noRef, N, H, payback } = M;
   const yr = (l) => l.years.find((y) => y.n === N) || l.years[l.years.length - 1];
@@ -4263,7 +4347,7 @@ function renderB3(r) {
   const refName = M.refName;
   const yrs = yrsTxt(N);
   const horizon = M.lastYear || H;
-  const pbTxt = payback ? `It pays off after about ${yrsTxt(payback)}.` : `It does not pay off within ${horizon} years.`;
+  const pbTxt = payback ? `Pays off in year ${payback}.` : gapYears.length ? 'Not enough data to estimate payback.' : `Does not pay off within ${horizon} years.`;
   const evPY = ev ? mid(yr(ev).total_per_year) : null, refPY = ref && !noRef ? mid(yr(ref).total_per_year) : null;
   const V = b3Verdict(M);
   let statement = 'Your cost comparison', detail = null, big = null;
@@ -4335,7 +4419,7 @@ function renderB3(r) {
   const blocks = ev && B ? h('section', { class: 'rsec b3blocks' }, h('h2', null, noRef ? `Your costs over ${yrs}` : `Keep or switch, over ${yrs}`),
     costBars(M),
     h('h3', null, 'Upfront cost'), cmpTable(B.upfront, 'CHF'),
-    h('h3', null, 'Running costs'), cmpTable(B.running, 'CHF per year'), energyParts(ev) ? h('p', { class: 'small muted' }, `Energy, electric car: ${energyText(ev)}.${ref && !noRef && energyParts(ref) ? ` Your car: ${energyText(ref)}.` : ''}`) : null,
+    h('h3', null, 'Running costs'), cmpTable(B.running, 'CHF per year'), energyBox(ev, noRef ? null : ref, r.assumptions || [], refName),
     h('h3', null, 'Depreciation and total cost'), cmpTable(B.dep, 'CHF'),
     !noRef && M.saving != null ? h('div', { class: 'frow diffrow' }, h('span', null, `Difference over ${yrs}`), h('b', { class: M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn' }, M.saving >= 0 ? `${fmt.chf100(M.saving)} less with the EV` : `${fmt.chf100(-M.saving)} more with the EV`)) : null,
     uncert, battery,
@@ -4384,7 +4468,10 @@ function renderB3(r) {
   const sections = [
     glance,
     blocks,
-    h('section', { class: 'rsec' }, h('h2', null, noRef ? 'Total cost over the years' : 'When does it pay off?'), ev ? savingChart([ev], N, payback) : null,
+    h('section', { class: 'rsec' }, h('h2', null, noRef ? 'Total cost over the years' : 'When does it pay off?'),
+      ev && !noRef ? h('p', { class: 'pbanswer ' + (payback ? 'good' : gapYears.length ? 'open' : 'bad') }, payback ? `Pays off in year ${payback}` : gapYears.length ? 'Not enough data to estimate payback' : `Does not pay off within ${horizon} years`,
+        payback > 8 ? h('small', null, ' Values after year 8 are extrapolated, so this is uncertain.') : M.scen?.flips ? h('small', null, ' What the cars are worth at the end can change this.') : null) : null,
+      ev ? savingChart([ev], N, payback) : null,
       h('p', { class: 'note keep' }, noRef ? 'Total cost by how long you keep the car.' : payback ? `Above zero the electric car has paid off: with your answers after about ${yrsTxt(payback)}.` : `Above zero the electric car would have paid off. With your answers it does not within ${horizon} years.`)),
     h('section', { class: 'rsec' }, h('h2', null, 'Costs per year'), gapNote(),
       noRef ? h('p', { class: 'infoline' }, r.no_reference === 'out_of_scope' ? 'Your car is not petrol or diesel, so there is no comparison with it.' : 'Without a current car there is no comparison.') : null,
@@ -4983,7 +5070,10 @@ const ChatNav = {
     ui.barrier = 'MULTI'; store.session = {}; ui.flow = { history: [], ownTrips: false, forced: null, current: null };
     ChatNav.on = true;
     if (patch && ChatNav.patch(patch)) { const p = store.profile, c = commuteOf(p);
-      const got = [p.postal_code ? `home ${p.postal_code} ${placeName(p.postal_code) || ''}`.trim() : null, c?.dest_km ? `commute ${fmt.n(c.dest_km)} km one way` : null, p.work_postal_code ? `work ${p.work_postal_code}` : null].filter(Boolean);
+      const cc = p.current_car, ct = cc?.targa_id && cc.targa_id !== 'skipped' ? carName(cc.targa_id) : null;
+      const got = [p.postal_code ? `home ${p.postal_code} ${placeName(p.postal_code) || ''}`.trim() : null, c?.dest_km ? `commute ${fmt.n(c.dest_km)} km one way` : null, p.work_postal_code ? `work ${p.work_postal_code}` : null,
+        ct ? `your car ${ct}${cc.first_registration ? ` (${cc.first_registration.slice(0, 4)})` : ''}` : null, cc?.value_today_chf != null ? `selling price ${fmt.chf(cc.value_today_chf)}` : null,
+        p.target_ev?.size ? `electric car: ${evChoiceText(p)}` : null].filter(Boolean);
       if (got.length) Assistant.msgs.push({ role: 'sys', text: 'Noted: ' + got.join(' · ') + '. You can change it later.' }); }
     Assistant.msgs.push({ role: 'sys', text: 'Checking: ' + store.queue.map((c) => BARRIERS[c].title).join(', ') });
     ChatNav.ask();
@@ -5047,7 +5137,10 @@ const ChatNav = {
     }
     const odo = num(p.car_mileage_km, 0, 600000); if (odo != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.odometer_km = odo; n++; }
     const yr = num(p.car_first_registration_year, 1995, new Date().getFullYear()); if (yr) { d.current_car.first_registration = `${yr}-${yr === new Date().getFullYear() ? '01' : '06'}`; n++; }
-    if (p.second_car === 'none') { d.second_car.targa_id = 'none'; n++; }
+    const sale = num(p.car_sale_price_chf, 0, 400000); if (sale != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.value_today_chf = sale; n++; }
+    const evSize = { small: 'S', medium: 'M', mid: 'M', large: 'L', s: 'S', m: 'M', l: 'L' }[String(p.ev_size || '').toLowerCase()]; if (evSize) { d.target_ev.size = evSize; n++; }
+    if (['new', 'used'].includes(p.ev_purchase)) { d.target_ev.purchase = p.ev_purchase; n++; }
+    const evp = num(p.ev_price_chf, 3000, 300000); if (evp != null) { d.target_ev.price_chf = evp; n++; }
     const ppl = num(p.people, 1, 7); if (ppl) { d.trips.forEach((t) => setPeople(t, ppl)); n++; }
     if (['none', 'small', 'large'].includes(p.trailer)) { d.trips.forEach((t) => { t.trailer = p.trailer; }); n++; }
     if (Array.isArray(p.charging_interest)) { const ci = p.charging_interest.filter((x) => ['everyday', 'trips_ch', 'abroad'].includes(x)); if (ci.length && ui.flow) { ui.flow.interest = ci; n++; } }

@@ -1662,7 +1662,7 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .lp-mask { overflow: hidden; }
 .lp-brand { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
 .lp-brand svg { width: 22px; height: 22px; flex: none; }
-.lp-body { margin: auto 0; padding: 28px 0 8px; display: flex; flex-direction: column; }
+.lp-body { margin: auto 0; padding: 24px 0 9vh; display: flex; flex-direction: column; }   /* 25 Nov: a little above the middle */
 .lp-claim { margin: 0; display: flex; flex-direction: column; font-size: clamp(40px, 12.6vw, 72px); line-height: .95; font-weight: 800;
   letter-spacing: -0.045em; text-transform: uppercase; color: var(--ink); }
 .lp-line { display: block; overflow: hidden; padding: .03em 0 .08em; white-space: nowrap; }
@@ -1677,17 +1677,19 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
   hyphens: none; }
 .lp-q-in > span { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
 .lp-go { position: relative; display: block; width: 100%; height: 62px; margin-top: 34px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.lp-go > svg.lp-frame { position: absolute; inset: -6px; width: calc(100% + 12px); height: calc(100% + 12px); overflow: visible; fill: none; stroke: none; pointer-events: none; z-index: 2; }
+.lp-go > svg.lp-frame { position: absolute; left: 0; top: 0; overflow: visible; fill: none; stroke: none; pointer-events: none; z-index: 2; }
 .lp-frame rect { fill: none; stroke-width: 3; }
-.lp-line-draw { stroke: var(--accent); transition: stroke .5s; }
-.lp-go:hover .lp-line-draw, .lp-go:focus-visible .lp-line-draw { stroke: var(--ink); }
-.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; transition: background .3s; }
-.lp-go:hover .lp-go-fill { background: #245d9f; }
+.lp-line-draw { stroke: var(--accent); }
+.lp-line-hover { stroke: var(--ink); opacity: 0; transition: opacity .4s; }
+.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;
+  clip-path: inset(0 100% 0 0); transition: clip-path .6s cubic-bezier(.65,0,.35,1), background .3s; }
+.lp-go.ready .lp-go-fill { clip-path: inset(0); }
+.lp-go.ready:hover .lp-go-fill { background: #245d9f; }
 .lp-go:active .lp-go-fill { background: var(--ink); }
 .lp-go:focus-visible { outline: none; }
-.lp-about { margin: 26px auto 0; max-width: 34em; text-align: center; font-size: 13px; line-height: 1.55; color: var(--ink-2); text-wrap: balance; }
+.lp-about { margin: 46px 0 0 auto; max-width: 31em; text-align: right; font-style: italic; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
 details.datasrc.lp-src { margin: 8px 0 0; border: 0; border-radius: 0; background: none; padding: 0; }
-details.datasrc.lp-src > summary { min-height: 0; justify-content: center; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--accent); }
+details.datasrc.lp-src > summary { min-height: 0; justify-content: flex-end; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--accent); }
 .lp-src > summary svg { display: none; }
 .lp-src .dsgrid li { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 10px; padding: 9px 0; }
 .lp-src .dsname { font-size: 13px; } .lp-src .dswhat { font-size: 12px; }
@@ -2400,26 +2402,40 @@ const Landing = {
     if (!standalone && matchMedia('(pointer: coarse)').matches && D.requestFullscreen && !document.fullscreenElement) D.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
     go('home'); window.scrollTo({ top: 0 });
   },
-  /** The outline in real pixels, 6 px outside the button: a line three quarters of the edge long that keeps running round. */
+  /** The outline in real pixels, exactly on the button's edge (25 Nov: the outset frame was drawn crooked). */
   frame(btn) {
-    const svg = btn.querySelector('.lp-frame'); const G = 6, w = btn.clientWidth + 2 * G, hh = btn.clientHeight + 2 * G, P = 2 * (w - 3) + 2 * (hh - 3);
-    svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
+    const svg = btn.querySelector('.lp-frame'), w = btn.clientWidth, hh = btn.clientHeight, P = 2 * (w - 3) + 2 * (hh - 3);
+    if (w < 20 || hh < 20) return Landing._P || 0;   // not laid out (or already gone)
+    Landing._P = P;
+    svg.setAttribute('width', String(w)); svg.setAttribute('height', String(hh)); svg.setAttribute('viewBox', `0 0 ${w} ${hh}`);
     svg.querySelectorAll('rect').forEach((r) => { r.setAttribute('x', '1.5'); r.setAttribute('y', '1.5'); r.setAttribute('width', String(w - 3)); r.setAttribute('height', String(hh - 3)); });
     return P;
   },
-  button(btn, still) {
-    const P = Landing.frame(btn), run = btn.querySelector('.lp-line-draw');
-    run.style.strokeDasharray = `${0.75 * P} ${0.25 * P}`;
-    if (still) return;
-    // 25 Nov (Simone): always three quarters full and turning, at constant speed
-    run.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -P }], { duration: 4200, iterations: Infinity, easing: 'linear' });
-    addEventListener('resize', () => { const P2 = Landing.frame(btn); run.style.strokeDasharray = `${0.75 * P2} ${0.25 * P2}`; }, { once: true });
+  /** 1st animation (as before): a blue line runs once round the edge, then the button fills in.
+      2nd animation, only while the pointer is on it: a darker line, three quarters long, turning slowly. */
+  button(btn, after, still) {
+    let P = Landing.frame(btn);
+    const draw = btn.querySelector('.lp-line-draw'), spin = btn.querySelector('.lp-line-hover');
+    const dash = () => { draw.style.strokeDasharray = `${P} ${P}`; spin.style.strokeDasharray = `${0.75 * P} ${0.25 * P}`; };
+    dash();
+    if ('ResizeObserver' in window) new ResizeObserver(() => { P = Landing.frame(btn); dash(); }).observe(btn);
+    if (still) { draw.style.strokeDashoffset = '0'; btn.classList.add('ready'); return; }
+    draw.style.strokeDashoffset = String(P);
+    setTimeout(() => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1600, easing: 'linear', fill: 'forwards' })
+      .finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready')), Math.max(0, after - performance.now()));
+    let run = null;
+    btn.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'touch' || run) return;
+      spin.style.opacity = '1';
+      run = spin.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -P }], { duration: 7000, iterations: Infinity, easing: 'linear' });
+    });
+    btn.addEventListener('pointerleave', () => { spin.style.opacity = '0'; const r = run; run = null; setTimeout(() => { if (!run) r?.cancel(); }, 400); });
   },
   /** One direction for everything: a cascade from the top. The claim line by line, the rest block by block. */
   animate() {
     const root = document.querySelector('.landing'); if (!root) return;
     const btn = root.querySelector('.lp-go');
-    if (Motion.off()) { Landing.button(btn, true); return; }
+    if (Motion.off()) { Landing.button(btn, 0, true); return; }
     const E = 'cubic-bezier(.16,1,.3,1)', a = (el, kf, delay, duration) => el && el.animate(kf, { duration, delay, easing: E, fill: 'both' });
     const fromTop = [{ opacity: 0, transform: 'translateY(-18px)' }, { opacity: 1, transform: 'none' }];
     a(root.querySelector('.lp-brand'), [{ transform: 'translateY(-110%)' }, { transform: 'none' }], 0, 800);
@@ -2427,14 +2443,14 @@ const Landing = {
     words.forEach((w, i) => a(w, [{ transform: 'translateY(-105%)' }, { transform: 'none' }], 120 + i * 150, 1000));
     let t = 120 + words.length * 150 + 80;
     for (const q of ['.lp-q-in', '.lp-go', '.lp-about', '.lp-src']) { a(root.querySelector(q), fromTop, t, 900); t += 130; }
-    Landing.button(btn);
+    Landing.button(btn, performance.now() + t - 300);
   },
 };
 
 function viewLanding() {
   const NS = 'http://www.w3.org/2000/svg';
   const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
-  const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', 'lp-line-draw'); frame.append(r);
+  for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); frame.append(r); }
   const line = (kids) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, ...kids));
   // 25 Nov (Simone): claim, the question right under it, the button, then who is behind it and the sources
   return h('div', { class: 'landing' },
@@ -2443,8 +2459,8 @@ function viewLanding() {
       h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
         line(['Better data']), line(['Neutral']), line([h('span', { class: 'lp-swiss' }, 'Swiss'), h('span', { class: 'lp-flag' })])),
       h('p', { class: 'lp-q-in' }, h('span', null, 'Should you keep your car or'), h('span', null, 'switch to an electric vehicle?')),
-      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Start My Journey'), frame),
-      h('p', { class: 'lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources and AI to guide you to a more informed decision about electric vehicles.'),
+      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Let\u2019s Find Out'), frame),
+      h('p', { class: 'lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources, and AI to guide you through a more informed decision process about electric vehicles.'),
       dataSources()));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */

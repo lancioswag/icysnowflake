@@ -5624,7 +5624,7 @@ const Report = {
       footer: () => ({ text: 'Approximations from Swiss public data, not quotes. Developed at the University of St. Gallen (HSG) with partners.', fontSize: 7.5, color: C.muted, margin: [40, 18, 40, 0] }),
       content: R.tidy(content.filter(Boolean)) };
   },
-  fileName(codes) { return `BEV-Navigator_${codes.length === 1 ? BARRIERS[codes[0]].title.replace(/\W+/g, '-') : 'summary'}_${new Date().toISOString().slice(0, 10)}.pdf`; },
+  fileName(codes) { return `BEV-Navigator_${codes.length === 1 ? BARRIERS[codes[0]].title.replace(/\W+/g, '-') : 'full-report'}_${new Date().toISOString().slice(0, 10)}.pdf`; },
   async blob(codes) { const pm = await loadPdfLib(); return new Promise((ok, ko) => { try { pm.createPdf(Report.doc(codes)).getBlob(ok); } catch (e) { ko(e); } }); },
 };
 

@@ -201,7 +201,7 @@ export const SCEN = {
     ui.assistantOpen = false; await runAll(['B4', 'B3'], { quiet: true }); showResult('B3'); await sleep(900);
     const c1 = txt();
     go('answers'); await sleep(500);
-    [...document.querySelectorAll('.ansrow')].find((r) => /Your car/.test(r.innerText))?.click(); await sleep(1500);
+    [...document.querySelectorAll('.ansrow')].find((r) => /your car/i.test(r.innerText))?.click(); await sleep(1500);
     document.querySelector('.qnav .btn.primary')?.click(); for (let i = 0; i < 30 && !document.getElementById('cc-val'); i++) await sleep(100);
     const inp = document.getElementById('cc-val'); if (inp) { inp.value = '12000'; inp.dispatchEvent(new Event('input', { bubbles: true })); }
     await sleep(300); document.querySelector('.qnav .btn.primary')?.click();

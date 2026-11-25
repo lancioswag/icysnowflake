@@ -95,7 +95,7 @@ export const SCEN = {
       ['all five topics ok', b && !b.need.length, b?.need],
       ['B3 reference is petrol', cur?.energy_detail?.kind === 'petrol', cur?.energy_detail],
       ['every topic page renders', Object.values(pages).every((t) => t && !/could not be shown/.test(t)), pages],
-      ['Summary lists five topics', ['Range', 'Charging', 'Costs', 'Lifestyle', 'Climate'].every((k) => sum.includes(k))],
+      ['Summary lists five topics', ['Range and battery life', 'Charging options', 'Purchase and running costs', 'Fit with my lifestyle', 'Climate impact'].every((k) => sum.includes(k))],
       ['full PDF builds (>20 KB)', blobOk === true, blobOk],
       ['no NaN / null text', noNaN()],
       ['no horizontal overflow', overflow() <= 1, overflow()],

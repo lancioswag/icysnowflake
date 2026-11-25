@@ -2009,7 +2009,7 @@ function loadStore() {
     store.profile = sanitizeProfile(d.profile);
     store.queue = Array.isArray(d.queue) ? d.queue.filter((c) => BARRIERS[c]) : [];
     store.visited = Array.isArray(d.visited) ? d.visited.filter((c) => BARRIERS[c]) : [];
-    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {}; store.carAuto = d.carAuto || {}; store.carAutoNote = d.carAutoNote || {}; store.yearsKept = Number(d.yearsKept) || null; store.example = d.example || null;
+    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {}; store.carAuto = d.carAuto || {}; store.carAutoNote = d.carAutoNote || {}; store.yearsKept = Number(d.yearsKept) || null; store.example = d.example || null; store.priority = Array.isArray(d.priority) ? d.priority.filter((c) => BARRIERS[c]) : null;
     store.compass = d.compass && typeof d.compass === 'object' ? d.compass : null;
     if (d.settings) store.settings = { ...store.settings, ...d.settings };
     store.settings.demo = !!window.BEV_PREVIEW;
@@ -2020,7 +2020,7 @@ function loadStore() {
 }
 function saveStore() {
   if (typeof Account !== 'undefined') Account.queueSave();
-  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, carAuto: store.carAuto || {}, carAutoNote: store.carAutoNote || {}, settings: store.settings, compass: store.compass || null, yearsKept: store.yearsKept || null, example: store.example || null })); } catch { /* ignore */ }
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, carAuto: store.carAuto || {}, carAutoNote: store.carAutoNote || {}, settings: store.settings, compass: store.compass || null, yearsKept: store.yearsKept || null, example: store.example || null, priority: store.priority || null })); } catch { /* ignore */ }
 }
 function resetAll() {
   store.rev++;                       // answers of requests still running are ignored
@@ -2028,7 +2028,7 @@ function resetAll() {
   store.profile = emptyProfile(); store.queue = []; store.visited = []; store.results = {}; store.session = {}; store.carLabels = {};
   store.settings.demo = false;
   ui.topicSel = null; ui.draft = null; ui.flow = null; ui.editOpen = null; ui.assistantOpen = false;
-  store.compass = null; store.yearsKept = null; store.example = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
+  store.compass = null; store.priority = null; store.yearsKept = null; store.example = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
   Nav.stack = []; Nav.last = null;
   Summary.cache = {}; Assistant.msgs = []; Assistant.prefill = ''; Account.form = null;
   if (typeof ChatNav !== 'undefined') ChatNav.on = false;   // 25 Nov (stress test S15): a chat check left running ignored everything typed after a reset
@@ -2424,7 +2424,8 @@ function viewTopics() {
       // 26 Nov (slide 4): what happens when you press the button
       !allDone ? h('p', { class: 'picknext' }, !sel.length
         ? 'No topic picked: we check all five with a few short questions, then show a summary.'
-        : `Next: a few short questions for ${sel.length === 1 ? 'this topic' : `these ${sel.length} topics, in this order`}${sel.length === 1 ? ', then its result.' : ', asked once, then a summary and one page per topic.'}`) : null,
+        : sel.length === 1 ? 'Next: a few short questions for this topic, then its result.'
+        : `Next: a few short questions for these ${sel.length} topics, each asked once, then a summary with your topics in this order and one page per topic.`) : null,
       anyDone && !allDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
       h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('skip'), h('span', null, 'Keep it short with 5 questions')),
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
@@ -2691,6 +2692,7 @@ function viewOrient() {
 }
 function startQueue(codes) {
   store.queue = codes.filter((c, i) => ORDER.includes(c) && codes.indexOf(c) === i);   // tap order = priority
+  store.priority = store.queue.slice();   // 26 Nov: the order the person chose, kept for the Summary (the queue below puts the car before its costs)
   { const q = store.queue, i3 = q.indexOf('B3'), i4 = q.indexOf('B4'); if (i3 >= 0 && i4 > i3) { q.splice(i4, 1); q.splice(i3, 0, 'B4'); } }   // the car first, then its costs
   ui.topicSel = null;
   saveStore();
@@ -2826,7 +2828,7 @@ function viewError() {
 /* ---------- summary: statuses by fixed rules, wording by AI (n8n "AI summary v3", POST /summary) ---------- */
 const Summary = {
   cache: {}, busy: null, style: 'simple',
-  codes() { const order = [...store.queue, ...QUICK_CODES]; return order.filter((c, i) => order.indexOf(c) === i && store.results[c]); },
+  codes() { const order = [...(store.priority || []), ...store.queue, ...QUICK_CODES]; return order.filter((c, i) => order.indexOf(c) === i && store.results[c]); },
   key(codes, style) { return style + '|' + codes.map((c) => c + ':' + store.results[c].request_id).join(','); },
   get(style) { const c = Summary.codes(); return c.length ? Summary.cache[Summary.key(c, style)] : null; },
   async load(style) {
@@ -4763,7 +4765,7 @@ function renderB4(r) {
       + `About ${fmt.chf100(gap)} more, ${usedWanted ? '' : 'a used car, '}a smaller type or keeping your car a few years longer would close the gap.`));
   }
   const table = h('div', { class: 'b4wrap', role: 'region', 'aria-label': 'Car classes side by side', tabindex: '0' }, h('table', { class: 'b4t' },
-    h('thead', null, h('tr', null, h('th', null, ''), ...cols.map(({ o }) => h('th', { class: o.selected ? 'sel' : null }, h('span', { class: 'carpic sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, (o.size_label || clsShort(o.class_id)).replace(/\s*\(.*$/, '')), o.class_id === mineId ? h('span', { class: 'pill good' }, 'Your choice') : [o.selected ? h('span', { class: 'pill plain' }, 'Suggested') : null, h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose')])))),
+    h('thead', null, h('tr', null, h('th', null, ''), ...cols.map(({ o }) => h('th', { class: o.selected ? 'sel' : null }, h('span', { class: 'carpic sz-' + (o.class_id || 'M')[0] }, carSvg(o.class_id)), h('b', null, sizeLabel(SIZE_OF(o.class_id)) || clsShort(o.class_id)), o.class_id === mineId ? h('span', { class: 'pill good' }, 'Your choice') : [o.selected ? h('span', { class: 'pill plain' }, 'Suggested') : null, h('button', { class: 'btn small', type: 'button', onclick: () => chooseClass(o.class_id) }, 'Choose')])))),
     h('tbody', null,
       h('tr', null, h('th', null, 'Range'), ...cols.map(({ o }) => h('td', null, `${fmt.n(o.min_wltp_km)}+ km`))),
       h('tr', null, h('th', null, 'New price'), ...cols.map(({ o }) => h('td', { class: overBudget(o) ? 'warn' : null }, fmt.band(o.price_band_chf)))),

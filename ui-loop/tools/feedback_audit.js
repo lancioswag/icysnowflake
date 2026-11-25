@@ -31,12 +31,12 @@ const { open, FX } = require('./harness.js');
   const prio = await ev(() => [...document.querySelectorAll('.topicbtn')].map((b) => [b.dataset.code, b.querySelector('.prio')?.textContent || '']));
   check('N-04c tap order = priority (first tap is 1)', prio[0][0] === 'B2' && prio[0][1] === '1' && prio[1][0] === 'B3' && prio[1][1] === '2' && prio[2][0] === 'B7' && prio[2][1] === '3', prio);
   t = await main();
-  check('N-04d button "Check my topics" + what happens next', /Check my topics/.test(t) && /Next: a few short questions for these 3 topics, in this order/.test(t), t.slice(0, 600));
+  check('N-04d button "Check my topics" + what happens next', /Check my topics/.test(t) && /Next: a few short questions for these 3 topics, each asked once, then a summary with your topics in this order/.test(t), t.slice(0, 600));
   await page.locator('.topicbtn').filter({ hasText: /Purchase and running costs/ }).first().click(); await page.waitForTimeout(120);
   const prio2 = await ev(() => [...document.querySelectorAll('.topicbtn')].map((b) => [b.dataset.code, b.querySelector('.prio')?.textContent || '']));
   check('N-04e untapping renumbers', prio2[0][0] === 'B2' && prio2[1][0] === 'B7' && prio2[1][1] === '2', prio2);
-  const q = await ev(() => { startQueue(['B3', 'B4']); const q = store.queue.slice(); ui.flow = null; go('home'); return q; });
-  check('N-04f real route order: Costs picked first still asks Lifestyle first (B4 before B3)', q[0] === 'B4', q);
+  const q = await ev(() => { startQueue(['B3', 'B4']); const q = { queue: store.queue.slice(), summary: Summary.codes(), priority: store.priority.slice() }; ui.flow = null; go('home'); return q; });
+  check('N-04f route: Lifestyle questions before Costs (B4 before B3), Summary keeps the tap order', q.queue[0] === 'B4' && q.priority[0] === 'B3', q);
   check('N-04g no overflow (topics)', (await overflow()) <= 1, await overflow());
 
   // ---- load the saved answers of the Christian case

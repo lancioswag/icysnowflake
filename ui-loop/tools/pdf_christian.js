@@ -6,12 +6,13 @@ const fs = require('fs');
 const { open, FX } = require('./harness.js');
 (async () => {
   const b3 = JSON.parse(fs.readFileSync('/tmp/b3_word.json', 'utf8'));
-  const fx = { B4: FX.fx.B4, B6: FX.fx.B6, B3: b3 };
+  const R = process.env.B4B6 ? JSON.parse(fs.readFileSync(process.env.B4B6, 'utf8')) : null;
+  const fx = { B4: R ? R.B4 : FX.fx.B4, B6: R ? R.B6 : FX.fx.B6, B3: b3 };
   const { browser, page } = await open({ delay: 30 });
   const out = await page.evaluate(async (F) => {
     const p = Example.profile(true);
     store.profile = sanitizeProfile(p); store.carLabels['1BB439'] = 'BMW 530XD (diesel)'; store.yearsKept = 5;
-    for (const [c, resp] of Object.entries(F)) { const r = JSON.parse(JSON.stringify(resp)); r.profile = store.profile; store.results[c] = { response: r, request_id: 'p' + c, at: Date.now(), session: { barrier: BARRIERS[c].name }, sig: inputSig(store.profile, c) }; }
+    for (const [c, resp] of Object.entries(F)) { const r = JSON.parse(JSON.stringify(resp)); r.profile = store.profile; store.results[c] = { response: r, request_id: 'p' + c, at: Date.now(), session: c === 'B6' ? { barrier: BARRIERS[c].name, battery_entry: 'forecast' } : { barrier: BARRIERS[c].name }, sig: inputSig(store.profile, c) }; }
     store.visited = ['B3', 'B4', 'B6']; saveResults(); saveStore();
     showResult('B3'); await new Promise((r) => setTimeout(r, 800));
     const costs = document.querySelector('main').innerText.replace(/ /g, ' ');

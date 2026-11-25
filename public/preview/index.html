@@ -2530,14 +2530,31 @@ const Example = {
     return p;
   },
   async boot() {
-    const q = new URLSearchParams(location.search).get('example'); if (!['bmw-megane', 'bmw-megane-app'].includes(q)) return;
+    const q = new URLSearchParams(location.search).get('example'); if (!['bmw-megane', 'bmw-megane-app', 'weekend-lugano'].includes(q)) return;
+    if (q === 'weekend-lugano') return Example.lugano();
     history.replaceState(null, '', location.pathname);
     store.profile = sanitizeProfile(Example.profile(q === 'bmw-megane')); store.carLabels['1BB439'] = 'BMW 530xd'; store.results = {};
     store.queue = ['B4', 'B3']; store.example = q; store.yearsKept = 5; saveStore();
     await runAll(['B4', 'B3'], { quiet: true }); showResult('B3');
   },
+  /** 26 Nov (audit, slides 6-8): a synthetic case close to Christian's screenshots. BMW 530xd sold for CHF 14'000, a used
+      Medium / Large SUV for CHF 20'000, kept 6 years; shopping weekly, Lugano 8 weekends a year, family 3 times a year.
+      The Lugano weekends make the "Rental car or train for long trips" line. Opens Costs. */
+  async lugano() {
+    history.replaceState(null, '', location.pathname);
+    const p = Example.profile(false);
+    p.current_car.value_today_chf = 14000; p.target_ev = { size: 'M', purchase: 'used', price_chf: 20000, types: ['suv'] };
+    p.trips = [{ trip_type: 'other', label: 'Shopping', dest_km: 15, freq_n: 1, freq_unit: 'week', seats_needed: 2, trailer: 'none', coverage: 'must_ev' },
+      { trip_type: 'other', label: 'Weekend away', dest_location: 'Lugano', freq_n: 8, freq_unit: 'year', seats_needed: 2, trailer: 'none' },
+      { trip_type: 'other', label: 'Visit family', dest_km: 60, freq_n: 3, freq_unit: 'year', seats_needed: 4, trailer: 'none' }];
+    store.profile = sanitizeProfile(p); store.carLabels['1BB439'] = 'BMW 530xd Touring'; store.results = {};
+    store.queue = ['B4', 'B3', 'B2', 'B1', 'B7']; store.priority = null; store.example = 'weekend-lugano'; store.yearsKept = 6; ui.b3N = 6; saveStore();
+    ui.batch = { codes: ['B4', 'B3', 'B2', 'B1', 'B6', 'B7'], done: [], need: [] }; ui.view = 'batch'; render();
+    await runAll(['B4', 'B3', 'B2', 'B1', 'B6', 'B7']);
+  },
   note() {
     if (!store.example) return null;
+    if (store.example === 'weekend-lugano') return h('p', { class: 'kinfo exnote' }, icon('info'), h('span', null, 'Example: BMW 530xd sold for CHF 14\u2019000 against a used Medium / Large SUV for CHF 20\u2019000, with 8 weekends a year in Lugano (synthetic case for the audit).'));
     return h('p', { class: 'kinfo exnote' }, icon('info'), h('span', null, store.example === 'bmw-megane'
       ? 'Example: Christian\u2019s BMW 530xd vs a used Renault M\u00e9gane E-Tech, with every input of his TCO table (yours to change below).'
       : 'Example: the same BMW and M\u00e9gane, with the Navigator\u2019s own data (tariffs, tax, value curves).'));

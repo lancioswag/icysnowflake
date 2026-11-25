@@ -1675,20 +1675,30 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .lp-body { container-type: inline-size; }
 .lp-q-in { margin: 1em 0 0; font-size: calc(100cqi / 14); line-height: 1.22; font-weight: 800; letter-spacing: -0.025em; color: var(--ink);
   hyphens: none; }
-.lp-q-in > span { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
-.lp-go { position: relative; display: block; width: 100%; height: 62px; margin-top: 34px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.lp-q-in > .lp-m { display: block; }
+.lp-q-in .lp-in { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
+.lp-m { display: block; overflow: hidden; }
+.lp-in, .lp-word { will-change: transform; }
+.lp-btnm { margin-top: 34px; padding: 2px 0; }        /* room for the outline inside the mask */
+.lp-aboutm { margin-top: 44px; }
+.lp-aboutm .lp-about { margin: 0 0 0 auto; }
+.lp-srcm { margin-top: 6px; }
+.lp-go { position: relative; display: block; width: 100%; height: 62px; margin-top: 0; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .lp-go > svg.lp-frame { position: absolute; left: 0; top: 0; overflow: visible; fill: none; stroke: none; pointer-events: none; z-index: 2; }
 .lp-frame rect { fill: none; stroke-width: 3; }
 .lp-line-draw { stroke: var(--accent); }
 .lp-line-hover { stroke: var(--ink); opacity: 0; transition: opacity .4s; }
-.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;
-  clip-path: inset(0 100% 0 0); transition: clip-path .6s cubic-bezier(.65,0,.35,1), background .3s; }
-.lp-go.ready .lp-go-fill { clip-path: inset(0); }
-.lp-go.ready:hover .lp-go-fill { background: #245d9f; }
-.lp-go:active .lp-go-fill { background: var(--ink); }
+.lp-go-fill { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+/* the fill slides in with a transform (runs on the GPU, no lag on phones), then the label appears */
+.lp-go-fill::before { content: ''; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left center; transition: transform .65s cubic-bezier(.65,0,.35,1), background .3s; will-change: transform; }
+.lp-go-fill > span { position: relative; opacity: 0; transition: opacity .4s .35s; }
+.lp-go.ready .lp-go-fill::before { transform: none; }
+.lp-go.ready .lp-go-fill > span { opacity: 1; }
+.lp-go.ready:hover .lp-go-fill::before { background: #245d9f; }
+.lp-go:active .lp-go-fill::before { background: var(--ink); }
 .lp-go:focus-visible { outline: none; }
-.lp-about { margin: 46px 0 0 auto; max-width: 31em; text-align: right; font-style: italic; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
-details.datasrc.lp-src { margin: 8px 0 0; border: 0; border-radius: 0; background: none; padding: 0; }
+.lp-about { margin: 0 0 0 auto; max-width: 31em; text-align: right; font-style: italic; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+details.datasrc.lp-src { margin: 0; border: 0; border-radius: 0; background: none; padding: 0; }
 details.datasrc.lp-src > summary { min-height: 0; justify-content: flex-end; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--accent); }
 .lp-src > summary svg { display: none; }
 .lp-src .dsgrid li { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 10px; padding: 9px 0; }
@@ -1696,7 +1706,7 @@ details.datasrc.lp-src > summary { min-height: 0; justify-content: flex-end; pad
 .lp-src .dsdate { margin: 10px 0 2px !important; font-size: 12px !important; }
 .lp-src[open] .dsname .ul { animation: lpUl2 1.4s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 110ms + .15s); }
 @media (min-width: 700px) { .landing { padding-top: 48px; padding-bottom: 48px; } .lp-about { font-size: 14px; } }
-@media (max-height: 640px) { .lp-claim { font-size: clamp(34px, 10.5vw, 60px); } .lp-go { margin-top: 24px; } }
+@media (max-height: 640px) { .lp-claim { font-size: clamp(34px, 10.5vw, 60px); } .lp-btnm { margin-top: 24px; } .lp-aboutm { margin-top: 28px; } }
 @media (prefers-reduced-motion: reduce) { .landing *, .landing { animation: none !important; transition: none !important; } }
 .enbox { margin: 10px 0 4px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); display: grid; gap: 8px; }
 .enbox h4 { margin: 0; font-size: 14px; } .enbox p { margin: 0; font-size: 14px; line-height: 1.45; } .enbox small { color: var(--ink-2); font-size: 13px; }
@@ -2421,7 +2431,7 @@ const Landing = {
     if ('ResizeObserver' in window) new ResizeObserver(() => { P = Landing.frame(btn); dash(); }).observe(btn);
     if (still) { draw.style.strokeDashoffset = '0'; btn.classList.add('ready'); return; }
     draw.style.strokeDashoffset = String(P);
-    setTimeout(() => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1600, easing: 'linear', fill: 'forwards' })
+    setTimeout(() => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1400, easing: 'linear', fill: 'forwards' })
       .finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready')), Math.max(0, after - performance.now()));
     let run = null;
     btn.addEventListener('pointerenter', (e) => {
@@ -2431,19 +2441,19 @@ const Landing = {
     });
     btn.addEventListener('pointerleave', () => { spin.style.opacity = '0'; const r = run; run = null; setTimeout(() => { if (!run) r?.cancel(); }, 400); });
   },
-  /** One direction for everything: a cascade from the top. The claim line by line, the rest block by block. */
+  /** 25 Nov (Simone): cinema. Every part moves like the claim (drops in from above, inside its own mask) and the next one
+      starts when the previous one has finished: Better data, Neutral, Swiss, the question, the credits, the sources, the button. */
   animate() {
     const root = document.querySelector('.landing'); if (!root) return;
     const btn = root.querySelector('.lp-go');
     if (Motion.off()) { Landing.button(btn, 0, true); return; }
-    const E = 'cubic-bezier(.16,1,.3,1)', a = (el, kf, delay, duration) => el && el.animate(kf, { duration, delay, easing: E, fill: 'both' });
-    const fromTop = [{ opacity: 0, transform: 'translateY(-18px)' }, { opacity: 1, transform: 'none' }];
-    a(root.querySelector('.lp-brand'), [{ transform: 'translateY(-110%)' }, { transform: 'none' }], 0, 800);
-    const words = [...root.querySelectorAll('.lp-word')];
-    words.forEach((w, i) => a(w, [{ transform: 'translateY(-105%)' }, { transform: 'none' }], 120 + i * 150, 1000));
-    let t = 120 + words.length * 150 + 80;
-    for (const q of ['.lp-q-in', '.lp-go', '.lp-about', '.lp-src']) { a(root.querySelector(q), fromTop, t, 900); t += 130; }
-    Landing.button(btn, performance.now() + t - 300);
+    const D = 720, E = 'cubic-bezier(.22,1,.36,1)';
+    const drop = (el, at) => el && el.animate([{ transform: 'translateY(-106%)' }, { transform: 'none' }], { duration: D, delay: at, easing: E, fill: 'both' });
+    drop(root.querySelector('.lp-brand'), 0);
+    const seq = [...root.querySelectorAll('.lp-word'), ...root.querySelectorAll('.lp-q-in .lp-in'), root.querySelector('.lp-aboutm .lp-in'), root.querySelector('.lp-srcm .lp-in'), root.querySelector('.lp-btn-in')];
+    let t = 250;
+    for (const el of seq) { drop(el, t); t += D; }
+    Landing.button(btn, performance.now() + t - D);   // the button is still empty while it drops, so its outline starts right then
   },
 };
 
@@ -2458,10 +2468,12 @@ function viewLanding() {
     h('div', { class: 'lp-body' },
       h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
         line(['Better data']), line(['Neutral']), line([h('span', { class: 'lp-swiss' }, 'Swiss'), h('span', { class: 'lp-flag' })])),
-      h('p', { class: 'lp-q-in' }, h('span', null, 'Should you keep your car or'), h('span', null, 'switch to an electric vehicle?')),
-      h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, 'Let\u2019s Find Out'), frame),
-      h('p', { class: 'lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources, and AI to guide you through a more informed decision process about electric vehicles.'),
-      dataSources()));
+      h('p', { class: 'lp-q-in' }, ...['Should you keep your car or', 'switch to an electric vehicle?'].map((t) => h('span', { class: 'lp-m' }, h('span', { class: 'lp-in' }, t)))),
+      // 25 Nov (Simone): the button comes last in the sequence, but stays where it is in the layout
+      h('div', { class: 'lp-m lp-btnm' }, h('div', { class: 'lp-in lp-btn-in' },
+        h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, h('span', null, 'Let\u2019s Find Out')), frame))),
+      h('div', { class: 'lp-m lp-aboutm' }, h('p', { class: 'lp-in lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources, and AI to guide you through a more informed decision process about electric vehicles.')),
+      h('div', { class: 'lp-m lp-srcm' }, h('div', { class: 'lp-in' }, dataSources()))));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {

@@ -20,6 +20,8 @@ const { open, FX } = require('./harness.js');
   check('N-03d no "No personal data stored" claim', !/No personal data stored/i.test(lp));
   check('N-03e name Electric Car Explorer visible', /ELECTRIC CAR EXPLORER/i.test(lp));
   check('N-03f no horizontal overflow (landing)', (await overflow()) <= 1, await overflow());
+  const fit = await ev(() => { const c = document.querySelector('.lp-claim7'); return Math.max(...[...c.querySelectorAll('.lp-word')].map((w) => w.getBoundingClientRect().right)) - c.getBoundingClientRect().right; });
+  check('N-03g question lines not cut', fit <= 1, fit);
 
   // ---- N-04 Topic screen (slide 4)
   await ev(() => { go('home'); }); await page.waitForTimeout(500);

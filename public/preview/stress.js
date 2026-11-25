@@ -119,11 +119,11 @@ export const SCEN = {
   async S5() {
     fresh(); const p = Example.profile(false); p.postal_code = null; p.current_car.odometer_km = null;
     store.profile = sanitizeProfile(p); store.carLabels['1BB439'] = 'BMW 530xd'; saveStore();
-    calculate('B3'); await until(() => ui.view !== 'loading', 90000); await sleep(600);
+    store.session = { barrier: BARRIERS.B3.name }; calculate('B3'); await until(() => ui.view !== 'loading', 90000); await sleep(600);
     const t = txt();
     return log('S5 Missing data', [
       ['no error page', ui.view !== 'error', ui.view],
-      ['asks for the missing answer', ui.view === 'question' || /postal code|Where do you live|mileage/i.test(t), ui.view + ' ' + t.slice(0, 300)],
+      ['asks for the missing answer', ui.view === 'question' && /The calculation needs this answer/.test(t), ui.view + ' ' + t.slice(0, 200)],
       ['no result with zero', !store.results.B3],
     ]);
   },
@@ -212,7 +212,7 @@ export const SCEN = {
   // Recoverable error: the topic fails, Try again works
   async S12() {
     const keep = CONFIG.paths.navigator; fresh(); store.profile = sanitizeProfile(Example.profile(false)); store.carLabels['1BB439'] = 'BMW 530xd'; saveStore();
-    CONFIG.paths.navigator = '/navigator-off-test'; calculate('B2'); await until(() => ui.view !== 'loading', 90000); await sleep(400);
+    CONFIG.paths.navigator = '/navigator-off-test'; store.session = { barrier: BARRIERS.B2.name, charging_interest: ['everyday'] }; calculate('B2'); await until(() => ui.view !== 'loading', 90000); await sleep(400);
     const errView = ui.view, errTxt = txt();
     CONFIG.paths.navigator = keep;
     const again = [...document.querySelectorAll('main button')].find((x) => /Try again/.test(x.textContent)); again?.click();

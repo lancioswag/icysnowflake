@@ -1747,7 +1747,7 @@ details.datasrc.lp-src > summary { min-height: 0; justify-content: flex-end; pad
 .bigfig > small + span { margin-top: 4px; }
 details.datasrc.lp-src > summary span { flex: none; }
 .sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.lp-why { display: block; margin: 0 0 4px auto; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--ink-2); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.lp-why { display: block; margin: 0 0 4px auto; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--accent); background: none; border: 0; text-decoration: none; cursor: pointer; }   /* 25 Nov: same look as "See our data sources" */
 .lp-srcm .lp-in { display: flex; flex-direction: column; align-items: flex-end; }
 .lp-srcm details.datasrc { align-self: stretch; }
 .dsmonthly { font-weight: 400 !important; color: var(--ink-2) !important; flex-basis: 100% !important; }
@@ -2336,7 +2336,7 @@ function whyNotChat() {
   const btn = h('button', { class: 'btn primary block', type: 'button', onclick: close }, 'Got it');
   const wrap = h('div', { class: 'modalwrap', role: 'presentation', onclick: (e) => { if (e.target === wrap) close(); } },
     h('div', { class: 'modalcard', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'wnc-t' },
-      h('h2', { id: 'wnc-t' }, 'Why not just use a chatbot?'),
+      h('h2', { id: 'wnc-t' }, 'Better than ChatGPT?'),
       h('ul', null, pts.map(([t, d]) => h('li', null, h('b', null, t), h('span', null, d)))), btn));
   document.body.append(wrap); document.addEventListener('keydown', esc); btn.focus();
 }
@@ -2531,7 +2531,7 @@ function viewLanding() {
         h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, h('span', null, 'Let\u2019s Find Out')), frame))),
       h('div', { class: 'lp-m lp-aboutm' }, h('p', { class: 'lp-in lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources, and AI to guide you through a more informed decision process about electric vehicles.')),
       h('div', { class: 'lp-m lp-srcm' }, h('div', { class: 'lp-in' },   // 25 Nov: the chatbot question above the data sources
-        h('button', { class: 'linkbtn lp-why', type: 'button', onclick: () => whyNotChat() }, 'Why not just use a chatbot?'), dataSources()))));
+        h('button', { class: 'linkbtn lp-why', type: 'button', onclick: () => whyNotChat() }, 'Better than ChatGPT?'), dataSources()))));
 }
 /** Drag the grip of a picked topic to change the priority (finger or mouse). */
 function dragSort(box, items, onchange) {

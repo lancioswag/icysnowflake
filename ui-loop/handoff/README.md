@@ -9,11 +9,11 @@ Si tratta di una copia congelata della build `d2efab0`, pubblicata con il commit
 | Cartella | Contenuto |
 |---|---|
 | `site/` | Il sito della release: `index.html` (app completa in un solo file), `cars.json`, `RELEASE.json` (commit e sha256), icone e manifest |
-| `reports/` | `TEST_FINAL_2026-11-25.md` (test finale) e i report del 24 e 25.11 |
+| `reports/` | `TEST_FINAL_2026-11-25.md` (test finale, con lo stato finale di n8n) |
 | `pdf/` | PDF del caso Christian (BMW 530xd – Mégane usata, 5 anni): report completo e one-page |
-| `n8n/` | Export dei workflow usati dalla release, senza credenziali (riferimenti solo per nome) |
+| `n8n/` | Export dei 14 workflow della cartella operativa `C – Demo`, senza credenziali (riferimenti solo per nome) |
 | `data/` | Inventario delle tabelle Supabase e snapshot minimo delle righe lette dal caso Christian |
-| `HANDOFF.md` | Architettura, endpoint, workflow, tabelle, credenziali (solo dove configurarle), manutenzione, punti aperti |
+| `HANDOFF.md` | Architettura, cartella n8n `C – Demo`, endpoint, workflow, tabelle, account e credenziali (solo nomi), manutenzione, punti aperti |
 
 ## Scaricare il sito
 - **Dallo ZIP:** cartella `site/`.

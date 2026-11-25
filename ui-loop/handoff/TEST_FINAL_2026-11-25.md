@@ -84,4 +84,16 @@ La release salva i dati nel browser sotto la chiave propria `bevnav.release.v1`.
 | S14 chat reale su `/assist-claude` | 7/7 ("Noted: home 8001 Zürich ZH · your car BMW 530XD (diesel) (2015) · selling price CHF 15'000 …") |
 | S16 correzione in chat fino a Costs, Summary e PDF | 5/5 |
 
-**Restore e pulizia:** vedi `CLEANUP_2026-11-25.md` e l'`INVENTORY.md` del backup.
+## 7. Stato finale di n8n e ritest (25.11 sera)
+
+Tutto il backend della release è nella cartella `C – Demo`: 14 workflow attivi, compresi `LIVE – AI summary v3` e `LIVE – Feedback`, spostati lì con gli stessi ID, webhook e stato attivo.
+
+Ritest dalla release, sessione pulita, 390 × 844, dati sintetici:
+
+| Scenario | Prima della riorganizzazione | Dopo |
+|---|---|---|
+| S1 caso BMW–Mégane | 18/18, "CHF 11'140 less" | 18/18, "CHF 11'140 less" |
+| S13 PDF | 4/4 | 4/4 |
+| S16 chat con correzione fino a Costs, Summary e PDF | 5/5 | 5/5 |
+| Riassunto AI (`/summary`) | testo dal modello | testo dal modello |
+| Feedback (`/feedback`) | salvato | salvato |

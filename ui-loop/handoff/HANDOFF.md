@@ -13,7 +13,14 @@
 
 **Hosting.** Cloudflare Worker `bev-navigator` (account collegato a Claude). Static assets da `public/` (`wrangler.jsonc`); build automatica da `main`.
 
-## 2. Percorso delle richieste (release)
+## 2. Backend in n8n: cartella operativa `C – Demo`
+
+**Tutto il backend della release è in una sola cartella:** https://hsg-consultancy-project.app.n8n.cloud/projects/j9P8mCpnPYcLeixy/folders/XChIhGiVw3yzNRSJ/workflows
+- Percorso: Project Zurich Insurance › BEV Navigator – Claude (versione isolata) › `C – Demo (navigator-claude, assist-claude)`.
+- Contiene **14 workflow, tutti attivi**: API Navigator, Assist, le 6 pagine dei temi, i 4 moduli, `LIVE – AI summary v3` e `LIVE – Feedback`.
+- I quattro webhook della release: `/navigator-claude`, `/assist-claude`, `/summary`, `/feedback`.
+
+### Percorso delle richieste
 
 1. Il frontend (`site/index.html`) chiama `POST https://hsg-consultancy-project.app.n8n.cloud/webhook/navigator-claude` con `{profile, session:{barrier}}`.
 2. Il webhook è servito da **`C – API Navigator`** (`5GFUF6ZhA9iDVWvM`). Geocodifica (swisstopo) e itinerari (openrouteservice), poi chiama la pagina del tema:
@@ -28,19 +35,18 @@
    - Vehicle choice `3B32H3Nkf4VZHEro`
    - Charging `nxPxoFRjkj9W8bP9`
    - Alternatives `oKW5Z1vvHXYijrxh`
-   - Train fares `IeOOzJ2UV3qCEeFy`
 4. **Chat:** `POST /webhook/assist-claude`, servito da **`C – Assist`** (`yoyAddSECLWtfgyu`). Il nodo "Build prompt" contiene prompt, campi estraibili e selettore del modello (`DEFAULT_MODEL` openai). Il nodo "Check reply" fa la validazione. Il frontend applica il patch campo per campo (`ChatNav.patch`), conferma con "Noted: …" e accetta le correzioni.
-5. **Riassunto AI:** `POST /webhook/summary`, servito da **`LIVE – AI summary v3`** (`t6SOK4APZkBlW1H0`, cartella "Test Claude").
+5. **Riassunto AI:** `POST /webhook/summary`, servito da **`LIVE – AI summary v3`** (`t6SOK4APZkBlW1H0`).
 6. **Feedback:** `POST /webhook/feedback`, servito da **`LIVE – Feedback`** (`sDwbPpWFwpI2GmXO`), che scrive nella tabella interna di n8n `ui_feedback`.
 
-**Cartelle n8n.** Progetto "Project Zurich Insurance" (`j9P8mCpnPYcLeixy`), cartella "BEV Navigator – Claude (versione isolata)":
-- `C – Demo (navigator-claude, assist-claude)`: 13 workflow;
-- `T – Test (navigator-test, preview)`: 12 workflow;
-- `Tools (deploy and table copies)`.
+### Cartelle visibili fuori da `C – Demo` (la release non le usa)
 
-**Copie a confronto:**
-- `T –` è identica a `C –` per codice (verificato nodo per nodo il 25.11). Differiscono solo lo schema Supabase (`bevtest`) e il webhook (`/navigator-test`).
-- `/assist-v2` (`LIVE – Assist v2`, `OGgnBIfA6tjZWZSk`) è la chat precedente. Resta attiva per la copia su GitHub Pages. Rispetto a `/assist-claude` estrae meno campi: niente anno né vendita.
+| Cartella | Perché resta |
+|---|---|
+| `T – Test (navigator-test, preview)`, accanto a `C – Demo` | Serve la preview (`/navigator-test`) e la copia su GitHub Pages. Stesso codice di `C –`, ma schema Supabase `bevtest` |
+| `Zurich BEV Navigator - Prototyp` e `- Prototyp 2` | Del team fino alla presentazione (`/navigator`, `/navigator-v2`) |
+| `Outside the demo – chat for the GitHub Pages copy (Assist v2) and old Assist v1` | Contiene due workflow: `LIVE – Assist v2` (`/assist-v2`), finché serve alla copia su GitHub Pages, e `OLD – Assist v1` (`/assist`), finché il suo uso esterno resta incerto |
+| `zz Archive – not used by the demo (25.11.2026)` | Contenitore storico: solo materiale archiviato, coperto dal backup locale |
 
 ## 3. Database
 
@@ -60,22 +66,30 @@
 
 Righe per tabella: `data/supabase_inventory.json`.
 
-**Snapshot minimo del caso Christian:** `data/supabase_snapshot_christian.json`. Restore di prova in uno schema temporaneo: esecuzione 18284 del tool "Tools – Supabase inventory, snapshot and restore test", con lo stesso numero di righe e lo stesso diesel 2.02.
+**Snapshot minimo del caso Christian:** `data/supabase_snapshot_christian.json`. Restore di prova in uno schema temporaneo (25.11, esecuzione 18284): stesso numero di righe e stesso diesel 2.02.
 
 **Login (opzionale).** Il frontend usa Supabase Auth del progetto `ccftsgtvyvjtmonfbwyt.supabase.co`, con una chiave publishable pensata per il browser.
 
-**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti; non esportata).
+**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti, scritta da `LIVE – Feedback`; non esportata). Le altre 12 tabelle interne sono copie usate dal Prototyp del team, non dalla release.
 
-## 4. Credenziali (solo nomi e dove configurarle; nessun valore nel pacchetto)
+## 4. Account e credenziali (solo nomi; nessun valore nel pacchetto)
 
-Configurate in n8n → Credentials:
-- `Supabase N00 (dev)` (Postgres)
-- `ORS` (openrouteservice)
-- `OJP Fare key` (opentransportdata.swiss)
-- `API OPENAI`, `Groq`, `gamini api`, `Antropic API` (modelli della chat e del riassunto)
-- `n8n account` (API n8n, usata dai tool di deploy ed export)
+| Account / servizio | A cosa serve per la demo |
+|---|---|
+| n8n cloud `hsg-consultancy-project.app.n8n.cloud`, Project Zurich Insurance | Backend: cartella operativa `C – Demo` (14 workflow) |
+| Supabase "Claude" (credenziale n8n `Supabase N00 (dev)`) | Tabelle lette dai calcoli |
+| Supabase Auth `ccftsgtvyvjtmonfbwyt` | Login facoltativo nel frontend |
+| Cloudflare, Worker `bev-navigator` | Hosting del sito e della release |
 
-Hosting e codice:
+Credenziali n8n usate dai 14 workflow di `C – Demo` (n8n → Credentials):
+- `Supabase N00 (dev)` (Postgres): tabelle;
+- `ORS` (openrouteservice): geocodifica e percorsi;
+- `API OPENAI`: chat e riassunto (modello predefinito);
+- `Groq`, `gamini api`, `Antropic API`: modelli alternativi della chat, scelti con `DEFAULT_MODEL` in `C – Assist`.
+
+Le altre credenziali del progetto servono al team o a workflow archiviati, non alla demo.
+
+Codice:
 - **Cloudflare:** account del Worker `bev-navigator`.
 - **GitHub:** repo pubblico `lancioswag/icysnowflake`.
 
@@ -85,12 +99,12 @@ Le chiavi non vanno mai nel repo, nei report o nel frontend.
 
 | Cosa | Come |
 |---|---|
-| Codice dei nodi n8n | File in `n8n/test/*.js` del repo, copiati nel nodo con "Tools – set node code in a Claude workflow (T – or C –) from the repo" (URL raw fissato a un commit), poi pubblicati. Prima su `T –` e preview, poi su `C –` |
-| Export dei workflow senza credenziali | "Tools – export workflows without credentials (handoff backup)" |
+| Codice dei nodi n8n | Sorgenti dei nodi Code in `n8n/test/*.js` del repo. Si prova la modifica su `T –` con la preview, poi la stessa modifica va nel workflow di `C – Demo`, che va pubblicato (Publish) |
+| Export dei workflow | `n8n/n8n_demo_workflows.json` in questo pacchetto (14 workflow, senza credenziali) |
 | Test | `ui-loop/tools`: test live nel browser con `public/preview/stress.js` (S1–S16); test locali `e2e_*.js`, `regress.js`, `edge.js`, `reconcile.js` |
 
 ## 6. Dipendenze esterne
-- **Dati e API pubbliche:** swisstopo, openrouteservice, sharedmobility.ch, transport.opendata.ch, opentransportdata.swiss (OJP), ASTRA TAS (open data), LINDAS/ElCom (ora da tabelle R12).
+- **Dati e API pubbliche chiamate durante un calcolo:** swisstopo, openrouteservice, ASTRA TAS (open data), sharedmobility.ch, transport.opendata.ch. Le tariffe ElCom vengono dalle tabelle R12 in Supabase.
 - **CDN:** jsDelivr (pdfmake, supabase-js), cdnjs (Leaflet), Google Fonts.
 - **Modelli AI:** OpenAI (predefinito), con alternative Groq, Gemini e Anthropic.
 

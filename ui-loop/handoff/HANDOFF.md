@@ -9,7 +9,7 @@
 | https://bev-navigator.zurich-hsg.workers.dev/preview/ | Preview di lavoro (cambia a ogni push) | `T – Test` (`/navigator-test`) | testata |
 | https://bev-navigator.zurich-hsg.workers.dev/map | Mappa delle schermate | – | statica |
 | https://lancioswag.github.io/icysnowflake/ | Vecchia copia su GitHub Pages | – | **chiusa** il 25.11: ogni pagina rimanda al sito principale |
-| `icy-snowflake-1754.ricordatilamail18.workers.dev` | Vecchia copia su un altro account Cloudflare | – | non raggiungibile il 25.11 e senza accesso da qui; i workflow che chiamava sono archiviati |
+| `icy-snowflake-1754.ricordatilamail18.workers.dev` | Vecchia copia su un altro account Cloudflare | – | **non esiste più**: non raggiungibile il 25.11, nessun Worker nell'account (verificato da Simone) |
 
 **Hosting.** Cloudflare Worker `bev-navigator` (account collegato a Claude). Static assets da `public/` (`wrangler.jsonc`); build automatica da `main`.
 
@@ -111,4 +111,3 @@ Le chiavi non vanno mai nel repo, nei report o nel frontend.
 2. **AutoScout24:** serve l'accesso partner per la stima del valore di vendita.
 3. **Refresh mensile dei dati:** da costruire. Piano: workflow n8n mensile → tabelle R12 in Supabase con `as_of` e `checked_at`; nel frattempo "Updated by hand".
 4. **HSG/Zurich sulla Start:** confermare con Christian la decisione di Simone (solo riga HSG).
-5. **Vecchia copia su `ricordatilamail18.workers.dev`:** su un altro account Cloudflare, da chiudere da chi ha l'accesso.

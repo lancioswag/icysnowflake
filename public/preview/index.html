@@ -1605,6 +1605,7 @@ details.datasrc[open] > summary svg:last-child { transform: rotate(180deg); }
 .whynot li svg { flex: none; width: 18px; height: 18px; color: var(--accent); margin-top: 2px; }
 .bubble { transition: transform .2s ease, opacity .2s ease; }
 .bubble.tuck { transform: translateY(140%); opacity: 0; pointer-events: none; }
+.bubble.cover { transform: translateX(140%); opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .bubble { transition: none; } }
 .mapgrey .leaflet-tile-pane { filter: grayscale(1) brightness(1.04) contrast(.9); }
 .leaflet-tooltip.r50tip { font: 700 12px/1.2 Inter, system-ui, sans-serif; border: 0; border-radius: 8px; padding: 3px 7px; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
@@ -4926,7 +4927,7 @@ function assumptionsSection(list) {
   const ours = (a) => !a.url && /assumption|design decision|placeholder|not included|estimate by/i.test(String(a.source || '')) || !a.source;
   list = list.filter((a) => a.key !== 'all_trips_electric');
   return more('Sources & our assumptions', h('div', { class: 'srclegend' }, h('span', { class: 'srcpill src' }, 'Source'), h('span', null, 'official data, tap Source to open it'), h('span', { class: 'srcpill ours' }, 'Our assumption'), h('span', null, 'estimate by the HSG team')), h('div', { class: 'assum' }, list.map((a) => {
-    const vtxt = a.value == null ? '–' : typeof a.value === 'boolean' ? (a.value ? 'yes' : 'no') : `${typeof a.value === 'number' ? fmt.n(a.value, a.value % 1 ? 2 : 0) : a.value}${a.unit ? ' ' + a.unit : ''}`;
+    const vtxt = a.value == null ? '–' : typeof a.value === 'boolean' ? (a.value ? 'yes' : 'no') : `${typeof a.value === 'number' ? dec(a.value, 4) : a.value}${a.unit ? ' ' + a.unit : ''}`;
     const row = h('div', { class: 'as-row' + (vtxt.length > 22 ? ' long' : '') },
       h('span', null, a.label, a.is_user_value ? h('span', { class: 'yours' }, 'your value') : null),
       a.profile_field ? h('button', { type: 'button', class: 'v vbtn', 'aria-label': `Change: ${a.label}` }, vtxt, icon('edit')) : h('span', { class: 'v' }, vtxt),
@@ -5673,6 +5674,22 @@ Example.boot();
   const atEnd = innerHeight + y >= document.documentElement.scrollHeight - 40;
   b.classList.toggle('tuck', innerWidth < 900 && y > last + 4 && y > 120 && !atEnd);
   if (y < last - 4 || atEnd) b.classList.remove('tuck'); last = y; }, { passive: true }); })();
+/* 25 Nov (Amos, stress test): it still covered a control when the page stood still (e.g. +30 % in Costs at 390 px).
+   It now steps aside (.cover) whenever a button, field or link lies under it, and comes back when the spot is free. */
+function bubbleGuard() {
+  const b = document.querySelector('.bubble'); if (!b) return;
+  if (innerWidth >= 900) { b.classList.remove('cover'); return; }
+  const cs = getComputedStyle(b), w = b.offsetWidth, hh = b.offsetHeight;
+  const L = { left: innerWidth - parseFloat(cs.right) - w - 6, right: innerWidth - parseFloat(cs.right) + 6, top: innerHeight - parseFloat(cs.bottom) - hh - 6, bottom: innerHeight - parseFloat(cs.bottom) + 6 };
+  let hit = false;
+  for (const el of document.querySelectorAll('#main button, #main a[href], #main input, #main select, #main textarea, #main [role="button"]')) {
+    const r = el.getBoundingClientRect(); if (!r.width || r.bottom < L.top || r.top > L.bottom || r.right < L.left || r.left > L.right) continue;
+    if (el.closest('.bubble')) continue; hit = true; break;
+  }
+  b.classList.toggle('cover', hit);
+}
+(() => { let q = 0; const run = () => { if (q) return; q = requestAnimationFrame(() => { q = 0; bubbleGuard(); }); };
+  addEventListener('scroll', run, { passive: true }); addEventListener('resize', run); new MutationObserver(run).observe(document.getElementById('app'), { childList: true, subtree: true }); run(); })();
 </script>
 
 </body>

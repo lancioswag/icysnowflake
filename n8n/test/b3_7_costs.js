@@ -427,7 +427,7 @@ const assumptions = [];
 if (ref) {
   assumptions.push(A('current_car_value_today', 'What your current car is worth today', r0(ref.V0), 'CHF',
     ref.V0_user ? 'your value' : `estimate: new price × 0.85 per year of age, minus 1 % of the new price per 10,000 km above 15,000 km a year`, null, 'current_car.value_today_chf', ref.V0_user));
-  assumptions.push(A('current_car_consumption', 'Consumption of your current car', Math.round(ref.cons * 10) / 10, 'l/100 km',
+  assumptions.push(A('current_car_consumption', 'Consumption of your current car', Math.round(ref.cons * 100) / 100, 'l/100 km',
     ref.cons_user ? 'your value' : `ASTRA TAS type approval ${ref.cons_rated} l/100 km (${ref.cycle || 'WLTP'} test), plus ${Math.round((ref.realF - 1) * 100)} % for real driving (ICCT, From laboratory to road; gap by year of approval)`, 'https://theicct.org/publication/from-laboratory-to-road-a-2018-update/', 'current_car.consumption', ref.cons_user));
   if (!ref.V0_user) assumptions.push(A('current_car_new_price', 'New price of your current car (only for the value estimate)', ref.K, 'CHF',
     ref.K_user ? 'your value' : `Typical new price of a ${SIZE_WORD[ref.size].toLowerCase()} combustion car (BFE/EBP 2023, Table 4)`, ref.K_user ? null : BFE_EBP, 'current_car.new_price_chf', ref.K_user));

@@ -1852,6 +1852,7 @@ const fmt = {
   n: (x, d = 0) => (x == null || isNaN(x) ? '–' : grp(x, d)),
   chf: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x))),
   chf100: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x / 100) * 100)),
+  chf10: (x) => (x == null || isNaN(x) ? '–' : 'CHF ' + grp(Math.round(x / 10) * 10)),
   band: (b, round100 = true) => {
     if (!b || b.min == null) return '–';
     const r = (v) => grp(round100 ? Math.round(v / 100) * 100 : Math.round(v));
@@ -1913,7 +1914,8 @@ function emptyProfile() {
     second_car: { targa_id: 'none', wltp_range_km: null, towbar: null },   // 23 Nov: second car removed from the questions
     target_ev: { size: null, purchase: null, price_chf: null },   // 23 Nov: the car you want to drive (replaces the second-car question)
     selected_class_id: null, everyday_charging: null,
-    cost_assumptions: { fuel_price_chf_l: null, interest_rate: null, p_dc_chf_kwh: null, tyre_changes_per_year: null, insurance_current_chf_year: null, insurance_ev_chf_year: null, maintenance_current_chf_year: null, maintenance_ev_chf_year: null },
+    cost_assumptions: { fuel_price_chf_l: null, interest_rate: null, p_dc_chf_kwh: null, tyre_changes_per_year: null, insurance_current_chf_year: null, insurance_ev_chf_year: null, maintenance_current_chf_year: null, maintenance_ev_chf_year: null,
+      tax_current_chf_year: null, tax_ev_chf_year: null, residual_current_chf: null, residual_ev_chf: null, residual_years: null, ev_kwh_100km: null, electricity_price_chf_kwh: null },
     used_listing: { first_registration: null, odometer_km: null }, electricity_product: null,
     budget: null,             // UI only (B4 marks options above it); not part of the n8n contract
   };
@@ -2462,6 +2464,35 @@ const Landing = {
   },
 };
 
+/** 25 Nov: Christian's TCO Word as a reproducible case. ?example=bmw-megane loads a synthetic profile with every input of his table
+    (BMW 530xd 2015 worth CHF 15'000, used Renault Mégane E-Tech for CHF 20'000, 5 years, 10'000 km a year) and opens Costs.
+    Expected: CHF 5'000 cash, 5-year TCO 41'090 vs 29'950, CHF 11'140 for the electric car. ?example=bmw-megane-app keeps the app's own data. */
+const Example = {
+  WORD: { fuel_price_chf_l: 2.3, interest_rate: 3, insurance_current_chf_year: 900, insurance_ev_chf_year: 1000, maintenance_current_chf_year: 2400, maintenance_ev_chf_year: 1200,
+    tax_current_chf_year: 600, tax_ev_chf_year: 300, residual_current_chf: 5000, residual_ev_chf: 8000, residual_years: 5, ev_kwh_100km: 18, electricity_price_chf_kwh: 0.35 },
+  profile(word) {
+    const p = emptyProfile();
+    Object.assign(p, { postal_code: '8001', charging_at_work: 'no_car_commute', home_charging_status: 'yes', fixed_parking: 'yes', housing_type: 'house_owner', everyday_charging: 'private_ac' });
+    p.current_car = { ...p.current_car, targa_id: '1BB439', first_registration: '2015-01', odometer_km: 150000, value_today_chf: 15000, consumption: word ? 8.6 : null, approval_year: 2007 };
+    p.target_ev = { size: 'M', purchase: 'used', price_chf: 20000 };
+    p.trips = [{ trip_type: 'other', label: 'Everyday driving (10,000 km a year)', dest_km: 19.23, freq_n: 5, freq_unit: 'week', seats_needed: 2, trailer: 'none', coverage: 'must_ev' }];
+    if (word) Object.assign(p.cost_assumptions, Example.WORD);
+    return p;
+  },
+  async boot() {
+    const q = new URLSearchParams(location.search).get('example'); if (!['bmw-megane', 'bmw-megane-app'].includes(q)) return;
+    history.replaceState(null, '', location.pathname);
+    store.profile = sanitizeProfile(Example.profile(q === 'bmw-megane')); store.carLabels['1BB439'] = 'BMW 530xd'; store.results = {};
+    store.queue = ['B4', 'B3']; store.example = q; ui.b3N = 5; saveStore();
+    await runAll(['B4', 'B3'], { quiet: true }); showResult('B3');
+  },
+  note() {
+    if (!store.example) return null;
+    return h('p', { class: 'kinfo exnote' }, icon('info'), h('span', null, store.example === 'bmw-megane'
+      ? 'Example: Christian\u2019s BMW 530xd vs a used Renault M\u00e9gane E-Tech, with every input of his TCO table (yours to change below).'
+      : 'Example: the same BMW and M\u00e9gane, with the Navigator\u2019s own data (tariffs, tax, value curves).'));
+  },
+};
 function viewLanding() {
   const NS = 'http://www.w3.org/2000/svg';
   const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
@@ -4164,7 +4195,7 @@ function energyFormula(l, asm = []) {
     const tot = e.km_per_year * e.kwh_per_100km / 100 * e.chf_per_kwh;
     const pk = { private_ac: 'p_home', public_ac: 'p_public_ac', public_dc: 'p_dc' }[e.everyday] || 'p_home';
     return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km and CHF ${e.chf_per_kwh.toFixed(2)} per kWh: ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
-      basis: `Consumption: WLTP value of the class, adjusted for your speed and winter heating; charging losses not included. Electricity: ${A(pk)?.source || 'tariff where you charge'}.` };
+      basis: `Consumption: ${e.consumption_source === 'user' ? 'your value at the plug, charging losses included' : 'WLTP value of the class, adjusted for your speed and winter heating; the energy lost while charging is not included (enter your own consumption at the plug to include it)'}. Electricity: ${e.price_source === 'user' ? 'your average price' : A(pk)?.source || 'tariff where you charge'}.` };
   }
   if (e.l_per_100km == null || e.chf_per_l == null) return null;
   const tot = e.km_per_year * e.l_per_100km / 100 * e.chf_per_l;
@@ -4253,29 +4284,31 @@ const bandTxt = (b) => (b && b.low != null ? `CHF ${fmt.n(Math.round(b.low / 100
 /** Plain numbers for the tables (the unit is in the column head): rounded to CHF 100, or to CHF 1 for items per year. */
 const n100 = (x) => (x == null || isNaN(x) ? '–' : (Math.round(x / 100) * 100 < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x / 100) * 100)));
 const n1 = (x) => (x == null || isNaN(x) ? '–' : (x < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x))));
+// 25 Nov: cost blocks to CHF 10, so a TCO table like Christian's (41'090 vs 29'950) can be checked line by line
+const n10 = (x) => (x == null || isNaN(x) ? '–' : (Math.round(x / 10) * 10 < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x / 10) * 10)));
 function b3Blocks(M) {
   const { ev, ref, N, e, c, noRef } = M;
   if (!ev) return null;
-  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance'], ['maintenance', 'Maintenance and tyres'], ['bridging', 'Other transport for rare trips']];
+  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance'], ['maintenance', 'Maintenance and tyres'], ['vignette', 'Motorway vignette'], ['bridging', 'Other transport for rare trips']];
   const it = (y, k) => (y ? y.items?.[k] ?? null : null);
   const upfront = [
-    ['Price', noRef ? null : '0', n100(M.price), { sub: ev.purchase === 'used' ? `used, about ${ev.used_age_years || 4} years old` : 'new' }],
-    ['Other upfront costs', noRef ? null : '0', n100(M.install), { sub: M.install ? 'home charging installation' : 'none' }],
-    ['Sale of your current car', noRef ? null : '–', noRef ? '–' : n100(-M.sale), { sub: noRef ? null : ref.value_today_source === 'estimate' ? 'our estimate of its value today' : 'your value' }],
-    ['Cash you need today', noRef ? null : '0', n100(M.net), { strong: true, hi: true, sub: noRef ? null : 'price + installation − sale of your car' }],
+    ['Price', noRef ? null : '0', n10(M.price), { sub: ev.purchase === 'used' ? `used, about ${ev.used_age_years || 4} years old` : 'new' }],
+    ['Other upfront costs', noRef ? null : '0', n10(M.install), { sub: M.install ? 'home charging installation' : 'none' }],
+    ['Sale of your current car', noRef ? null : '–', noRef ? '–' : n10(-M.sale), { sub: noRef ? null : ref.value_today_source === 'estimate' ? 'our estimate of its value today' : 'your value' }],
+    ['Cash you need today', noRef ? null : '0', n10(M.net), { strong: true, hi: true, sub: noRef ? null : 'price + installation − sale of your car' }],
   ];
   const running = [
     ...ITEM_ROWS.filter(([k]) => (it(e, k) || 0) > 0 || (it(c, k) || 0) > 0).map(([k, l]) => [l, c ? n1(it(c, k)) : null, n1(it(e, k))]),
     ['Running costs per year', c ? n1(M.refRun) : null, n1(M.evRun), { strong: true }],
   ];
   const dep = [
-    ['Value today', c ? n100(ref.value_today_chf) : null, n100(M.price), { sub: 'your car: what it is worth; electric car: its price' }],
-    [`Value after ${yrsTxt(N)}`, c ? n100(M.refEnd) : null, n100(M.evEnd), { sub: M.extrap ? 'uncertain, see below' : null }],
-    [`Value loss over ${yrsTxt(N)}`, c ? n100(ref.value_today_chf - M.refEnd) : null, n100(M.price - M.evEnd)],
-    [`Interest over ${yrsTxt(N)}`, c ? n100(M.refInt) : null, n100(M.evInt), { sub: 'on the money tied up in the car' }],
-    [`Running costs over ${yrsTxt(N)}`, c ? n100(M.refRun * N) : null, n100(M.evRun * N)],
-    ['Charging installation', c ? '0' : null, n100(M.install)],
-    [`Total cost over ${yrsTxt(N)}`, c ? n100(M.refTot) : null, n100(M.evTot), { strong: true, hi: true }],
+    ['Value today', c ? n10(ref.value_today_chf) : null, n10(M.price), { sub: 'your car: what it is worth; electric car: its price' }],
+    [`Value after ${yrsTxt(N)}`, c ? n10(M.refEnd) : null, n10(M.evEnd), { sub: M.extrap ? 'uncertain, see below' : null }],
+    [`Value loss over ${yrsTxt(N)}`, c ? n10(ref.value_today_chf - M.refEnd) : null, n10(M.price - M.evEnd)],
+    [`Interest over ${yrsTxt(N)}`, c ? n10(M.refInt) : null, n10(M.evInt), { sub: 'on the money tied up in the car' }],
+    [`Running costs over ${yrsTxt(N)}`, c ? n10(M.refRun * N) : null, n10(M.evRun * N)],
+    ['Charging installation', c ? '0' : null, n10(M.install)],
+    [`Total cost over ${yrsTxt(N)}`, c ? n10(M.refTot) : null, n10(M.evTot), { strong: true, hi: true }],
   ];
   return { upfront, running, dep };
 }
@@ -4320,7 +4353,7 @@ function energyBox(ev, ref, asm, refName) {
     br > 0 || kmGap > 100 ? h('p', null, h('b', null, 'Trips the electric car cannot do: '), `${kmGap > 100 ? `about ${fmt.n(kmGap)} km a year by rental car or train, ` : ''}${fmt.chf(br)} a year, shown on its own line (Other transport).`) : null);
 }
 function renderB3(r) {
-  const M = b3Model(r); const { P, ev, ref, noRef, N, H, payback } = M;
+  const M = b3Model(r); const { P, ev, ref, noRef, N, H, payback, gapYears } = M;   // 25 Nov: gapYears was missing (crash when there is no payback)
   const yr = (l) => l.years.find((y) => y.n === N) || l.years[l.years.length - 1];
   const as = r.assumptions || [];
   const val = (k) => as.find((a) => a.key === k);
@@ -4336,10 +4369,10 @@ function renderB3(r) {
   const V = b3Verdict(M);
   let statement = 'Your cost comparison', detail = null, big = null;
   if (ev && !noRef && M.saving != null) {
-    statement = M.saving >= 0 ? `Over ${yrs}, a ${evPhrase(ev)} costs about ${fmt.chf100(M.saving)} less than keeping your ${refName}.`
-      : `Over ${yrs}, a ${evPhrase(ev)} costs about ${fmt.chf100(-M.saving)} more than keeping your ${refName}.`;
+    statement = M.saving >= 0 ? `Over ${yrs}, a ${evPhrase(ev)} costs about ${fmt.chf10(M.saving)} less than keeping your ${refName}.`
+      : `Over ${yrs}, a ${evPhrase(ev)} costs about ${fmt.chf10(-M.saving)} more than keeping your ${refName}.`;
     detail = `${pbTxt}${M.scen?.flips ? ` What the cars are worth after ${yrs} can turn the result around.` : ''}`;
-    big = { value: fmt.chf100(Math.abs(M.saving)), per: `over ${yrs}`, sub: `about ${fmt.chf(Math.round(Math.abs(M.saving) / N / 10) * 10)} a year`, label: M.saving >= 0 ? `less than keeping your ${refName}` : `more than keeping your ${refName}`, tone: M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn' };
+    big = { value: fmt.chf10(Math.abs(M.saving)), per: `over ${yrs}`, sub: `about ${fmt.chf(Math.round(Math.abs(M.saving) / N / 10) * 10)} a year`, label: M.saving >= 0 ? `less than keeping your ${refName}` : `more than keeping your ${refName}`, tone: M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn' };
   } else if (ev) {
     statement = `Kept for ${yrs}, a ${evName(ev, true)} costs ${fmt.band(yr(ev).total_per_year)} a year, all costs included.`;
     big = { value: fmt.band(yr(ev).total_per_year).replace(/^about /, ''), per: `/ ${fmt.chf(evPY / 12)} a month`, label: 'a year, all costs' };
@@ -4367,8 +4400,8 @@ function renderB3(r) {
   })();
   const frow = (l, v, cls, sub) => h('div', { class: 'frow' }, h('span', null, l, sub ? h('small', { class: 'frsub' }, sub) : null), h('b', { class: cls || null }, v));
   const glance = ev ? h('section', { class: 'factcard glance' }, h('h2', null, icon('wallet'), 'Your comparison'), pickRow, choiceRow, yearChips, fuelRow,
-    !noRef && M.saving != null ? frow(`Difference over ${yrs}`, M.saving >= 0 ? `${fmt.chf100(M.saving)} less` : `${fmt.chf100(-M.saving)} more`, M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn', 'electric car compared with keeping your car') : null,
-    !noRef ? frow('When does it pay off?', payback ? `after about ${yrsTxt(payback)}` : `not within ${horizon} years`, payback ? 'good' : 'warn') : null,
+    !noRef && M.saving != null ? frow(`Difference over ${yrs}`, M.saving >= 0 ? `${fmt.chf10(M.saving)} less` : `${fmt.chf10(-M.saving)} more`, M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn', 'electric car compared with keeping your car') : null,
+    !noRef ? frow('When does it pay off?', payback ? `in year ${payback}` : M.gapYears.length ? 'not enough data' : `not within ${horizon} years`, payback ? 'good' : 'warn', payback > 8 ? 'uncertain: values after year 8 are extrapolated' : null) : null,
     sizeHint, gapNote(), gapYearNote,
     ref?.value_today_source === 'estimate' && !noRef ? h('button', { class: 'kinfo linkish', type: 'button', onclick: () => editAnswer(8) }, icon('edit'), h('span', null, `Your ${refName} is worth about ${fmt.chf100(ref.value_today_chf)} today (our estimate). Got an offer? Enter it.`)) : null) : null;
 
@@ -4405,9 +4438,9 @@ function renderB3(r) {
     h('h3', null, 'Upfront cost'), cmpTable(B.upfront, 'CHF'),
     h('h3', null, 'Running costs'), cmpTable(B.running, 'CHF per year'), energyBox(ev, noRef ? null : ref, r.assumptions || [], refName),
     h('h3', null, 'Depreciation and total cost'), cmpTable(B.dep, 'CHF'),
-    !noRef && M.saving != null ? h('div', { class: 'frow diffrow' }, h('span', null, `Difference over ${yrs}`), h('b', { class: M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn' }, M.saving >= 0 ? `${fmt.chf100(M.saving)} less with the EV` : `${fmt.chf100(-M.saving)} more with the EV`)) : null,
+    !noRef && M.saving != null ? h('div', { class: 'frow diffrow' }, h('span', null, `Difference over ${yrs}`), h('b', { class: M.scen?.flips ? null : M.saving >= 0 ? 'good' : 'warn' }, M.saving >= 0 ? `${fmt.chf10(M.saving)} less with the EV` : `${fmt.chf10(-M.saving)} more with the EV`)) : null,
     uncert, battery,
-    h('p', { class: 'note keep' }, 'All amounts in CHF. Rounded to CHF 100; running costs per year to CHF 1. We calculate with unrounded values, so lines can differ slightly from their sum.')) : null;
+    h('p', { class: 'note keep' }, 'All amounts in CHF, rounded to CHF 10 (running costs per year to CHF 1). We calculate with unrounded values, so lines can differ slightly from their sum.')) : null;
 
   // ---- per-year table (full analysis) ----
   const shown = [ev, noRef ? null : ref].filter(Boolean);
@@ -4447,9 +4480,10 @@ function renderB3(r) {
     dc ? [h('h3', null, 'Where the values at the end come from'), h('ul', { class: 'small' },
       h('li', null, h('b', null, 'Electric car: '), dc.ev), h('li', null, h('b', null, 'Used electric car: '), dc.ev_used), h('li', null, h('b', null, 'Your car: '), dc.current_car),
       h('li', null, h('b', null, 'Uncertainty: '), dc.uncertainty), h('li', null, h('b', null, 'Battery: '), dc.battery))] : null,
-    h('p', { class: 'small muted' }, 'Costs that are the same for both cars (parking, motorway vignette) are left out.'));
+    h('p', { class: 'small muted' }, 'Parking is left out: it is the same for both cars. The motorway vignette (CHF 40 a year) is counted for both.'));
 
   const sections = [
+    Example.note(),
     glance,
     blocks,
     h('section', { class: 'rsec' }, h('h2', null, noRef ? 'Total cost over the years' : 'When does it pay off?'),
@@ -5551,6 +5585,7 @@ loadStore();
 Account.init();
 if (ui.view === 'home' && !location.hash) ui.view = 'landing';   // 24 Nov: every fresh load starts on the landing page
 render();
+Example.boot();
 
 /* 23 Nov: on a phone the chat bubble covered controls (e.g. the petrol price switch). It now slides away while you scroll
    down and comes back when you scroll up or reach the end of the page. */

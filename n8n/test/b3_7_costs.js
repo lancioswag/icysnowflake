@@ -110,6 +110,16 @@ const insCat = (size, newPrice) => (num(newPrice) !== null && newPrice >= 70000 
 const insAvg = (cat, ageStart, N) => { let t = 0; for (let k = 0; k < N; k++) t += (ageStart + k < 5 ? INS.full[cat] : INS.liab[cat]); return t / N; };
 const insUserCur = num(ca.insurance_current_chf_year), insUserEv = num(ca.insurance_ev_chf_year);
 const mntUserCur = num(ca.maintenance_current_chf_year), mntUserEv = num(ca.maintenance_ev_chf_year);
+// 25 Nov (Christian's TCO Word as a reproducible case): optional user values for every line of his table.
+//   residual_*_chf: what each car is worth after residual_years (default 5) years; the value curve passes through that point.
+//   tax_*_chf_year: motor vehicle tax per year; ev_kwh_100km: consumption at the plug (incl. charging losses); electricity_price_chf_kwh: blended price.
+const RES_YEARS = Math.max(1, Math.min(12, num(ca.residual_years) ?? 5));
+const resUserCur = num(ca.residual_current_chf), resUserEv = num(ca.residual_ev_chf);
+const taxUserCur = num(ca.tax_current_chf_year), taxUserEv = num(ca.tax_ev_chf_year);
+const evConsUser = num(ca.ev_kwh_100km), elecUser = num(ca.electricity_price_chf_kwh);
+const VIGNETTE = 40;   // motorway vignette CHF 40 a year, the same for both cars (BAZG / via.admin.ch)
+// value after t years when the person gives the value after RES_YEARS: a steady yearly rate through that point
+const through = (v0, rN, t) => (v0 > 0 && rN > 0 ? v0 * (rN / v0) ** (t / RES_YEARS) : Math.max(0, v0 * (1 - t / RES_YEARS)));
 const maint = (size, ev, km, ageFactor = 1) => {
   const s = C.S_SERVICE[size] * (ev ? C.EV_SERVICE[size] : 1);
   return (0.5 * s + C.tyre_changes * C.TYRE_CHANGE_CHF + ((0.5 * s) / 15000 + C.TYRE_KM[size]) * km) * ageFactor;
@@ -149,7 +159,7 @@ if (!noRef) {
     const vEst = Math.max(K * C.EST_FLOOR, K * C.EST_YEAR ** age0 - (K * C.EST_KM_PP / 100) * Math.max(0, km0 - C.RW_BASE_KM * age0) / 10000);
     const V0 = vUser ?? vEst;
     const kmLoss = Math.max(0, annual - C.RW_BASE_KM) / 10000 * (C.KEEP_KM_PP / 100);
-    const value = (t) => Math.max(0, V0 * C.KEEP_YEAR ** t * Math.max(0.3, 1 - kmLoss * t));
+    const value = resUserCur !== null ? (t) => through(V0, resUserCur, t) : (t) => Math.max(0, V0 * C.KEEP_YEAR ** t * Math.max(0.3, 1 - kmLoss * t));
     const energy = trips.reduce((s, t) => s + t.days_per_year * 2 * t.km * (cons / 100) * (C.TRAILER[t.trailer] ?? 1) * fuelPrice, 0);
     const repairF = Math.min(C.OLD_REPAIR_MAX, 1 + C.OLD_REPAIR * Math.max(0, age0 - C.OLD_REPAIR_FROM));
     ref = { fuel, cons, cons_rated: num(car.consumption), cycle: car.cycle ?? null, realF, cons_user: consUser !== null, fuelPrice, fuelRow, fuel_user: fuelUser !== null, size, K, K_user: num(cc.new_price_chf) !== null,
@@ -238,7 +248,12 @@ for (const purchase of ['new', 'used']) {
     const userPrice = tgtCls === o.class_id && purchase === (tgtBuy ?? 'new');
     const pMin = userPrice ? tgtPrice : newMin * buyF;
     const pMax = userPrice ? tgtPrice : newMax * buyF;
-    const en = evEnergy(o.class_id);
+    const en0 = evEnergy(o.class_id);
+    // your EV's consumption (incl. losses) and / or a blended price replace the class value and the tariff where you charge
+    const ownLine = !tgtSize || size === tgtSize || userPrice;
+    const evKwh = evConsUser !== null && ownLine ? (o.ev_annual_km * evConsUser) / 100 : en0.kwh;
+    const avgPrice = elecUser ?? (en0.kwh ? en0.chf / en0.kwh : (pEvery ?? 0));
+    const en = { kwh: evKwh, chf: evKwh * avgPrice, cons_user: evConsUser !== null && ownLine, price_user: elecUser !== null };
     const tax = taxRow('bev', o.class_id);
     const ins = insRow('bev', o.class_id);
     const insCatEv = insCat(size, (newMin + newMax) / 2);
@@ -255,21 +270,21 @@ for (const purchase of ['new', 'used']) {
       const rwAdj = (n) => { const typ = rwAt(size, age + n); const kmPP = (C.RW_KM_PP * (o.ev_annual_km - C.RW_BASE_KM) * n) / 10000; return Math.min(typ * 1.25, Math.max(typ * 0.4, typ - kmPP)); };
       let rwMin = Infinity; for (let n = 1; n <= N; n++) rwMin = Math.min(rwMin, rwAdj(n));
       const rwPct = rwMin / 100;
-      const veh = (P0) => { const RW = (P0 / buyF) * rwPct; return { loss: (P0 - RW) / N, interest: (C.r * (P0 + RW)) / 2, rw: RW }; };
-      const extrapolated = age + N > 8;
+      const veh = (P0) => { const RW = resUserEv !== null && userPrice ? through(P0, resUserEv, N) : (P0 / buyF) * rwPct; return { loss: (P0 - RW) / N, interest: (C.r * (P0 + RW)) / 2, rw: RW }; };
+      const extrapolated = !(resUserEv !== null && userPrice) && age + N > 8;
       const band = extrapolated ? C.BAND_EXTRA : C.BAND_TABLE;
       const evKm = o.ev_annual_km * N + (purchase === 'used' ? C.RW_BASE_KM * age : 0);
       const a = veh(pMin), b = veh(pMax);
-      const taxV = taxPerYear(tax, N);
+      const taxV = taxUserEv ?? taxPerYear(tax, N);
       const iMin = installs ? C.INSTALL.min / N : 0;
       const iMax = installs ? C.INSTALL.max / N : 0;
       const insV = insUserEv ?? insAvg(insCatEv, age, N);
-      const rest = en.chf + taxV + insV + mnt + bridgingSum;
+      const rest = en.chf + taxV + insV + mnt + VIGNETTE + bridgingSum;
       const tMin = a.loss + a.interest + iMin + rest;
       const tMax = b.loss + b.interest + iMax + rest;
       return {
         n: N,
-        items: { vehicle: r0((a.loss + b.loss) / 2), interest: r0((a.interest + b.interest) / 2), energy: r0(en.chf), tax: r0(taxV), insurance: r0(insV), maintenance: r0(mnt), installation: r0((iMin + iMax) / 2), bridging: r0(bridgingSum) },
+        items: { vehicle: r0((a.loss + b.loss) / 2), interest: r0((a.interest + b.interest) / 2), energy: r0(en.chf), tax: r0(taxV), insurance: r0(insV), maintenance: r0(mnt), vignette: VIGNETTE, installation: r0((iMin + iMax) / 2), bridging: r0(bridgingSum) },
         value_after: { min: r0(a.rw), max: r0(b.rw) },
         value_after_band: { low: r0(((a.rw + b.rw) / 2) * (1 - band)), high: r0(((a.rw + b.rw) / 2) * (1 + band)), share: band, extrapolated },
         running_per_year: r0(rest),
@@ -298,7 +313,8 @@ for (const purchase of ['new', 'used']) {
       battery: { gross_kwh: kwh, replacement_chf: kwh ? r100(kwh * C.BATTERY_CHF_KWH) : null, warranty_years: C.WARRANTY_YEARS, warranty_km: C.WARRANTY_KM, age_today: age },
       cash_need_today_chf: { min: r0(pMin + (installs ? C.INSTALL.min : 0) - v0), max: r0(pMax + (installs ? C.INSTALL.max : 0) - v0) },
       energy_detail: { kind: 'electricity', km_per_year: o.ev_annual_km, kwh_per_100km: o.ev_annual_km ? Math.round((en.kwh / o.ev_annual_km) * 1000) / 10 : null,
-        chf_per_kwh: en.kwh ? Math.round((en.chf / en.kwh) * 100) / 100 : pEvery, everyday: everyday.value },
+        chf_per_kwh: en.kwh ? Math.round((en.chf / en.kwh) * 100) / 100 : pEvery, everyday: everyday.value,
+        consumption_source: en.cons_user ? 'user' : 'class', losses_included: en.cons_user, price_source: en.price_user ? 'user' : 'tariff' },
       years: NS.map(yearOf),
       _payback: NS_PAYBACK.map(yearOf),
       bridging,
@@ -321,15 +337,15 @@ if (ref) {
     const RW = ref.value(N);
     const loss = (P - RW) / N;
     const interest = (C.r * (P + RW)) / 2;
-    const taxV = taxPerYear(ref.tax, N);
-    const t = loss + interest + ref.energy + taxV + insV + mnt;
-    const band = N > 8 ? C.BAND_EXTRA : C.BAND_CAR;
+    const taxV = taxUserCur ?? taxPerYear(ref.tax, N);
+    const t = loss + interest + ref.energy + taxV + insV + mnt + VIGNETTE;
+    const band = resUserCur !== null ? C.BAND_CAR : N > 8 ? C.BAND_EXTRA : C.BAND_CAR;
     return {
       n: N,
-      items: { vehicle: r0(loss), interest: r0(interest), energy: r0(ref.energy), tax: r0(taxV), insurance: r0(insV), maintenance: r0(mnt), installation: 0, bridging: 0 },
+      items: { vehicle: r0(loss), interest: r0(interest), energy: r0(ref.energy), tax: r0(taxV), insurance: r0(insV), maintenance: r0(mnt), vignette: VIGNETTE, installation: 0, bridging: 0 },
       value_after: { min: r0(RW), max: r0(RW) },
       value_after_band: { low: r0(RW * (1 - band)), high: r0(RW * (1 + band)), share: band, extrapolated: N > 8 },
-      running_per_year: r0(ref.energy + taxV + insV + mnt),
+      running_per_year: r0(ref.energy + taxV + insV + mnt + VIGNETTE),
       total_per_year: { min: r0(t), max: r0(t) },
       total_over_n: { min: r0(t * N), max: r0(t * N) },
       saving_vs_current: null,
@@ -418,7 +434,7 @@ assumptions.push(A('p_home', 'Electricity price at home', pHome, 'CHF/kWh', pr.p
 assumptions.push(A('p_public_ac', 'Public AC charging price', pAC, 'CHF/kWh', pr.p_public_ac?.source ?? null, pr.p_public_ac?.url ?? null));
 assumptions.push(A('p_dc', 'Fast charging (DC) price', pDC, 'CHF/kWh', pr.p_dc?.source ?? null, pr.p_dc?.url ?? null, 'cost_assumptions.p_dc_chf_kwh', pr.p_dc?.user === true));
 assumptions.push(A('tyre_changes', 'Tyre changes per year (summer / winter)', C.tyre_changes, null, num(ca.tyre_changes_per_year) !== null ? 'your value' : 'BFE/EBP 2023; TCS (CHF 80 per change)', null, 'cost_assumptions.tyre_changes_per_year', num(ca.tyre_changes_per_year) !== null));
-assumptions.push(A('motor_vehicle_tax', `Motor vehicle tax, electric car (estimate, canton ${canton ?? 'unknown'})`, t0 ? r0(taxPerYear(t0, START_N)) : null, 'CHF/yr', t0?.source ?? null, t0?.url ?? null));
+assumptions.push(A('motor_vehicle_tax', `Motor vehicle tax, electric car (canton ${canton ?? 'unknown'})`, taxUserEv ?? (t0 ? r0(taxPerYear(t0, START_N)) : null), 'CHF/yr', taxUserEv !== null ? 'your value' : (t0?.source ?? null), taxUserEv !== null ? null : (t0?.url ?? null), 'cost_assumptions.tax_ev_chf_year', taxUserEv !== null));
 const COMPARIS = 'https://www.comparis.ch/autoversicherung/praemien/kosten';
 if (ref) assumptions.push(A('insurance_current', 'Insurance of your current car', r0(insUserCur ?? insAvg(insCat(ref.size, ref.K), ref.age0, START_N)), 'CHF/yr', insUserCur !== null ? 'your value' : `Comparis premium ranges 2025 (midpoint), ${ref.age0 + 0 >= 5 ? 'liability only (car older than 5 years)' : 'full cover while under 5 years old, then liability'}`, insUserCur !== null ? null : COMPARIS, 'cost_assumptions.insurance_current_chf_year', insUserCur !== null));
 assumptions.push(A('insurance', 'Insurance of the electric car', r0(insUserEv ?? insAvg(insCat(optLines[0] ? (optLines[0].size_label === 'Small' ? 'S' : 'M') : 'M', null), 0, START_N)), 'CHF/yr', insUserEv !== null ? 'your value' : 'Comparis premium ranges 2025 (midpoint): full cover for the first 5 years of the car, then liability; used cars accordingly', insUserEv !== null ? null : COMPARIS, 'cost_assumptions.insurance_ev_chf_year', insUserEv !== null));
@@ -432,6 +448,21 @@ assumptions.push(A('battery_warranty', 'Battery warranty (typical)', `${C.WARRAN
 assumptions.push(A('battery_replacement', 'Battery replacement, only as a separate scenario', C.BATTERY_CHF_KWH, 'CHF per kWh', 'Nissan list prices (Leaf 40 / 62 kWh) reported by Auto Bild and t-online', 'https://www.t-online.de/mobilitaet/e-autos/id_89687372/elektroauto-so-teuer-ist-der-akku-tausch-.html'));
 assumptions.push(A('installation', 'Home charging installation (one-off)', installs ? '2,000–3,500' : 0, 'CHF', 'Leitfaden Ladeinfrastruktur im Stockwerkeigentum; TCS wallbox test (2024)', null));
 assumptions.push(A('ev_subsidy', 'Purchase subsidy for the EV', 0, 'CHF', 'not included yet', null));
+// 25 Nov: the remaining lines of Christian's TCO table, each one editable
+if (ref) assumptions.push(A('tax_current', `Motor vehicle tax of your current car (canton ${canton ?? 'unknown'})`, r0(taxUserCur ?? taxPerYear(ref.tax, START_N)), 'CHF/yr', taxUserCur !== null ? 'your value' : (ref.tax?.source ?? 'cantonal tax table'), taxUserCur !== null ? null : (ref.tax?.url ?? null), 'cost_assumptions.tax_current_chf_year', taxUserCur !== null));
+if (ref) assumptions.push(A('residual_current', `What your current car is worth after ${RES_YEARS} years`, r0(ref.value(RES_YEARS)), 'CHF', resUserCur !== null ? 'your value' : 'our estimate: −18 % of its value per year (see value loss above)', null, 'cost_assumptions.residual_current_chf', resUserCur !== null));
+{
+  const own = optLines.find((l) => l.price_source === 'user') || optLines.find((l) => l.selected && l.purchase === defaultPurchase) || optLines[0];
+  if (own) {
+    const y = own.years[RES_YEARS - 1];
+    assumptions.push(A('residual_ev', `What the electric car is worth after ${RES_YEARS} years`, y ? r0((y.value_after.min + y.value_after.max) / 2) : null, 'CHF', resUserEv !== null && own.price_source === 'user' ? 'your value' : 'BFE/EBP 2023, Figure 2 (share of the new price by age)', resUserEv !== null ? null : BFE_EBP, 'cost_assumptions.residual_ev_chf', resUserEv !== null && own.price_source === 'user'));
+    const e = own.energy_detail || {};
+    assumptions.push(A('ev_consumption', 'Consumption of the electric car', e.kwh_per_100km, 'kWh/100 km', e.consumption_source === 'user' ? 'your value, at the plug (charging losses included)' : 'WLTP value of the class, adjusted for your speed and winter heating (B4); charging losses not included', null, 'cost_assumptions.ev_kwh_100km', e.consumption_source === 'user'));
+    assumptions.push(A('electricity_price', 'Average electricity price you pay', e.chf_per_kwh, 'CHF/kWh', e.price_source === 'user' ? 'your value' : 'your everyday charging place (home tariff ElCom, or public AC / DC); fast-charging share on long trips', null, 'cost_assumptions.electricity_price_chf_kwh', e.price_source === 'user'));
+  }
+}
+assumptions.push(A('vignette', 'Motorway vignette (same for both cars)', VIGNETTE, 'CHF/yr', 'Swiss motorway vignette, federal price', 'https://www.via.admin.ch', null, false));
+if (resUserCur !== null || resUserEv !== null) assumptions.push(A('residual_years', 'Year your values after … years refer to', RES_YEARS, 'years', 'your value', null, 'cost_assumptions.residual_years', num(ca.residual_years) !== null));
 
 for (const l of lines) { delete l._tax; delete l._ins; delete l._payback; }
 if (bridgingPending) warnings.push('bridging_prices_pending');

@@ -1,0 +1,3 @@
+{"cost_assumptions": {"fuel_price_chf_l": 2.3, "interest_rate": 3, "insurance_current_chf_year": 900, "insurance_ev_chf_year": 1000,
+ "maintenance_current_chf_year": 2400, "maintenance_ev_chf_year": 1200, "tax_current_chf_year": 600, "tax_ev_chf_year": 300,
+ "residual_current_chf": 5000, "residual_ev_chf": 8000, "residual_years": 5, "ev_kwh_100km": 18, "electricity_price_chf_kwh": 0.35}}

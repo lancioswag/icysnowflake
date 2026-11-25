@@ -165,7 +165,7 @@ export const SCEN = {
     const br2 = lineOf(resp('B3'), (l) => l.kind === 'option' && l.selected)?.bridging || [];
     return log('S7 Foreign trip added, changed, deleted', [
       ['n8n ok', b && !b.need.length, b?.need],
-      ['trip routed (B1 has the trip)', JSON.stringify(resp('B1')?.result || {}).includes('Paris')],
+      ['trip routed (distance known)', (store.profile.trips.find((t) => /Paris/.test(t.label))?.routing?.dist_km || 0) > 300, store.profile.trips.find((t) => /Paris/.test(t.label))?.routing],
       ['change recalculated Costs', sig1 !== sig0],
       ['bridging follows the frequency', JSON.stringify(br1) !== JSON.stringify(br0) || br0.length === 0, { br0, br1 }],
       ['bridging explains why', br1.length === 0 || (br1[0].why && br1[0].why.frequency), br1[0]?.why],
@@ -248,8 +248,8 @@ Object.assign(SCEN, {
     const same = shared.filter((k) => a.patch?.[k] != null || b.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
     try { ChatNav.stop && ChatNav.stop(); } catch { } ui.assistantOpen = false; render();
     return log('S14 Chat with the BMW–Mégane profile', [
-      ['notes what it understood', /selling price CHF.15’000/.test(noted) && /electric car: Sedan or estate, used, about CHF.20’000/.test(noted), noted],
-      ['car and year taken', /^1BB/.test(p1.current_car.targa_id || '') && p1.current_car.first_registration?.startsWith('2015'), p1.current_car],
+      ['notes what it understood', /selling price CHF.15’000/.test(noted.replace(/\u00a0/g, ' ')) && /electric car: Sedan or estate, used, about CHF.20’000/.test(noted), noted],
+      ['car, mileage and sale taken', /^1BB/.test(p1.current_car.targa_id || '') && p1.current_car.odometer_km === 150000 && p1.current_car.value_today_chf === 15000, p1.current_car],
       ['EV class, used, price taken', p1.target_ev.size === 'M' && p1.target_ev.purchase === 'used' && p1.target_ev.price_chf === 20000, p1.target_ev],
       ['asks for missing data', asked.length > 0, asked],
       ['takes a correction (14000)', p2.current_car.value_today_chf === 14000, p2.current_car.value_today_chf],

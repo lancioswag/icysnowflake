@@ -2041,7 +2041,8 @@ function commitDraft(draft) {
   const old = store.profile, nw = clone(draft);
   // rule 7: car changed → its details go
   if ((old.current_car.targa_id ?? null) !== (nw.current_car.targa_id ?? null)) {
-    Object.assign(nw.current_car, { first_registration: null, odometer_km: null, consumption: null, new_price_chf: null, value_today_chf: null });
+    // 25 Nov (chat test): only the OLD car's details go; details given together with the new car (one chat message) stay
+    for (const k of ['first_registration', 'odometer_km', 'consumption', 'new_price_chf', 'value_today_chf']) if ((nw.current_car[k] ?? null) === (old.current_car[k] ?? null)) nw.current_car[k] = null;
   }
   // rule 6: no second car → no "not with second car", no towbar
   if (nw.second_car.targa_id === 'none') {
@@ -4391,7 +4392,7 @@ function bridgingBox(ev) {
     with_stops: 'to the first fast charger; charging stops on the way are counted', first_leg: 'to the first fast charger; charging stops on the way are counted' };
   return h('div', { class: 'enbox brbox' }, h('h4', null, 'Trips by other transport'),
     items.map((b) => { const w = b.why; const why = [];
-      if (w.missing.includes('range')) why.push(`needs about ${fmt.n(w.need_km)} km of range${w.seasons.length === 1 && w.seasons[0] === 'winter' ? ' in winter' : ''} (${BASIS[w.need_basis] || 'there and back on one charge'}); this car has at least ${fmt.n(w.class_km)} km`);
+      if (w.missing.includes('range')) why.push(`needs about ${fmt.n(w.need_km)} km of range${w.seasons.length === 1 && w.seasons[0] === 'winter' ? ' in winter' : ''} (${BASIS[w.need_basis] || (/stop/.test(w.need_basis) ? 'the longest stretch between fast chargers; charging stops on the way are counted' : /dest/.test(w.need_basis) ? 'one way, you charge at the destination' : 'there and back on one charge')}); this car has at least ${fmt.n(w.class_km)} km`);
       if (w.missing.includes('seats')) why.push('needs more seats than this car has');
       if (w.missing.includes('towbar')) why.push('needs a towbar this car class does not offer');
       return h('p', null, h('b', null, `${b.label}: `), `${(MODE_TXT[b.key] || b.key || 'other transport').toLowerCase()}, ${fmt.n(b.days)} day${b.days === 1 ? '' : 's'} a year${w.frequency ? ` (${w.frequency})` : ''}`,

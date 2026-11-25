@@ -30,7 +30,7 @@ const FIELDS = {
   trips_add: 'array of other regular trips: [{ label, km_one_way, times, per: week | month | year }]',
   home_charging_status: 'yes | no | unknown (can charge at home)', fixed_parking: 'yes | no', housing_type: 'house_owner | condo_owner | tenant',
   car_brand: 'brand of the current car', car_model: 'model of the current car', car_fuel: 'petrol | diesel | electric | petrol hybrid | diesel hybrid', no_car: 'true if the person has no car',
-  car_mileage_km: 'mileage of the current car (number)', car_first_registration_year: 'year (number)',
+  car_mileage_km: 'mileage of the current car (number)', car_first_registration_year: 'year of first registration (number); a year written next to the car, e.g. "a 2015 BMW", is this year',
   second_car: 'none (if no other car stays in the household)', people: 'people in the car on most trips (1-7)', trailer: 'none | small | large',
   car_sale_price_chf: 'price the person expects or was offered for selling the current car, CHF (number)',
   ev_size: 'type of electric car wanted: small (city car) | medium (sedan or estate) | large (minivan, 6-7 seats)',

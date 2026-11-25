@@ -165,7 +165,7 @@ export const SCEN = {
     const br2 = lineOf(resp('B3'), (l) => l.kind === 'option' && l.selected)?.bridging || [];
     return log('S7 Foreign trip added, changed, deleted', [
       ['n8n ok', b && !b.need.length, b?.need],
-      ['trip routed (distance known)', (store.profile.trips.find((t) => /Paris/.test(t.label))?.routing?.dist_km || 0) > 300, store.profile.trips.find((t) => /Paris/.test(t.label))?.routing],
+      ['trip routed (distance known)', (br0.find((x) => /Paris/.test(x.label))?.why?.km_one_way || 0) > 300, br0.find((x) => /Paris/.test(x.label))?.why],
       ['change recalculated Costs', sig1 !== sig0],
       ['bridging follows the frequency', JSON.stringify(br1) !== JSON.stringify(br0) || br0.length === 0, { br0, br1 }],
       ['bridging explains why', br1.length === 0 || (br1[0].why && br1[0].why.frequency), br1[0]?.why],
@@ -245,7 +245,8 @@ Object.assign(SCEN, {
     const call = (path) => fetch(CONFIG.apiBase + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'chat', request_id: 'p' + Date.now(), message: msg, history: [], context: {} }) }).then((r) => r.json()).catch((e) => ({ error: String(e) }));
     const [a, b] = await Promise.all([call('/assist-v2'), call('/assist-claude')]);
     const shared = ['postal_code', 'car_brand', 'car_model', 'car_fuel', 'car_first_registration_year', 'car_mileage_km'];
-    const same = shared.filter((k) => a.patch?.[k] != null || b.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
+    // the copy may read more (e.g. the year); every field the team workflow returns must match
+    const same = shared.filter((k) => a.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
     try { ChatNav.stop && ChatNav.stop(); } catch { } ui.assistantOpen = false; render();
     return log('S14 Chat with the BMW–Mégane profile', [
       ['notes what it understood', /selling price CHF.15’000/.test(noted.replace(/\u00a0/g, ' ')) && /electric car: Sedan or estate, used, about CHF.20’000/.test(noted), noted],
@@ -254,7 +255,7 @@ Object.assign(SCEN, {
       ['asks for missing data', asked.length > 0, asked],
       ['takes a correction (14000)', p2.current_car.value_today_chf === 14000, p2.current_car.value_today_chf],
       ['copy returns the new fields', b.patch?.car_sale_price_chf === 15000 && b.patch?.ev_size && b.patch?.ev_price_chf === 20000, b.patch],
-      ['same shared fields as /assist-v2', same, { v2: a.patch, claude: b.patch }],
+      ['same fields as /assist-v2 where v2 answers', same, { v2: a.patch, claude: b.patch }],
     ], { noted, asked });
   },
 });

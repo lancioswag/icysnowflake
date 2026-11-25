@@ -4233,13 +4233,13 @@ function energyFormula(l, asm = []) {
     if (e.kwh_per_100km == null || e.chf_per_kwh == null) return null;
     const tot = e.km_per_year * e.kwh_per_100km / 100 * e.chf_per_kwh;
     const pk = { private_ac: 'p_home', public_ac: 'p_public_ac', public_dc: 'p_dc' }[e.everyday] || 'p_home';
-    return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km and CHF ${e.chf_per_kwh.toFixed(2)} per kWh: ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+    return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km and CHF ${e.chf_per_kwh.toFixed(2)} per kWh: ${fmt.chf(Math.round(tot))} a year`,
       basis: `Consumption: ${e.consumption_source === 'user' ? 'your value at the plug, charging losses included' : 'WLTP value of the class, adjusted for your speed and winter heating; the energy lost while charging is not included (enter your own consumption at the plug to include it)'}. Electricity: ${e.price_source === 'user' ? 'your average price' : A(pk)?.source || 'tariff where you charge'}.` };
   }
   if (e.l_per_100km == null || e.chf_per_l == null) return null;
   const tot = e.km_per_year * e.l_per_100km / 100 * e.chf_per_l;
   const cons = e.consumption_source === 'user' ? 'your value' : e.l_per_100km_rated != null ? `type approval ${fmt.n(e.l_per_100km_rated, 1)} l per 100 km (${e.cycle || 'WLTP'} test), plus ${Math.round((e.real_factor - 1) * 100)} % for real driving (ICCT)` : 'type approval (ASTRA TAS), real-world estimate';
-  return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.l_per_100km, 1)} l per 100 km and CHF ${e.chf_per_l.toFixed(2)} per litre: ${fmt.chf(Math.round(tot / 10) * 10)} a year`,
+  return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.l_per_100km, 1)} l per 100 km and CHF ${e.chf_per_l.toFixed(2)} per litre: ${fmt.chf(Math.round(tot))} a year`,
     basis: `Consumption: ${cons}. ${e.kind === 'diesel' ? 'Diesel' : 'Petrol'} price: ${e.price_source || A('fuel_price')?.source || 'BFS'}.` };
 }
 /** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
@@ -4320,11 +4320,12 @@ const signChf10 = (v) => (v == null ? '–' : (v >= 0 ? '+ ' : '− ') + 'CHF ' 
 /** Band of a value after N years as text: "CHF 900 to 1,800". */
 const bandTxt = (b) => (b && b.low != null ? `CHF ${fmt.n(Math.round(b.low / 100) * 100)} to ${fmt.n(Math.round(b.high / 100) * 100)}` : null);
 /** Rows of the three blocks; used on the page and in the PDF. Each row: [label, keep, switch, opts]. */
-/** Plain numbers for the tables (the unit is in the column head): rounded to CHF 100, or to CHF 1 for items per year. */
+/** Plain numbers for the tables (the unit is in the column head): rounded to CHF 10, or to CHF 1 for items per year. */
 const n100 = (x) => (x == null || isNaN(x) ? '–' : (Math.round(x / 100) * 100 < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x / 100) * 100)));
 const n1 = (x) => (x == null || isNaN(x) ? '–' : (x < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x))));
 // 25 Nov: cost blocks to CHF 10, so a TCO table like Christian's (41'090 vs 29'950) can be checked line by line
 const n10 = (x) => (x == null || isNaN(x) ? '–' : (Math.round(x / 10) * 10 < 0 ? '−' : '') + fmt.n(Math.abs(Math.round(x / 10) * 10)));
+const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 function b3Blocks(M) {
   const { ev, ref, N, e, c, noRef } = M;
   if (!ev) return null;
@@ -5411,14 +5412,14 @@ const Report = {
   /* ---------- small builders ---------- */
   t(x) { return x == null || x === '' ? '–' : String(x); },
   /** Number-like cells are right-aligned and never broken ("100 km/h", "CHF 1.200"). */
-  isNum(x) { return typeof x === 'string' && /^(CHF\s|[-–+]?\d|about \d|from CHF)/.test(x) && x.length < 28 && !/\b(times|once|twice|days?|years?|of)\b/.test(x); },
+  isNum(x) { return typeof x === 'string' && /^(CHF\s|[-–−+]?\d|about \d|from CHF)/.test(x) && x.length < 28 && !/\b(times|once|twice|days?|years?|of)\b/.test(x); },
   table(head, rows, widths) {
     if (!rows.length) return null;
     const R = Report;
-    const cell = (x) => (typeof x === 'object' && x !== null ? x : R.isNum(R.t(x)) ? { text: R.t(x), alignment: 'right', noWrap: true } : { text: R.t(x), noWrap: R.t(x).length <= 14 });
+    const cell = (x) => (typeof x === 'object' && x !== null ? (R.isNum(R.t(x.text)) || R.t(x.text) === '–' ? { alignment: 'right', noWrap: true, ...x } : x) : R.isNum(R.t(x)) ? { text: R.t(x), alignment: 'right', noWrap: true } : { text: R.t(x), noWrap: R.t(x).length <= 14 });
     const numCol = head.map((_, i) => rows.length && rows.every((r) => R.isNum(typeof r[i] === 'object' && r[i] ? r[i].text : R.t(r[i])) || R.t(r[i]) === '–'));
     return { table: { headerRows: 1, dontBreakRows: true, widths: widths || head.map((_, i) => (i ? 'auto' : '*')),
-      body: [head.map((x, i) => ({ text: x, style: 'th', noWrap: String(x).length <= 16, alignment: numCol[i] && i ? 'right' : 'left' })), ...rows.map((r) => r.map(cell))] },
+      body: [head.map((x, i) => ({ text: x, style: 'th', noWrap: String(x).length <= 16, alignment: numCol[i] && i ? 'right' : 'left' })), ...rows.map((r) => r.map((x, i) => (i && R.t(x) === '–' && typeof x !== 'object' ? { text: '–', alignment: 'right' } : cell(x))))] },
       layout: { hLineWidth: (i, node) => (i === 1 ? 0.9 : i === node.table.body.length ? 0.6 : 0), vLineWidth: () => 0, hLineColor: (i) => (i === 1 ? Report.C.ink2 : Report.C.line),
         paddingTop: () => 5, paddingBottom: () => 5, paddingLeft: (i) => (i ? 8 : 0), paddingRight: (i, node) => (i === node.table.widths.length - 1 ? 0 : 8),
         fillColor: (i) => (i > 0 && i % 2 === 0 ? Report.C.zebra : null) }, margin: [0, 2, 0, 14], fontSize: 9 };
@@ -5487,7 +5488,7 @@ const Report = {
     const tbl = (rows, unit) => R.table([unit, ...(two ? ['Keep your car'] : []), 'Switch to an EV'],
       rows.map(([l, k, sw, o = {}]) => [o.strong ? { text: l, bold: true } : (o.sub ? `${l} (${o.sub})` : l), ...(two ? [cellOf(k, o)] : []), cellOf(sw, o)]), two ? ['*', 88, 88] : ['*', 110]);
     const diff = (v) => (v >= 0 ? `${fmt.chf10(v)} less with the EV` : `${fmt.chf10(-v)} more with the EV`);
-    const out = [{ text: `${evName(M.ev, true)}${two ? ` against keeping your ${M.refName}` : ''}, kept ${yrs}`, bold: true, margin: [0, 0, 0, 4] },
+    const out = [{ text: cap(`${evName(M.ev, true)}${two ? ` against keeping your ${M.refName}` : ''}, kept ${yrs}`), bold: true, margin: [0, 0, 0, 4] },
       R.h3('Upfront cost (CHF)'), tbl(B.upfront, 'CHF'),
       R.h3('Running costs (CHF per year)'), tbl(B.running, 'CHF per year'),
       energyText(M.ev) ? { text: [two && energyFormula(M.ref, r.assumptions || []) ? `Energy, your car: ${energyFormula(M.ref, r.assumptions || []).calc}. ${energyFormula(M.ref, r.assumptions || []).basis}` : null, `Energy, electric car: ${energyFormula(M.ev, r.assumptions || [])?.calc || energyText(M.ev)}.`].filter(Boolean).join(' '), fontSize: 8.5, color: C.ink2, margin: [0, 2, 0, 0] } : null,
@@ -5505,7 +5506,7 @@ const Report = {
     if (M.bridge) out.push(R.h3(`From the upfront cost to the difference over ${yrs}`), R.kv([
       ['Net outlay today (price and installation, minus the sale of your car)', signChf10(M.bridge.net)], ['Value at the end: electric car minus your car', signChf10(M.bridge.ends)],
       [`Lower running costs over ${yrs}`, signChf10(M.bridge.running)], [`Interest over ${yrs}`, signChf10(M.bridge.interest)], [`Difference over ${yrs}`, signChf10(M.saving)]]),
-      { text: 'Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. These lines are rounded to CHF 10; the tables above to CHF 100 and running costs per year to CHF 1.', fontSize: 8, color: C.muted });
+      { text: 'Plus saves you money, minus costs you money. The sale of your car counts once, in the net outlay. Values, totals and differences are rounded to CHF 10; running costs per year to CHF 1.', fontSize: 8, color: C.muted });
     const dc = r.depreciation_curve; if (dc) out.push(R.h3('Where the values at the end come from'), R.list([`Electric car: ${dc.ev}`, `Used electric car: ${dc.ev_used}`, `Your car: ${dc.current_car}`, `Uncertainty: ${dc.uncertainty}`, `Battery: ${dc.battery}`]));
     return out.filter(Boolean); },
 
@@ -5603,8 +5604,8 @@ const Report = {
       V.lines.length ? R.list(V.lines.slice(0, 3)) : null,
       ...(b3 ? (() => { const M = b3Model(b3); if (!M.ev || M.noRef || M.saving == null) return [];
         return [{ text: `Costs, kept ${yrsTxt(M.N)}`, style: 'h3' }, R.table(['CHF', 'Keep your car', 'Switch to an EV'], [
-          ['Net outlay today', '0', n100(M.net)], ['Running costs per year', n1(M.refRun), n1(M.evRun)],
-          [`Value after ${yrsTxt(M.N)}`, n100(M.refEnd), n100(M.evEnd)], [{ text: `Total cost over ${yrsTxt(M.N)}`, bold: true }, { text: n100(M.refTot), bold: true }, { text: n100(M.evTot), bold: true }]], ['*', 100, 100]),
+          ['Net outlay today', '0', n10(M.net)], ['Running costs per year', n1(M.refRun), n1(M.evRun)],
+          [`Value after ${yrsTxt(M.N)}`, n10(M.refEnd), n10(M.evEnd)], [{ text: `Total cost over ${yrsTxt(M.N)}`, bold: true }, { text: n10(M.refTot), bold: true }, { text: n10(M.evTot), bold: true }]], ['*', 100, 100]),
           { text: `Difference: ${M.saving >= 0 ? `${fmt.chf10(M.saving)} less` : `${fmt.chf10(-M.saving)} more`} with the electric car.${M.scen?.flips ? ' What the cars are worth at the end can turn this around.' : ''}`, bold: true, margin: [0, 4, 0, 6] }]; })() : []),
       ok && sm.headline ? { text: 'In words, by AI', style: 'h3' } : null,
       ok && sm.headline ? { text: sm.headline, fontSize: 10, color: C.ink2, lineHeight: 1.3, margin: [0, 0, 0, 8] } : null,

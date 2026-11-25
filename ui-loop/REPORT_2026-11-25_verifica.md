@@ -162,6 +162,7 @@ Ora 5'918 / 3'170 l'anno e 29'590 / 15'850 su 5 anni. Il totale e la differenza 
 | Caso | Esito |
 |---|---|
 | Cinque temi, viaggio all'estero modificato e cancellato, reset e ripresa (refresh), back, AI spenta, errore con retry, chat + parità | ⛔ **Da ripetere dopo le correzioni.** Motivo: browser scollegato dalle 09:47. Ultimo passaggio verificato: tutta la suite verde alle 09:05 sulla build `1f732be` (390 e 1366); S1, S11 e S13 verdi alle 09:25 sulla build `fb2bea2` |
+| Nuovo tentativo 13:05 (browser integrato, build `987d71b`) | ⛔ Tutte le chiamate a n8n falliscono dal computer di Simone: `hsg-consultancy-project.app.n8n.cloud` (e `n8n.cloud`) dà ERR_CERT_AUTHORITY_INVALID, cioè questo computer non si fida del certificato TLS (di solito una rete con ispezione TLS o un antivirus). Altri siti (Cloudflare, CDN) funzionano; n8n risponde dal lato server (MCP). Ultimo passaggio verificato: la preview si carica con le copie giuste (`/navigator-test`, `/assist-claude`) e la build nuova (`bubbleGuard`, energia precisa) |
 | Calcolo B3 sulla copia n8n con il profilo sintetico | ✅ esecuzioni 16678 e 16704 (vedi §2) |
 | Chat sulla copia `/assist-claude` | ✅ esecuzione 16757 |
 

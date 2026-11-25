@@ -220,6 +220,30 @@ export const SCEN = {
       ['paths: /navigator-test and /assist-claude', CONFIG.paths.navigator === '/navigator-test' && CONFIG.paths.assist === '/assist-claude', CONFIG.paths],
     ]);
   },
+  async S16() {
+    // 25 Nov (final handoff): the chat confirms, takes a correction, and the corrected value reaches Costs, Summary and PDF
+    fresh(); Assistant.open && Assistant.open();
+    await Assistant.send('I drive a 2015 BMW 530xd diesel with 150000 km and live in 8001 Zurich. I could sell it for 15000. I am looking at a used medium electric car for about 20000.');
+    for (let i = 0; i < 80 && Assistant.busy; i++) await sleep(250);
+    const noted = (Assistant.msgs.find((m) => /^Noted:/.test(m.text || ''))?.text || '').replace(/\u00a0/g, ' ');
+    Assistant.last = 0; await Assistant.send('Sorry, the selling price is 14000, not 15000.');
+    for (let i = 0; i < 160 && (Assistant.busy || (typeof ChatNav !== 'undefined' && ChatNav.busy)); i++) await sleep(250); await sleep(600);
+    const corrected = store.profile.current_car.value_today_chf;
+    const X = Example.profile(false); const p = clone(store.profile); p.trips = X.trips;
+    for (const k of ['home_charging_status', 'fixed_parking', 'housing_type', 'charging_at_work', 'everyday_charging']) p[k] = X[k];
+    store.profile = sanitizeProfile(p); store.yearsKept = 5; saveStore();
+    if (typeof ChatNav !== 'undefined') ChatNav.on = false; ui.assistantOpen = false;
+    await runAll(['B4', 'B3'], { quiet: true }); showResult('B3'); await sleep(900); const c = txt();
+    go('summary'); await sleep(900); const s2 = txt();
+    const pdf = JSON.stringify(Report.doc(Summary.codes()));
+    return log('S16 Chat correction reaches the result', [
+      ['chat confirms 15’000', /selling price CHF.15’000/.test(noted), noted],
+      ['correction taken (14’000)', corrected === 14000, corrected],
+      ['Costs: sale 14’000, cash 6’000', /\u221214’000/.test(c) && /Cash you need today[\s\S]{0,80}6’000/.test(c), (c.match(/Cash you need today[\s\S]{0,80}/) || [])[0]],
+      ['Summary: CHF 6’000 upfront', /CHF 6’000 upfront/.test(s2), (s2.match(/Over \d+ years[^\n]*/) || [])[0]],
+      ['PDF: 14’000 and 6’000', /14’000/.test(pdf) && /6’000/.test(pdf), null],
+    ]);
+  },
   async S9a() { await SCEN.S1(); sessionStorage.setItem('stress.s9', JSON.stringify({ q: store.queue, res: Object.keys(store.results), y: store.yearsKept })); return 'reload now'; },
   async S9b() {
     const was = JSON.parse(sessionStorage.getItem('stress.s9') || '{}'); await sleep(500);

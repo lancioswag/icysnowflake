@@ -77,8 +77,8 @@ export const SCEN = {
   },
   // Petrol regression, all five topics in one go (multiple selection), then each topic page
   async S3() {
-    fresh(); await CARS.versions('VOLKSWAGEN', 'GOLF'); await until(() => CARS.data, 20000);
-    const golf = carId(/^VOLKSWAGEN\|GOLF \(petrol\)$/i, 2019) || carId(/^VOLKSWAGEN\|GOLF/i, 2019);
+    fresh(); await CARS.versions('VW', 'GOLF (petrol)'); await until(() => CARS.data, 20000);
+    const golf = carId(/^VW\|GOLF \(petrol\)$/i, 2019);
     const p = emptyProfile();
     Object.assign(p, { postal_code: '9000', charging_at_work: 'parking_no_charger', work_postal_code: '8400', home_charging_status: 'no', fixed_parking: 'yes', housing_type: 'tenant' });
     p.current_car = { ...p.current_car, targa_id: golf?.id, first_registration: '2019-04', odometer_km: 90000 };

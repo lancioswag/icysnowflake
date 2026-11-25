@@ -33,7 +33,7 @@ La release salva i dati nel browser sotto la chiave propria `bevnav.release.v1`.
 | S11 AI non disponibile: percorso guidato, verdetto e PDF | 4/4 | 4/4 |
 | S12 errore del workflow con retry | 4/4 | – |
 | S13 PDF senza account | 4/4 | 4/4 |
-| S14 chat: conferma, domanda, correzione 15'000 → 14'000, parità con `/assist-v2` | 7/7 | – |
+| S14 chat: conferma, domanda, correzione 15'000 → 14'000 | 7/7 | – |
 | S15 chat → risultato → vendita cambiata in Your answers (15'000 → 12'000) | 7/8 (\*) | – |
 | S16 correzione in chat (15'000 → 14'000) fino a Costs, Summary e PDF (cash 6'000) | 5/5 | 5/5 |
 

@@ -1668,6 +1668,24 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .landing { box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; width: 100%; max-width: 560px; margin: 0 auto;
   padding: max(20px, env(safe-area-inset-top)) 22px max(20px, env(safe-area-inset-bottom)); }
 .lp-mask { overflow: hidden; }
+.lp7 .lp-claim7 { font-size: clamp(32px, 9vw, 60px); line-height: 1.04; letter-spacing: -0.035em; text-transform: none; }
+.lp7 details.datasrc.lp-src > summary { justify-content: flex-start; }
+.lp-trust .dot { margin: 0 6px; color: var(--accent); font-weight: 800; }
+.lp7 .lp-claim7 .lp-line .lp-word { color: var(--ink); }
+.lp7 .lp-claim7 .lp-line:nth-child(3) .lp-word { color: var(--accent); }
+.lp7 .lp-qm { margin-top: 18px; }
+.lp7 .lp-q7 { font-size: 17.5px; font-weight: 500; line-height: 1.45; letter-spacing: 0; color: var(--ink-2); }
+.lp7 .lp-btnm { margin-top: 28px; }
+.lp7 .lp-aboutm { margin-top: 22px; }
+.lp-trust { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+.lp-trust b { font-weight: 700; color: var(--ink); }
+.lp7 .lp-srcm { margin-top: 10px; }
+.lp7 .lp-srcm .lp-in { align-items: flex-start; }
+.lp7 .lp-why { margin: 0 0 4px 0; }
+.illus { margin: 8px 0 0; } .illus .linkbtn { display: inline; padding: 0; font-size: inherit; font-weight: 600; }
+.bigfig.long .bigline b { font-size: clamp(26px, 7.4vw, 40px); white-space: normal; line-height: 1.08; }
+.picksub { margin: 8px 0 0; font-size: 16px; line-height: 1.45; color: var(--ink-2); max-width: 32em; }
+.picknext { margin: 2px 2px 4px; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); text-align: center; }
 .lp-brand { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .28em; color: var(--accent); }
 .lp-brand svg { width: 22px; height: 22px; flex: none; }
 .lp-body { margin: auto 0; padding: 24px 0 9vh; display: flex; flex-direction: column; }   /* 25 Nov: a little above the middle */
@@ -1908,14 +1926,14 @@ function download(name, mime, content) {
 /* ---------- barriers ---------- */
 const TOPIC_ICON = { B1: 'route', B2: 'plug', B4: 'car', B3: 'wallet', B6: 'battery', B7: 'leaf' };
 const BARRIERS = {
-  B1: { short: 'The range your trips need', name: 'B1 Range', title: 'Range & battery life', tile: 'Range & battery life', hint: 'Will it get me where I go – and for how many years?', question: 'How much range do you need?', blurb: 'See which real range covers the trips you actually make, and how the battery ages.', next: ['B4', 'B2', 'B3'] },
-  B2: { short: 'Home, work and nearby', name: 'B2 Charging', title: 'Charging access', tile: 'Charging access', hint: 'Where could I charge – at home, at work, nearby?', question: 'Where can you charge?', blurb: 'Your options at home, at work and nearby – with the next step and the cost.', next: ['B3', 'B1'] },
-  B4: { short: 'The class that fits you', name: 'B4 Choosing the car', title: 'Lifestyle match', tile: 'Lifestyle match', hint: 'The car size for your trips and budget – best done last.', question: 'Which electric car fits you?', blurb: 'The smallest car class that does your trips, plus a plan for the rest.', next: ['B3', 'B2'] },
-  B3: { short: 'Compared with your car', name: 'B3 Costs', title: 'Costs & resale value', tile: 'Costs & resale value', hint: 'Buying and running it compared with my car – and what it is worth later.', question: 'What does it cost you?', blurb: 'Cost per year and over the years you keep the car, compared with your car, and the resale value.', next: ['B2', 'B4', 'B7'] },
+  B1: { short: 'The range your trips need', name: 'B1 Range', title: 'Range and battery life', tile: 'Range and battery life', hint: 'Will it get me where I go – and for how many years?', question: 'How much range do you need?', blurb: 'See which real range covers the trips you actually make, and how the battery ages.', next: ['B4', 'B2', 'B3'] },
+  B2: { short: 'Home, work and nearby', name: 'B2 Charging', title: 'Charging options', tile: 'Charging options', hint: 'Where could I charge – at home, at work, nearby?', question: 'Where can you charge?', blurb: 'Your options at home, at work and nearby – with the next step and the cost.', next: ['B3', 'B1'] },
+  B4: { short: 'The class that fits you', name: 'B4 Choosing the car', title: 'Fit with my lifestyle', tile: 'Fit with my lifestyle', hint: 'The car size for your trips and budget – best done last.', question: 'Which electric car fits you?', blurb: 'The smallest car class that does your trips, plus a plan for the rest.', next: ['B3', 'B2'] },
+  B3: { short: 'Compared with your car', name: 'B3 Costs', title: 'Purchase and running costs', tile: 'Purchase and running costs', hint: 'Buying and running it compared with my car – and what it is worth later.', question: 'What does it cost you?', blurb: 'Cost per year and over the years you keep the car, compared with your car, and the resale value.', next: ['B2', 'B4', 'B7'] },
   B6: { short: 'Health and value over time', name: 'B6 Battery & resale', title: 'Battery details', tile: 'Battery life & resale value', hint: 'How long the battery lasts and what the car is worth later.', question: 'Battery life', blurb: 'Battery health and resale value over 8 years – or a check of a used EV.', next: ['B3', 'B4', 'B2'] },
   B7: { short: 'Life cycle and switching now', name: 'B7 Ecology', title: 'Climate impact', tile: 'Climate impact', hint: 'Is it really better for the climate?', question: 'Is it better for the climate?', blurb: 'Life-cycle emissions, and whether switching now pays off for the climate.', next: ['B3', 'B4'] },
 };
-const ORDER = ['B1', 'B2', 'B3', 'B7', 'B4'];   // B6 is shown inside B1 (battery) and B3 (resale)
+const ORDER = ['B4', 'B3', 'B2', 'B1', 'B7'];   // B6 is shown inside B1 (battery) and B3 (resale). 26 Nov (Christian, slide 4): his order
 const QUICK_CODES = ['B1', 'B2', 'B3', 'B6', 'B7', 'B4'];
 BARRIERS.EDIT = { name: 'Edit', title: 'Your answers', question: '', next: [] };
 BARRIERS.MULTI = { name: 'Your topics', title: 'Your topics', question: '', next: [] };   // the questions of all picked topics, each asked once
@@ -1928,7 +1946,7 @@ function emptyProfile() {
     trips: [], trips_source: null, home_charging_status: null, fixed_parking: null, housing_type: null,
     current_car: { targa_id: null, first_registration: null, odometer_km: null, consumption: null, new_price_chf: null, value_today_chf: null, approval_year: null },
     second_car: { targa_id: 'none', wltp_range_km: null, towbar: null },   // 23 Nov: second car removed from the questions
-    target_ev: { size: null, purchase: null, price_chf: null, extra_cash_chf: null },   // 25 Nov: extra cash on top of the sale (budget), apart from the car's price   // 23 Nov: the car you want to drive (replaces the second-car question)
+    target_ev: { size: null, purchase: null, price_chf: null, extra_cash_chf: null, types: null },   // 26 Nov: types = Christian's car types (slide 5), several allowed   // 25 Nov: extra cash on top of the sale (budget), apart from the car's price   // 23 Nov: the car you want to drive (replaces the second-car question)
     selected_class_id: null, everyday_charging: null,
     cost_assumptions: { fuel_price_chf_l: null, interest_rate: null, p_dc_chf_kwh: null, tyre_changes_per_year: null, insurance_current_chf_year: null, insurance_ev_chf_year: null, maintenance_current_chf_year: null, maintenance_ev_chf_year: null,
       tax_current_chf_year: null, tax_ev_chf_year: null, residual_current_chf: null, residual_ev_chf: null, residual_years: null, ev_kwh_100km: null, electricity_price_chf_kwh: null },
@@ -2144,7 +2162,7 @@ function blocksForMissing(missing, code) {
 
 /** n8n returns the profile with routed trips: keep it, so the next call skips routing. */
 function adoptProfile(resp) {
-  if (resp && resp.profile) { const p = sanitizeProfile(resp.profile); const old = store.profile.trips || []; p.trips.forEach((t, i) => { const o = old[i]; if (o && o.label === t.label && o.people != null && t.people == null) t.people = o.people; }); p.budget = store.profile.budget; store.profile = p; dropStaleResults(); saveStore(); }
+  if (resp && resp.profile) { const p = sanitizeProfile(resp.profile); const old = store.profile.trips || []; p.trips.forEach((t, i) => { const o = old[i]; if (o && o.label === t.label && o.people != null && t.people == null) t.people = o.people; }); p.budget = store.profile.budget; if (store.profile.target_ev?.types && p.target_ev && !p.target_ev.types) p.target_ev.types = store.profile.target_ev.types; store.profile = p; dropStaleResults(); saveStore(); }
 }
 async function calculate(code, opts = {}) {
   ui.barrier = code;
@@ -2378,9 +2396,12 @@ function viewTopics() {
   // Martin 20.11: every topic can be dragged into order right away; the order of the list is the order of the questions.
   const ord = ui.topicOrder && ui.topicOrder.length === ORDER.length && ORDER.every((c) => ui.topicOrder.includes(c)) ? ui.topicOrder.slice() : [...sel0, ...ORDER.filter((c) => !sel0.includes(c))];
   const sel = ord.filter((c) => sel0.includes(c));
+  // 26 Nov (Christian, slide 4: "starting with the most important"): the first topic you tap is number 1. A tapped topic moves up
+  // behind the ones already picked; an unpicked one goes back below. Dragging still changes the order.
+  const reorder = (picked) => { ui.topicOrder = [...picked, ...ORDER.filter((x) => !picked.includes(x))]; };
   const allDone = sel.length > 0 && sel.every((c) => store.results[c]);
   const set = (a) => { ui.topicSel = a; render(); };
-  const toggle = (c) => { const on = new Set(sel); on.has(c) ? on.delete(c) : on.add(c); ui.topicOrder = ord; set(ord.filter((x) => on.has(x))); };
+  const toggle = (c) => { const next = sel.includes(c) ? sel.filter((x) => x !== c) : [...sel, c]; reorder(next); set(next); };
   const btn = (c, picked) => h('button', { class: 'topicbtn', type: 'button', 'data-code': c, 'aria-pressed': String(picked),
       'aria-label': picked ? `${BARRIERS[c].tile}, priority ${sel.indexOf(c) + 1}` : BARRIERS[c].tile, onclick: () => toggle(c) },
     icon(TOPIC_ICON[c]), h('span', { class: 'tt' }, BARRIERS[c].tile),
@@ -2389,16 +2410,21 @@ function viewTopics() {
   const list = h('div', { class: 'topiclist all', 'aria-describedby': 'ordhint' }, ord.map((c) => btn(c, sel.includes(c))), h('span', { id: 'ordhint', class: 'sr-only' }, 'Drag a topic, or press Alt and the arrow keys, to change the order.'));
   dragSort(list, ord, (a, moved) => { ui.topicOrder = a; const on = new Set([...sel, moved]); set(a.filter((x) => on.has(x))); });
   return h('div', { class: 'flow home' },
+    // 26 Nov (Christian, slide 4): say what to do and why, in his words
     h('section', { class: 'hook' },
-      h('h1', { class: 'bigtitle hometitle' }, 'Find out if you want electric')),   // 24 Nov (Simone): no secondary texts; the landing page explains the tool
-    h('h2', { class: 'pickhead' }, 'What\u2019s holding you back?'),
+      h('h1', { class: 'bigtitle hometitle' }, 'What matters most to you?'),
+      h('p', { class: 'picksub' }, 'Choose the topics you\u2019d like to explore, starting with the most important.')),
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
-      null),   // 23 Nov: no instruction text; the keys show what to do
+      null),
     h('div', { class: 'cta' },
       // 25 Nov: back with saved results, the main button opens them; checking again is the second one
       allDone ? h('button', { class: 'btn primary block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
       h('button', { class: 'btn block' + (allDone ? '' : ' primary'), type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
-        allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Check again' : 'Check topics')),
+        allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Check again' : 'Check my topics')),
+      // 26 Nov (slide 4): what happens when you press the button
+      !allDone ? h('p', { class: 'picknext' }, !sel.length
+        ? 'No topic picked: we check all five with a few short questions, then show a summary.'
+        : `Next: a few short questions for ${sel.length === 1 ? 'this topic' : `these ${sel.length} topics, in this order`}${sel.length === 1 ? ', then its result.' : ', asked once, then a summary and one page per topic.'}`) : null,
       anyDone && !allDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
       h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('skip'), h('span', null, 'Keep it short with 5 questions')),
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
@@ -2418,7 +2444,7 @@ const DATA_SOURCES = [
   ['Paul Scherrer Institut (carculator), BFE', 'https://carculator.readthedocs.io', 'greenhouse gases over the life of a car (Climate)'],
   ['Geotab, AVILOO', 'https://www.geotab.com/blog/ev-battery-health/', 'how batteries age (Battery & resale)'],
   ['EAFO (European Commission)', 'https://alternative-fuels-observatory.ec.europa.eu', 'charging abroad (Range, Charging)'],
-  ['SBB, Mobility, KAYAK', 'https://www.sbb.ch', 'train, car sharing and rental prices for trips an electric car cannot do (Lifestyle match, Costs)'],
+  ['SBB, Mobility, KAYAK', 'https://www.sbb.ch', 'train, car sharing and rental prices for trips an electric car cannot do (Fit with my lifestyle, Costs)'],
 ];
 const DATA_UPDATED = '23 Nov 2026';   // date of the last manual check of the tables (no scheduled refresh yet: say so, 25 Nov)
 function dataSources() {
@@ -2521,17 +2547,20 @@ function viewLanding() {
   const frame = document.createElementNS(NS, 'svg'); frame.setAttribute('class', 'lp-frame'); frame.setAttribute('aria-hidden', 'true'); frame.setAttribute('preserveAspectRatio', 'none');
   for (const c of ['lp-line-draw', 'lp-line-hover']) { const r = document.createElementNS(NS, 'rect'); r.setAttribute('class', c); frame.append(r); }
   const line = (kids) => h('span', { class: 'lp-line', 'aria-hidden': 'true' }, h('span', { class: 'lp-word' }, ...kids));
-  // 25 Nov (Simone): claim, the question right under it, the button, then who is behind it and the sources
-  return h('div', { class: 'landing' },
-    h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'BEV NAVIGATOR'))),
+  // 26 Nov (Christian, slide 3): the user's purpose first (60 % potential: people open to it but not yet decided), the trust
+  // claim smaller and below, then the button "Find my options". Name "Electric Car Explorer" is Christian's proposal: decision for Simone.
+  // "No personal data stored" is not used: answers go to n8n for the calculation and n8n keeps its executions (see the audit).
+  return h('div', { class: 'landing lp7' },
+    h('div', { class: 'lp-mask' }, h('div', { class: 'lp-brand' }, brandMark(), h('span', null, 'ELECTRIC CAR EXPLORER'))),
     h('div', { class: 'lp-body' },
-      h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
-        line(['Better data']), line(['Neutral']), line([h('span', { class: 'lp-swiss' }, 'Swiss'), h('span', { class: 'lp-flag' })])),
-      h('div', { class: 'lp-m lp-qm' }, h('p', { class: 'lp-q-in lp-in' }, h('span', null, 'Should you keep your car or'), h('span', null, 'switch to an electric vehicle?'))),
+      h('h1', { class: 'lp-claim lp-claim7', 'aria-label': 'Is now the right time for me to go electric?' },
+        line(['Is now the']), line(['right time for me']), line(['to go electric?'])),
+      h('div', { class: 'lp-m lp-qm' }, h('p', { class: 'lp-q-in lp-in lp-q7' }, 'Discover how an all-electric car could fit your life and budget, with clear answers on costs, charging and everyday driving.')),
       // 25 Nov (Simone): the button comes last in the sequence, but stays where it is in the layout
       h('div', { class: 'lp-m lp-btnm' }, h('div', { class: 'lp-in lp-btn-in' },
-        h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, h('span', null, 'Let\u2019s Find Out')), frame))),
-      h('div', { class: 'lp-m lp-aboutm' }, h('p', { class: 'lp-in lp-about' }, 'This tool is powered by the University of St. Gallen.', h('br'), 'It combines Swiss data, institutional sources, and AI to guide you through a more informed decision process about electric vehicles.')),
+        h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, h('span', null, 'Find my options')), frame))),
+      h('div', { class: 'lp-m lp-aboutm' }, h('p', { class: 'lp-in lp-trust' }, h('b', null, 'Independent'), h('span', { class: 'dot', 'aria-hidden': 'true' }, '\u00b7'), h('b', null, 'Developed in Switzerland'), h('span', { class: 'dot', 'aria-hidden': 'true' }, '\u00b7'), h('b', null, 'No sign\u2011up needed'),
+        h('br'), 'A project of the University of St. Gallen (HSG). It sells nothing.')),
       h('div', { class: 'lp-m lp-srcm' }, h('div', { class: 'lp-in' },   // 25 Nov: the chatbot question above the data sources
         h('button', { class: 'linkbtn lp-why', type: 'button', onclick: () => whyNotChat() }, 'Better than ChatGPT?'), dataSources()))));
 }
@@ -3535,11 +3564,22 @@ const BLOCKS = {
     why_not: (d) => (V.int(d.current_car.odometer_km, 0, 600000) ? '' : 'Please enter the mileage of your car.') },
   // 23 Nov (evening): one question for "the electric car you are looking at". Its price is also your budget (the old budget
   // question 13 is no longer asked). Lifestyle match and Costs show it as "Your choice" and can change it.
-  9: { title: 'Which electric car are you looking at?', why: 'We compare this car with yours. Lifestyle match checks if it fits your trips; Costs and Climate compare it with your car.',
+  // 26 Nov (Christian, slide 5): "What type of car would suit your needs? Select all that could work for you." Several types can be
+  // picked; we calculate with the smallest size among them (the cheapest that could work). If seats or trips need a bigger car,
+  // Fit with my lifestyle says so. "Not sure yet" clears the others.
+  9: { title: 'What type of car would suit your needs?', why: 'We compare this car with yours. Fit with my lifestyle checks if it fits your trips; Costs and Climate compare it with your car.',
     render: (d) => {
       const t = d.target_ev; if (!d.second_car.targa_id) d.second_car.targa_id = 'none';
-      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Type'), h('div', { class: 'chips' }, [['S', SIZE_NAME.S], ['M', SIZE_NAME.M], ['L', SIZE_NAME.L], ['any', 'Not sure']].map(([k, l]) => chip(l, t.size === k, () => { t.size = t.size === k ? null : k; render(); }))),
-          ['S', 'M', 'L'].includes(t.size) ? h('p', { class: 'hint' }, `${SIZE_NAME[t.size]}: ${SIZE_SEATS[t.size]}.`) : null),
+      if (!Array.isArray(t.types)) t.types = ['S', 'M', 'L'].includes(t.size) ? [CAR_TYPES.find((c) => c.size === t.size).k] : [];
+      const sync = () => { const z = t.types.map((k) => CAR_TYPES.find((c) => c.k === k)?.size).filter(Boolean); t.size = z.length ? ['S', 'M', 'L'].find((x) => z.includes(x)) : t.size === 'any' ? 'any' : null; };
+      const pickT = (k) => { t.types = t.types.includes(k) ? t.types.filter((x) => x !== k) : [...t.types, k]; sync(); if (t.types.length && t.size === 'any') sync(); render(); };
+      const unsure = !t.types.length && t.size === 'any';
+      return [h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'Select all that could work for you'), h('div', { class: 'chips' },
+          CAR_TYPES.map((c) => chip(c.label, t.types.includes(c.k), () => pickT(c.k))),
+          chip('Not sure yet', unsure, () => { t.types = []; t.size = unsure ? null : 'any'; render(); })),
+          t.types.length > 1 && new Set(t.types.map((k) => CAR_TYPES.find((c) => c.k === k).size)).size > 1
+            ? h('p', { class: 'hint' }, `We calculate with the smallest: ${sizeLabel(t.size, false, t.types)} (${SIZE_SEATS[t.size]}). You can compare the others in Costs.`)
+            : ['S', 'M', 'L'].includes(t.size) ? h('p', { class: 'hint' }, `${sizeLabel(t.size, false, t.types)}: ${SIZE_SEATS[t.size]}.`) : null),
         h('div', { class: 'qpart' }, h('div', { class: 'qq' }, 'New or used?'), h('div', { class: 'chips' }, [['new', 'New'], ['used', 'Used'], ['any', 'Not sure']].map(([k, l]) => chip(l, t.purchase === k, () => { t.purchase = t.purchase === k ? null : k; render(); })))),
         chfField('ev-price', 'Price of the electric car (optional)', t.price_chf, (v) => { t.price_chf = v; refreshNav(); }, 300000),
         h('p', { class: 'hint' }, 'From an offer or a listing, or the most you would pay. Empty: typical Swiss prices.'),
@@ -3813,12 +3853,30 @@ const CLASSES = {
   M1: [250, 'Citroën ë-Berlingo · MG S5'], M2: [350, 'VW ID.3 · Cupra Born · Škoda Elroq'], M3: [450, 'VW ID.4 · BMW iX1 · Audi Q4 e-tron'], M4: [550, 'Tesla Model Y · Škoda Enyaq'],
   L1: [250, 'Ford e-Tourneo · Citroën ë-Berlingo XL'], L2: [350, 'VW ID. Buzz · Kia PV5'], L3: [450, 'Peugeot e-5008 · Kia EV9'], L4: [550, 'Volvo EX90 · Hyundai IONIQ 9'],
 };
-// 25 Nov (Simone, Christian): body types say more than small / medium / large
-const SIZE_NAME = { S: 'City car', M: 'Mid-size car', L: 'Minivan' };
+// 26 Nov (Christian, slides 2 and 5): his car types. Our data (vehicle_classes) has three sizes only, so each type maps to one size:
+// Small car and Small SUV / Crossover -> S, Medium-sized car and Medium / Large SUV -> M, Large car and Van -> L. Body type is not in
+// the data yet: decision for Simone (see FEEDBACK_AUDIT_PREVIEW.md).
+const CAR_TYPES = [
+  { k: 'small', label: 'Small car', low: 'small car', size: 'S' },
+  { k: 'medium', label: 'Medium-sized car', low: 'medium-sized car', size: 'M' },
+  { k: 'large', label: 'Large car', low: 'large car', size: 'L' },
+  { k: 'small_suv', label: 'Small SUV / Crossover', low: 'small SUV or crossover', size: 'S' },
+  { k: 'suv', label: 'Medium / Large SUV', low: 'medium or large SUV', size: 'M' },
+  { k: 'van', label: 'Van', low: 'van', size: 'L' },
+];
+const SIZE_DEFAULT = { S: 'Small car', M: 'Medium-sized car', L: 'Large car or van' };
+/** The name of a size: the type(s) the person picked for it, else the default name. */
+function sizeLabel(z, low, types = store.profile?.target_ev?.types) {
+  const picked = (types || []).map((k) => CAR_TYPES.find((t) => t.k === k)).filter((t) => t && t.size === z);
+  if (picked.length) return picked.map((t) => (low ? t.low : t.label)).join(' or ');
+  const d = SIZE_DEFAULT[z]; return d && low ? d.toLowerCase() : d;
+}
+const sizeLow = (z) => sizeLabel(z, true) || 'electric car';
+const SIZE_NAME = new Proxy(SIZE_DEFAULT, { get: (o, z) => (typeof z === 'string' && z in o ? sizeLabel(z) : o[z]) });
 const SIZE_SEATS = { S: 'up to 4 seats', M: '5 seats', L: '6 to 7 seats' };
 /** "Small · 250 km+" – never the internal class code. */
 function clsShort(id) { const c = CLASSES[id]; return c ? `${SIZE_NAME[id[0]]}, ${c[0]}+ km` : 'Electric car'; }
-function clsLong(id) { const c = CLASSES[id]; return c ? `electric ${SIZE_NAME[id[0]].toLowerCase()} with ${c[0]} km range` : 'electric car'; }
+function clsLong(id) { const c = CLASSES[id]; return c ? `electric ${sizeLow(id[0])} with ${c[0]} km range` : 'electric car'; }
 const clsExamples = (id) => (CLASSES[id] ? 'e.g. ' + CLASSES[id][1] : '');
 
 /** Editable email: the person changes the text here, then opens it in the mail app, Gmail or Outlook, or copies it. Nothing goes through n8n. */
@@ -4143,7 +4201,7 @@ function viewMail() {
 
 /* ---------- B3 ---------- */
 // V8.11 (23 Nov, Christian + Martin): total cost of ownership. One electric car against your car, chosen by size and new / used.
-const ITEMS = [['vehicle', 'Value loss', 'var(--ink-2)'], ['interest', 'Interest on the money in the car', 'var(--line-2)'], ['energy', 'Energy', 'var(--s1)'], ['tax', 'Tax', 'var(--neutral-mark)'], ['insurance', 'Insurance', 'var(--s3)'], ['maintenance', 'Maintenance and tyres', 'var(--line-2)'], ['vignette', 'Motorway vignette', 'var(--line)'], ['installation', 'Charging installation', 'var(--s2)'], ['bridging', 'Other transport', 'var(--ink)']];
+const ITEMS = [['vehicle', 'Value loss', 'var(--ink-2)'], ['interest', 'Interest on the money in the car', 'var(--line-2)'], ['energy', 'Energy', 'var(--s1)'], ['tax', 'Tax', 'var(--neutral-mark)'], ['insurance', 'Insurance', 'var(--s3)'], ['maintenance', 'Maintenance and tyres', 'var(--line-2)'], ['vignette', 'Motorway vignette', 'var(--line)'], ['installation', 'Charging installation', 'var(--s2)'], ['bridging', 'Rental car or train for long trips', 'var(--ink)']];   // 26 Nov (Christian, slide 8): was "Other transport"
 const ITEM_WHY = {
   vehicle: 'Price today minus value at the end, per year. Not the full price.',
   interest: 'The money could earn 1.25 % elsewhere.',
@@ -4154,6 +4212,10 @@ const ITEM_WHY = {
 const MODE_TXT = { second_car: 'Your second car', rental: 'Rental car', car_sharing: 'Car sharing', train: 'Train' };
 const mid = (b) => (b == null || b.min == null ? null : (b.min + (b.max ?? b.min)) / 2);
 /** The electric car shown against your car: size (class) and new / used, chosen on the page (no new calculation). */
+/* 26 Nov (Christian, slides 6-7): the size, new/used and fuel-price switches on the Costs page are a what-if for that page only.
+   Before, b3Pick read them everywhere, so Summary, verdict, AI facts and PDF showed the what-if car while the page said
+   "Summary and PDF keep your choice". Now they count only while the Costs page itself is drawn (B3_PAGE). */
+let B3_PAGE = false;
 function b3Pick(r) {
   const lines = r.lines || [];
   const opts = lines.filter((l) => l.kind === 'option');
@@ -4164,13 +4226,13 @@ function b3Pick(r) {
   const tgt = store.profile.target_ev || {};
   const tgtCls = ['S', 'M', 'L'].includes(tgt.size) ? (String(selCls || '')[0] === tgt.size ? selCls : classes.find((c) => c[0] === tgt.size)) : null;
   const mineCls = tgtCls || selCls;
-  const cls = classes.includes(ui.b3Cls) ? ui.b3Cls : mineCls;
+  const cls = B3_PAGE && classes.includes(ui.b3Cls) ? ui.b3Cls : mineCls;
   const bmax = budgetMax();
   const newOf = opts.find((l) => l.class_id === cls && (l.purchase || 'new') === 'new');
   const autoBuy = hasBuy && bmax != null && newOf?.price_today_chf?.min > bmax ? 'used' : (r.default_purchase || 'new');
-  const buy = hasBuy ? (['new', 'used'].includes(store.session.ev_purchase) ? store.session.ev_purchase : ['new', 'used'].includes(tgt.purchase) ? tgt.purchase : autoBuy) : 'new';
+  const buy = hasBuy ? (B3_PAGE && ['new', 'used'].includes(store.session.ev_purchase) ? store.session.ev_purchase : ['new', 'used'].includes(tgt.purchase) ? tgt.purchase : autoBuy) : 'new';
   const ev = opts.find((l) => l.class_id === cls && (l.purchase || 'new') === buy) || opts[0] || null;
-  const f = ui.b3Fuel || 1;
+  const f = (B3_PAGE && ui.b3Fuel) || 1;
   if (f !== 1 && ref && ev) {   // fuel price scenario: only the energy of your car changes
     const dE = (y) => (y.items?.energy || 0) * (f - 1);
     const shift = (b, d) => (b ? { min: b.min + d, max: b.max + d } : b);
@@ -4340,7 +4402,7 @@ const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 function b3Blocks(M) {
   const { ev, ref, N, e, c, noRef } = M;
   if (!ev) return null;
-  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance'], ['maintenance', 'Maintenance and tyres'], ['vignette', 'Motorway vignette'], ['bridging', 'Other transport for rare trips']];
+  const ITEM_ROWS = [['energy', 'Energy'], ['tax', 'Motor vehicle tax'], ['insurance', 'Insurance'], ['maintenance', 'Maintenance and tyres'], ['vignette', 'Motorway vignette'], ['bridging', 'Rental car or train for long trips']];
   const it = (y, k) => (y ? y.items?.[k] ?? null : null);
   const upfront = [
     ['Price', noRef ? null : '0', n10(M.price), { sub: ev.purchase === 'used' ? `used, about ${ev.used_age_years || 4} years old` : 'new' }],
@@ -4352,7 +4414,9 @@ function b3Blocks(M) {
   const xc = store.profile.target_ev?.extra_cash_chf;
   if (xc != null && M.net != null) upfront.push(['Extra cash you can add', null, n10(xc), { sub: M.net <= xc ? 'enough for this car' : `about ${fmt.chf100(M.net - xc)} short` }]);
   const running = [
-    ...ITEM_ROWS.filter(([k]) => (it(e, k) || 0) > 0 || (it(c, k) || 0) > 0).map(([k, l]) => [l, c ? n1(it(c, k)) : null, n1(it(e, k))]),
+    ...ITEM_ROWS.filter(([k]) => (it(e, k) || 0) > 0 || (it(c, k) || 0) > 0).map(([k, l]) => [l, c ? n1(it(c, k)) : null, n1(it(e, k)),
+      // 26 Nov (Christian, slide 8): which trip makes this cost, right in the row
+      k === 'bridging' && (ev.bridging || []).length ? { sub: ev.bridging.map((b) => `${b.label}: ${(MODE_TXT[b.key] || 'other transport').toLowerCase()}, ${fmt.n(b.days)} day${b.days === 1 ? '' : 's'} a year`).join('; ') } : undefined].filter((x) => x !== undefined)),
     ['Running costs per year', c ? n1(M.refRun) : null, n1(M.evRun), { strong: true }],
   ];
   const dep = [
@@ -4379,7 +4443,7 @@ function b3Verdict(M) {
 function costBars(M) {
   const { ev, c, N, e, noRef } = M;
   if (!ev || noRef || !c || !e || M.evEnd == null || M.refEnd == null || M.price == null) return null;
-  const IT = [['loss', 'Value loss', '#1e3a8a'], ['interest', 'Interest', '#6b7fd1'], ['energy', 'Energy', '#f59e0b'], ['tax', 'Tax', '#94a3b8'], ['insurance', 'Insurance', '#14b8a6'], ['maintenance', 'Maintenance and tyres', '#a855f7'], ['vignette', 'Vignette', '#cbd5e1'], ['bridging', 'Other transport', '#e11d48'], ['installation', 'Charging installation', '#64748b']];
+  const IT = [['loss', 'Value loss', '#1e3a8a'], ['interest', 'Interest', '#6b7fd1'], ['energy', 'Energy', '#f59e0b'], ['tax', 'Tax', '#94a3b8'], ['insurance', 'Insurance', '#14b8a6'], ['maintenance', 'Maintenance and tyres', '#a855f7'], ['vignette', 'Vignette', '#cbd5e1'], ['bridging', 'Rental car / train', '#e11d48'], ['installation', 'Charging installation', '#64748b']];
   const vals = (isEv) => {
     const y = isEv ? e : c;
     return { loss: isEv ? (M.price - M.evEnd) / N : (M.ref.value_today_chf - M.refEnd) / N, interest: y.items?.interest || 0, energy: y.items?.energy || 0, tax: y.items?.tax || 0,
@@ -4404,7 +4468,10 @@ function bridgingBox(ev) {
     with_stops: 'to the first fast charger; charging stops on the way are counted', first_leg: 'to the first fast charger; charging stops on the way are counted' };
   return h('div', { class: 'enbox brbox' }, h('h4', null, 'Trips by other transport'),
     items.map((b) => { const w = b.why; const why = [];
-      if (w.missing.includes('range')) why.push(`needs about ${fmt.n(w.need_km)} km of range${w.seasons.length === 1 && w.seasons[0] === 'winter' ? ' in winter' : ''} (${BASIS[w.need_basis] || (/stop/.test(w.need_basis) ? 'the longest stretch between fast chargers; charging stops on the way are counted' : /dest/.test(w.need_basis) ? 'one way, you charge at the destination' : 'there and back on one charge')}); this car has at least ${fmt.n(w.class_km)} km`);
+      // 26 Nov (Christian, slide 8): need_km is rated range (WLTP, winter and motorway included), not the trip length. For trips away
+      // from home a charging stop is planned only after 2.5 hours of driving, so a trip of about 2 hours each way is driven on one
+      // charge, and the drive back starts with 70 % of the battery. The old text said "stops counted" also when there was none.
+      if (w.missing.includes('range')) why.push(`${w.km_one_way ? `${fmt.n(w.km_one_way)} km one way; ` : ''}that needs about ${fmt.n(w.need_km)} km of rated range (WLTP)${w.seasons.length === 1 && w.seasons[0] === 'winter' ? ' in winter' : ''} (${BASIS[w.need_basis] || (/stop/.test(w.need_basis) ? 'longest drive without charging: we plan a fast-charging stop only after 2.5 hours at the wheel, and the drive back starts at 70 % battery' : /dest/.test(w.need_basis) ? 'one way, you charge at the destination' : 'there and back on one charge')}); this car class has at least ${fmt.n(w.class_km)} km`);
       if (w.missing.includes('seats')) why.push('needs more seats than this car has');
       if (w.missing.includes('towbar')) why.push('needs a towbar this car class does not offer');
       return h('p', null, h('b', null, `${b.label}: `), `${(MODE_TXT[b.key] || b.key || 'other transport').toLowerCase()}, ${fmt.n(b.days)} day${b.days === 1 ? '' : 's'} a year${w.frequency ? ` (${w.frequency})` : ''}`,
@@ -4420,7 +4487,7 @@ function energyBox(ev, ref, asm, refName) {
     fr ? h('p', null, h('b', null, `Your ${refName}: `), fr.calc, h('br'), h('small', null, fr.basis),
       (() => { const y = store.carAutoNote?.[store.profile.current_car.targa_id]; return y ? h('small', { class: 'warnline' }, h('br'), `We only have versions of this model approved up to ${y}, so consumption may be off. If you know your real consumption, change it under Assumptions and sources.`) : null; })()) : null,
     fe ? h('p', null, h('b', null, 'Electric car: '), fe.calc, h('br'), h('small', null, fe.basis)) : null,
-    br > 0 || kmGap > 100 ? h('p', null, h('b', null, 'Trips the electric car cannot do: '), `${kmGap > 100 ? `about ${fmt.n(kmGap)} km a year by rental car or train, ` : ''}${fmt.chf(br)} a year, shown on its own line (Other transport).`) : null);
+    br > 0 || kmGap > 100 ? h('p', null, h('b', null, 'Trips the electric car cannot do: '), `${kmGap > 100 ? `about ${fmt.n(kmGap)} km a year by rental car or train, ` : ''}${fmt.chf(br)} a year, shown on its own line (Rental car or train for long trips).`) : null);
 }
 function renderB3(r) {
   const M = b3Model(r); const { P, ev, ref, noRef, N, H, payback, gapYears } = M;   // 25 Nov: gapYears was missing (crash when there is no payback)
@@ -4528,7 +4595,7 @@ function renderB3(r) {
           return h('span', { class: 'cv sub' }, b ? [b.cost_per_year_chf == null ? 'No price data' : fmt.n(b.cost_per_year_chf), h('small', null, `${(MODE_TXT[b.key] || b.key).toLowerCase()}, ${fmt.n(b.days)} d`)] : '–'); })]; }); })(),
     [['Total per year', (l) => yr(l).total_per_year], [`Total in ${yrs}`, (l) => yr(l).total_over_n]].map(([lab, f]) => [h('span', { class: 'cl st' }, lab), shown.map((l) => h('span', { class: 'cv st' }, f(l) ? fmt.chf100(mid(f(l))).replace(/CHF\s?/, '') : '–'))])));
   const kmNote = ev?.energy_detail && ref?.energy_detail && !noRef && ev.energy_detail.km_per_year < ref.energy_detail.km_per_year
-    ? h('p', { class: 'note keep' }, `The electric car drives ${fmt.n(ev.energy_detail.km_per_year)} of your ${fmt.n(ref.energy_detail.km_per_year)} km a year; the rest are rare trips under "Other transport".`) : null;
+    ? h('p', { class: 'note keep' }, `The electric car drives ${fmt.n(ev.energy_detail.km_per_year)} of your ${fmt.n(ref.energy_detail.km_per_year)} km a year; the rest are long trips under "Rental car or train for long trips".`) : null;
 
   // ---- how we calculated: reconciliation of upfront cost and total cost ----
   const dc = r.depreciation_curve || null;
@@ -4625,7 +4692,7 @@ function renderB4(r) {
   const sel = opts.find((o) => o.selected) || opts[0];
   const showRef = r.reference && !opts.some((o) => o.class_id === r.reference.class_id);
   const cols = [...opts.map((o) => ({ o })), ...(showRef ? [{ o: r.reference, ref: true }] : [])];
-  const SUM = ['New price', 'Range (WLTP)', 'Seats', 'Towbar', 'Days electric', 'Other transport'];
+  const SUM = ['New price', 'Range (WLTP)', 'Seats', 'Towbar', 'Days electric', 'Rental car or train'];
   const nRows = 1 + SUM.length + trips.length;
   const tpl = { gridRow: `1 / span ${nRows}`, '--b4-rows': `var(--b4-head) repeat(${SUM.length}, var(--b4-sum)) repeat(${trips.length}, var(--b4-trip))` };
   const bmax = budgetMax();
@@ -4660,25 +4727,39 @@ function renderB4(r) {
           p.key === 'train' && p.train_time_h ? h('span', { class: 'sub' }, `${fmt.hm(p.train_time_h)} by train (car ${fmt.hm(p.car_time_h)})`) : null); }));
   };
   // the one visible block: the chosen class in simple rows; the side-by-side board goes into Full analysis
-  const frow = (l, v, cls) => h('div', { class: 'frow' }, h('span', null, l), h('b', { class: cls || null }, v));
+  const frow = (l, v, cls, sub) => h('div', { class: 'frow' }, h('span', null, l, sub ? h('small', { class: 'frsub' }, sub) : null), h('b', { class: cls || null }, v));
   const clsName = (o) => `${SIZE_NAME[SIZE_OF(o.class_id)] || 'Electric car'} (${fmt.n(o.min_wltp_km)}+ km)`;
   const days = (o) => (o.ev_days === o.total_days ? 'All' : `${fmt.n(o.ev_days)} of ${fmt.n(o.total_days)}`);
   const tgtSz = ['S', 'M', 'L'].includes(store.profile.target_ev?.size) ? store.profile.target_ev.size : null;
   const ids = opts.map((o) => o.class_id), pc = store.profile.selected_class_id;
   const mineId = pc && ids.includes(pc) && (!tgtSz || SIZE_OF(pc) === tgtSz) ? pc : sel && (!tgtSz || SIZE_OF(sel.class_id) === tgtSz) ? sel.class_id : ids.find((id) => SIZE_OF(id) === tgtSz) || null;
+  // 26 Nov (Christian, slide 5): "Used Medium-sized car / New price: around CHF 40'000 / Used example: around CHF 23'000, about 4 years
+  // old, 80'000 km. Illustrative purchase price – adjust to match a specific offer." New price = middle of the class band; used
+  // example = the used price Costs uses for this class (BFE/EBP value curve, about 4 years old), else new price x the same share.
+  const tgt = store.profile.target_ev || {};
+  const round1k = (x) => (x == null ? null : Math.round(x / 1000) * 1000);
+  const newMid = sel?.price_band_chf?.min != null ? (sel.price_band_chf.min + sel.price_band_chf.max) / 2 : null;
+  const usedEx = (() => { if (!sel) return null;
+    const ln = (store.results.B3?.response?.result?.lines || []).find((l) => l.kind === 'option' && l.class_id === sel.class_id && l.purchase === 'used' && l.price_source !== 'user');
+    return ln?.price_today_chf ? mid(ln.price_today_chf) : newMid != null ? newMid * (USED_SHARE[SIZE_OF(sel.class_id)] || 0.409) : null; })();
+  const typeTxt = sel ? `${tgt.purchase === 'used' ? 'Used ' : tgt.purchase === 'new' ? 'New ' : ''}${tgt.purchase === 'used' || tgt.purchase === 'new' ? sizeLow(SIZE_OF(sel.class_id)) : sizeLabel(SIZE_OF(sel.class_id))}` : '';
   const pick = sel ? h('section', { class: 'factcard' }, h('h2', null, icon('car'), mineId === sel.class_id ? 'Your choice' : 'Suggested for your trips'),
-    frow('Class', clsName(sel)),
+    frow('Type', typeTxt),
+    frow('Range', `${fmt.n(sel.min_wltp_km)}+ km (WLTP)`),
     frow('Seats', String(sel.seats ?? '–')),
-    usedWanted ? frow('Used price, about 4 years old', `from about ${fmt.chf100(minPrice(sel))}` + (overBudget(sel) ? ' ⚠' : ''), overBudget(sel) ? 'warn' : null)
-      : frow('New price', fmt.band(sel.price_band_chf) + (overBudget(sel) ? ' ⚠' : ''), overBudget(sel) ? 'warn' : null),
+    frow('New price', newMid != null ? `around ${fmt.chf(round1k(newMid))}` + (!usedWanted && overBudget(sel) ? ' ⚠' : '') : '–', !usedWanted && overBudget(sel) ? 'warn' : null),
+    tgt.purchase !== 'new' && usedEx != null ? frow('Used example', `around ${fmt.chf(round1k(usedEx))}` + (usedWanted && overBudget(sel) ? ' ⚠' : ''), usedWanted && overBudget(sel) ? 'warn' : null, 'about 4 years old, about 60\u2019000 km') : null,
+    tgt.price_chf && mineId === sel.class_id ? frow('Your price', fmt.chf(tgt.price_chf)) : null,
+    h('p', { class: 'small muted illus' }, 'Illustrative purchase price \u2013 adjust to match a specific offer. ',
+      h('button', { class: 'linkbtn inl', type: 'button', onclick: () => editAnswer(9) }, 'Adjust')),
     budgetLine(sel)) : null;
   // 25 Nov (Christian): say which limit applies and, if nothing of your type fits it, why and what would
   function budgetLine(o) {
     const B = budget(); if (B.max == null) return null;
     const lim = B.by === 'cash' ? `Your budget today: ${fmt.chf(B.max)} (${B.saleSrc === 'estimate' ? 'our estimate of your car' : 'sale of your car'} ${fmt.chf(B.sale)} + extra cash ${fmt.chf(B.extra)})` : `Most you would pay: ${fmt.chf(B.max)}`;
-    if (!overBudget(o)) return h('p', { class: 'kinfo good' }, icon('check'), h('span', null, `${lim}. A ${usedWanted ? 'used ' : ''}${SIZE_NAME[SIZE_OF(o.class_id)].toLowerCase()} fits it.`));
+    if (!overBudget(o)) return h('p', { class: 'kinfo good' }, icon('check'), h('span', null, `${lim}. A ${usedWanted ? 'used ' : ''}${sizeLow(SIZE_OF(o.class_id))} fits it.`));
     const gap = minPrice(o) - B.max;
-    return h('p', { class: 'kinfo warn' }, icon('info'), h('span', null, `${lim}. A ${usedWanted ? 'used ' : 'new '}${SIZE_NAME[SIZE_OF(o.class_id)].toLowerCase()} starts at about ${fmt.chf100(minPrice(o))}, so none of our cars of this type fits. `
+    return h('p', { class: 'kinfo warn' }, icon('info'), h('span', null, `${lim}. A ${usedWanted ? 'used ' : 'new '}${sizeLow(SIZE_OF(o.class_id))} starts at about ${fmt.chf100(minPrice(o))}, so none of our cars of this type fits. `
       + `About ${fmt.chf100(gap)} more, ${usedWanted ? '' : 'a used car, '}a smaller type or keeping your car a few years longer would close the gap.`));
   }
   const table = h('div', { class: 'b4wrap', role: 'region', 'aria-label': 'Car classes side by side', tabindex: '0' }, h('table', { class: 'b4t' },
@@ -4692,8 +4773,8 @@ function renderB4(r) {
   const tgtSize = store.profile.target_ev?.size;
   const sizeNote = sel && ['S', 'M', 'L'].includes(tgtSize) && SIZE_OF(sel.class_id) !== tgtSize
     ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, 'SML'.indexOf(tgtSize) > 'SML'.indexOf(SIZE_OF(sel.class_id))
-      ? `You chose a ${SIZE_NAME[tgtSize].toLowerCase()}. Seats and trips alone would need only a ${SIZE_NAME[SIZE_OF(sel.class_id)].toLowerCase()}; a bigger car still makes sense for luggage, comfort or towing.`
-      : `You chose a ${SIZE_NAME[tgtSize].toLowerCase()}, but your seats or trips need a ${SIZE_NAME[SIZE_OF(sel.class_id)].toLowerCase()}.`)) : null;
+      ? `You chose a ${sizeLow(tgtSize)}. Seats and trips alone would need only a ${sizeLow(SIZE_OF(sel.class_id))}; a bigger car still makes sense for luggage, comfort or towing.`
+      : `You chose a ${sizeLow(tgtSize)}, but your seats or trips need a ${sizeLow(SIZE_OF(sel.class_id))}.`)) : null;
   const sections = [
     pick, sizeNote,
     h('section', { class: 'rsec' }, h('h2', null, 'Compare the car classes'),
@@ -4701,11 +4782,11 @@ function renderB4(r) {
       table,
       h('p', { class: 'small muted' }, 'Your trips are checked with the range in winter on the motorway.')),
   ];
-  const dealer = sel ? `Electric car, ${(SIZE_NAME[SIZE_OF(sel.class_id)] || '').toLowerCase()}\n- Range: at least ${fmt.n(sel.min_wltp_km)} km (WLTP)\n- Seats: ${sel.seats}\n- Towbar: ${TOW[sel.towbar] || 'not needed'}\n- Typical new price: ${fmt.band(sel.price_band_chf)}\n(From the BEV Navigator – a class, not a specific model.)` : '';
+  const dealer = sel ? `Electric car, ${sizeLow(SIZE_OF(sel.class_id))}\n- Range: at least ${fmt.n(sel.min_wltp_km)} km (WLTP)\n- Seats: ${sel.seats}\n- Towbar: ${TOW[sel.towbar] || 'not needed'}\n- Typical new price: ${fmt.band(sel.price_band_chf)}\n(From the BEV Navigator – a class, not a specific model.)` : '';
   return {
     // 25 Nov (Simone): if you chose a type, the headline is your choice; the smallest type for your trips is the note under it
     big: sel ? (tgtSz && SIZE_OF(sel.class_id) !== tgtSz
-      ? { value: SIZE_NAME[tgtSz], sub: 'your choice', label: `Smallest type for your trips: ${SIZE_NAME[SIZE_OF(sel.class_id)].toLowerCase()} (${SIZE_SEATS[SIZE_OF(sel.class_id)]}, ${fmt.n(sel.min_wltp_km)}+ km)` }
+      ? { value: SIZE_NAME[tgtSz], sub: 'your choice', label: `Smallest type for your trips: ${sizeLow(SIZE_OF(sel.class_id))} (${SIZE_SEATS[SIZE_OF(sel.class_id)]}, ${fmt.n(sel.min_wltp_km)}+ km)` }
       : { value: SIZE_NAME[SIZE_OF(sel.class_id)] || 'Electric car', label: `${fmt.n(sel.min_wltp_km)}+ km range`, sub: sel.ev_days === sel.total_days ? 'covers all your driving days' : `covers ${fmt.n(sel.ev_days)} of ${fmt.n(sel.total_days)} driving days` }) : null,
     statement: r.no_option ? 'No electric car can do all the trips you need on its own yet.' : sel ? `A ${clsLong(sel.class_id)} does ${fmt.n(sel.ev_days)} of your ${fmt.n(sel.total_days)} driving days.` : 'Your EV options',
     detail: sel ? (sel.ev_days === sel.total_days ? 'No other car is needed for your trips.' : `For the rest: ${Object.entries(sel.bridging_days || {}).filter(([, v]) => v).map(([k, v]) => `${fmt.n(v)} day${v === 1 ? '' : 's'} ${MODE_TXT[k]?.toLowerCase()}`).join(', ')}.`) : null,
@@ -4854,11 +4935,11 @@ function renderB7(r) {
   const b1 = v.block1 || {};
   const cmp = v.comparison;
   const car0 = r.calculated_for?.current_car;
-  const SZ0 = SIZE_NAME;
+  const SZ0 = SIZE_NAME;   // 26 Nov: Climate names the size by Christian's types too
   const noEq = (t) => String(t || '').replace(/CO2/g, 'CO2').replace(/\s*\((?=[^)]*\d{4})[^)]*\)/g, '');
   const b2 = v.block2 ? { ...v.block2, statement: (() => { const x = v.block2; const t = fmt.n(x.saving_t_per_year, 1);
     if (x.type === '2a') return x.verdict === 'switch_pays_off' ? `Compared with keeping your ${car0?.name || 'current car'}: switching now saves about ${t} t CO2 a year.` : `Compared with keeping your ${car0?.name || 'current car'} until it is worn out, switching now does not save greenhouse gases yet – building a new car causes emissions too.`;
-    return (x.saving_t_per_year || 0) > 0 ? `A new electric ${(SZ0[v.size] || 'car').toLowerCase()} instead of a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car saves about ${t} t CO2 a year.` : `For your use, a new electric car does not save greenhouse gases compared with a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car.`; })() } : null;
+    return (x.saving_t_per_year || 0) > 0 ? `A new electric ${SZ0[v.size] ? sizeLow(v.size) : 'car'} instead of a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car saves about ${t} t CO2 a year.` : `For your use, a new electric car does not save greenhouse gases compared with a new ${v.reference_fuel === 'diesel' ? 'diesel' : 'petrol'} car.`; })() } : null;
   const SZ = SIZE_NAME;
   const setSize = (sz) => { const list = byClass[st.size] || []; const pos = Math.max(0, list.indexOf(st.cls)); st.size = sz; st.cls = (byClass[sz] || [])[pos] ?? (byClass[sz] || [])[0]; render(); };
   const median = (cid) => (r.variants || []).find((x) => x.class_id === cid)?.wltp_range_median_km;
@@ -4967,7 +5048,7 @@ function setEvChoice(cid, purchase) {
   const d = clone(store.profile); const t = d.target_ev || (d.target_ev = { size: null, purchase: null, price_chf: null });
   const changed = (cid && SIZE_OF(cid) !== t.size) || (purchase && purchase !== t.purchase);
   if (changed && t.price_chf) t.price_chf = null;   // the price was for the car chosen before
-  if (cid) { t.size = SIZE_OF(cid); d.selected_class_id = cid; }
+  if (cid) { t.size = SIZE_OF(cid); d.selected_class_id = cid; if (Array.isArray(t.types)) { t.types = t.types.filter((k) => CAR_TYPES.find((c) => c.k === k)?.size === t.size); if (!t.types.length) t.types = null; } }
   if (purchase) t.purchase = purchase;
   const had = Object.keys(store.results);
   ui.b3Cls = null; store.session.ev_purchase = null;
@@ -5004,7 +5085,7 @@ const Results = {
   view(code) {
     const rec = store.results[code];
     if (!rec) return h('div', { class: 'col' }, h('p', null, 'No result yet.'));
-    const b = Results.build(code);
+    B3_PAGE = code === 'B3'; let b; try { b = Results.build(code); } finally { B3_PAGE = false; }
     const nxt = nextBarrier(code);
     const ai = Results.ai[code] || { status: 'idle' };
     const assumptions = rec.response.result?.assumptions;
@@ -5030,7 +5111,7 @@ const Results = {
         null),
       h('section', { class: 'keycard' + (b.big?.tone ? ' ' + b.big.tone : ''), 'aria-live': 'polite' },
         h('span', { class: 'keylabel' }, icon('bolt'), 'In short'),
-        b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') }, h('div', { class: 'bigline' }, h('b', null, b.big.value), b.big.per ? h('em', null, b.big.per) : null), b.big.sub ? h('small', null, b.big.sub) : null, h('span', null, b.big.label)) : null,
+        b.big ? h('div', { class: 'bigfig' + (b.big.tone ? ' ' + b.big.tone : '') + (String(b.big.value).length > 13 ? ' long' : '') }, h('div', { class: 'bigline' }, h('b', null, b.big.value), b.big.per ? h('em', null, b.big.per) : null), b.big.sub ? h('small', null, b.big.sub) : null, h('span', null, b.big.label)) : null,
         b.big ? null : h('p', { class: 'keystat', id: 'keystat' }, highlight(b.statement)),
         b.detail ? h('p', { class: 'keydetail' }, normNum(String(b.detail))) : null,
         b.info ? h('p', { class: 'kinfo' }, icon('info'), h('span', null, b.info)) : null,
@@ -5244,7 +5325,7 @@ const ChatNav = {
     const odo = num(p.car_mileage_km, 0, 600000); if (odo != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.odometer_km = odo; n++; }
     const yr = num(p.car_first_registration_year, 1995, new Date().getFullYear()); if (yr) { d.current_car.first_registration = `${yr}-${yr === new Date().getFullYear() ? '01' : '06'}`; n++; }
     const sale = num(p.car_sale_price_chf, 0, 400000); if (sale != null && d.current_car.targa_id && d.current_car.targa_id !== 'skipped') { d.current_car.value_today_chf = sale; n++; }
-    const evSize = { small: 'S', medium: 'M', mid: 'M', large: 'L', s: 'S', m: 'M', l: 'L' }[String(p.ev_size || '').toLowerCase()]; if (evSize) { d.target_ev.size = evSize; n++; }
+    const evSize = { small: 'S', medium: 'M', mid: 'M', large: 'L', s: 'S', m: 'M', l: 'L' }[String(p.ev_size || '').toLowerCase()]; if (evSize) { if (evSize !== d.target_ev.size) d.target_ev.types = null; d.target_ev.size = evSize; n++; }
     if (['new', 'used'].includes(p.ev_purchase)) { d.target_ev.purchase = p.ev_purchase; n++; }
     const evp = num(p.ev_price_chf, 3000, 300000); if (evp != null) { d.target_ev.price_chf = evp; n++; }
     const xc = num(p.ev_extra_cash_chf, 0, 300000); if (xc != null) { d.target_ev.extra_cash_chf = xc; n++; }
@@ -5298,7 +5379,7 @@ const Assistant = {
     if (ChatNav.on) return ['Stop the check'];
     // 24 Nov (Simone): examples that show the use case: you describe your situation, the assistant fills in the answers for you
     if (!ChatNav.on && !Object.keys(store.results).length) return ['I drive a 2015 VW Golf diesel, live in 8004 Zurich and work in Winterthur 4 days a week. What would it cost?',
-      'What does \u201cLifestyle match\u201d mean?', 'How long does an electric car battery last?'];
+      'What does \u201cFit with my lifestyle\u201d mean?', 'How long does an electric car battery last?'];
     if (ui.view === 'question') return ['Why do you ask this?', "What if I'm not sure?"];
     if (ui.view === 'result') return ['Explain this result in simple words.', 'What should I do next?', 'Which assumptions matter most?'];
     return ['What can the Navigator tell me?', 'Which topic should I start with?'];
@@ -5526,7 +5607,7 @@ const Report = {
     return [R.table(['Electric car', 'Examples', 'Seats', 'Towbar', 'New price', 'Days electric'], opts.map((o) => [clsShort(o.class_id) + (o._ref ? ' (covers all trips)' : o.selected ? ' (your choice)' : ''), (CLASSES[o.class_id] || [])[1] || '–', o.seats, TOW[o.towbar] || '–', o.price_band_chf ? fmt.band({ min: o.price_band_chf.min, max: o.price_band_chf.max }) : '–', `${fmt.n(o.ev_days)} of ${fmt.n(o.total_days)}`]), ['auto', '*', 'auto', 'auto', 'auto', 'auto']),
       sel ? R.h3(`Trips with the ${clsShort(sel.class_id)}`) : null,
       sel ? R.table(['Trip', 'How often', 'By electric car', 'Otherwise'], (sel.trips || []).map((t) => [t.label, t.frequency, t.covered ? 'yes' : `${fmt.n(t.days)} of ${fmt.n(t.of_days)} days not`, t.covered ? '–' : `${BR[t.plan?.key] || t.plan?.key || '–'}${t.plan?.effort ? ' (' + t.plan.effort + ')' : ''}`])) : null,
-      sel ? R.note(`For the dealer: an electric car, ${(SIZE_NAME[sel.size] || '').toLowerCase()} size, at least ${fmt.n(sel.min_wltp_km)} km official range (WLTP), ${sel.seats} seats, towbar: ${TOW[sel.towbar] || 'not needed'}.`) : null]; },
+      sel ? R.note(`For the dealer: an electric car, ${sizeLow(sel.size)} size, at least ${fmt.n(sel.min_wltp_km)} km official range (WLTP), ${sel.seats} seats, towbar: ${TOW[sel.towbar] || 'not needed'}.`) : null]; },
 
   B6(r) { const R = Report;
     if (r.mode === 'assessment') return [R.kv([['First registration', r.listing?.first_registration], ['Mileage', r.listing?.odometer_km != null ? `${fmt.n(r.listing.odometer_km)} km` : null], ['Age', r.listing?.age_years != null ? `${fmt.n(r.listing.age_years, 1)} years` : null], ['Estimated battery health today', r.soh_today_pct != null ? `${fmt.n(r.soh_today_pct)} %` : null]])];

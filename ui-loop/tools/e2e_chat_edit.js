@@ -27,7 +27,7 @@ const b3For = (profile) => { const inp = JSON.parse(JSON.stringify(INP)); inp.pr
   await ev(async () => { resetAll(); Assistant.open(); await Assistant.send('I drive a 2015 BMW 530xd diesel with 150000 km and live in 8001 Zurich. I could sell it for 15000. I am looking at a used medium electric car for about 20000 and drive about 10000 km a year.'); });
   await page.waitForTimeout(1500);
   const chat = await ev(() => ({ noted: Assistant.msgs.find((m) => /^Noted:/.test(m.text || ''))?.text || '', p: store.profile, saved: JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}').profile }));
-  check('chat confirms what it understood', /selling price CHF.15’000/.test(chat.noted.replace(/ /g, ' ')) && /Mid-size car, used, about CHF.20’000/.test(chat.noted.replace(/ /g, ' ')), chat.noted);
+  check('chat confirms what it understood', /selling price CHF.15’000/.test(chat.noted.replace(/ /g, ' ')) && /Medium-sized car, used, about CHF.20’000/.test(chat.noted.replace(/ /g, ' ')), chat.noted);
   check('chat fields in the answers', chat.p.current_car.value_today_chf === 15000 && chat.p.current_car.odometer_km === 150000 && chat.p.target_ev.size === 'M' && chat.p.target_ev.purchase === 'used' && chat.p.target_ev.price_chf === 20000, { cc: chat.p.current_car, ev: chat.p.target_ev });
   check('chat fields saved in the browser', chat.saved?.current_car?.value_today_chf === 15000 && chat.saved?.target_ev?.price_chf === 20000, chat.saved?.current_car);
   // 2. result. The chat then asks for trips and charging; those answers of the example are set directly (house owner, charging at home:

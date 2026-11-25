@@ -2493,7 +2493,7 @@ const Example = {
     history.replaceState(null, '', location.pathname);
     store.profile = sanitizeProfile(Example.profile(q === 'bmw-megane')); store.carLabels['1BB439'] = 'BMW 530xd'; store.results = {};
     store.queue = ['B4', 'B3']; store.example = q; ui.b3N = 5; saveStore();
-    await runAll(['B4', 'B3'], { quiet: true }); showResult('B3');
+    await runAll(['B4', 'B3'], { quiet: true }); ui.b3N = 5; showResult('B3');
   },
   note() {
     if (!store.example) return null;
@@ -4123,7 +4123,7 @@ function viewMail() {
 
 /* ---------- B3 ---------- */
 // V8.11 (23 Nov, Christian + Martin): total cost of ownership. One electric car against your car, chosen by size and new / used.
-const ITEMS = [['vehicle', 'Value loss', 'var(--ink-2)'], ['interest', 'Interest on the money in the car', 'var(--line-2)'], ['energy', 'Energy', 'var(--s1)'], ['tax', 'Tax', 'var(--neutral-mark)'], ['insurance', 'Insurance', 'var(--s3)'], ['maintenance', 'Maintenance and tyres', 'var(--line-2)'], ['installation', 'Charging installation', 'var(--s2)'], ['bridging', 'Other transport', 'var(--ink)']];
+const ITEMS = [['vehicle', 'Value loss', 'var(--ink-2)'], ['interest', 'Interest on the money in the car', 'var(--line-2)'], ['energy', 'Energy', 'var(--s1)'], ['tax', 'Tax', 'var(--neutral-mark)'], ['insurance', 'Insurance', 'var(--s3)'], ['maintenance', 'Maintenance and tyres', 'var(--line-2)'], ['vignette', 'Motorway vignette', 'var(--line)'], ['installation', 'Charging installation', 'var(--s2)'], ['bridging', 'Other transport', 'var(--ink)']];
 const ITEM_WHY = {
   vehicle: 'Price today minus value at the end, per year. Not the full price.',
   interest: 'The money could earn 1.25 % elsewhere.',
@@ -4355,11 +4355,11 @@ function b3Verdict(M) {
 function costBars(M) {
   const { ev, c, N, e, noRef } = M;
   if (!ev || noRef || !c || !e || M.evEnd == null || M.refEnd == null || M.price == null) return null;
-  const IT = [['loss', 'Value loss', '#1e3a8a'], ['interest', 'Interest', '#6b7fd1'], ['energy', 'Energy', '#f59e0b'], ['tax', 'Tax', '#94a3b8'], ['insurance', 'Insurance', '#14b8a6'], ['maintenance', 'Maintenance and tyres', '#a855f7'], ['bridging', 'Other transport', '#e11d48'], ['installation', 'Charging installation', '#64748b']];
+  const IT = [['loss', 'Value loss', '#1e3a8a'], ['interest', 'Interest', '#6b7fd1'], ['energy', 'Energy', '#f59e0b'], ['tax', 'Tax', '#94a3b8'], ['insurance', 'Insurance', '#14b8a6'], ['maintenance', 'Maintenance and tyres', '#a855f7'], ['vignette', 'Vignette', '#cbd5e1'], ['bridging', 'Other transport', '#e11d48'], ['installation', 'Charging installation', '#64748b']];
   const vals = (isEv) => {
     const y = isEv ? e : c;
     return { loss: isEv ? (M.price - M.evEnd) / N : (M.ref.value_today_chf - M.refEnd) / N, interest: y.items?.interest || 0, energy: y.items?.energy || 0, tax: y.items?.tax || 0,
-      insurance: y.items?.insurance || 0, maintenance: y.items?.maintenance || 0, bridging: y.items?.bridging || 0, installation: isEv ? M.install / N : 0 };
+      insurance: y.items?.insurance || 0, maintenance: y.items?.maintenance || 0, vignette: y.items?.vignette || 0, bridging: y.items?.bridging || 0, installation: isEv ? M.install / N : 0 };
   };
   const rows = [[M.refName, vals(false)], [`Electric car, ${clsShort(ev.class_id).split(', ')[0].toLowerCase()}, ${ev.purchase === 'used' ? 'used' : 'new'}`, vals(true)]].map(([name, v]) => ({ name, v, tot: Object.values(v).reduce((a, x) => a + Math.max(0, x), 0) }));
   const max = Math.max(...rows.map((r) => r.tot)) || 1;
@@ -5474,11 +5474,12 @@ const Report = {
     const cellOf = (v, o) => (o.strong ? { text: v ?? '–', bold: true } : (v ?? '–'));
     const tbl = (rows, unit) => R.table([unit, ...(two ? ['Keep your car'] : []), 'Switch to an EV'],
       rows.map(([l, k, sw, o = {}]) => [o.strong ? { text: l, bold: true } : (o.sub ? `${l} (${o.sub})` : l), ...(two ? [cellOf(k, o)] : []), cellOf(sw, o)]), two ? ['*', 88, 88] : ['*', 110]);
-    const diff = (v) => (v >= 0 ? `${fmt.chf100(v)} less with the EV` : `${fmt.chf100(-v)} more with the EV`);
+    const diff = (v) => (v >= 0 ? `${fmt.chf10(v)} less with the EV` : `${fmt.chf10(-v)} more with the EV`);
     const out = [{ text: `${evName(M.ev, true)}${two ? ` against keeping your ${M.refName}` : ''}, kept ${yrs}`, bold: true, margin: [0, 0, 0, 4] },
       R.h3('Upfront cost (CHF)'), tbl(B.upfront, 'CHF'),
       R.h3('Running costs (CHF per year)'), tbl(B.running, 'CHF per year'),
       energyText(M.ev) ? { text: [two && energyFormula(M.ref, r.assumptions || []) ? `Energy, your car: ${energyFormula(M.ref, r.assumptions || []).calc}. ${energyFormula(M.ref, r.assumptions || []).basis}` : null, `Energy, electric car: ${energyFormula(M.ev, r.assumptions || [])?.calc || energyText(M.ev)}.`].filter(Boolean).join(' '), fontSize: 8.5, color: C.ink2, margin: [0, 2, 0, 0] } : null,
+      ...(M.ev.bridging || []).filter((b) => b.why).map((b) => ({ text: `${b.label}: ${(MODE_TXT[b.key] || b.key || 'other transport').toLowerCase()}, ${fmt.n(b.days)} days a year${b.why.frequency ? ` (${b.why.frequency})` : ''}, ${b.cost_per_year_chf != null ? fmt.chf(b.cost_per_year_chf) + ' a year' : 'no price data'}${b.why.missing.includes('range') ? `. Needs about ${fmt.n(b.why.need_km)} km, this car has ${fmt.n(b.why.class_km)} km` : ''}.`, fontSize: 9, margin: [0, 2, 0, 0] })),
       R.h3(`Depreciation and total cost over ${yrs} (CHF)`), tbl(B.dep, 'CHF')];
     if (two && M.saving != null) out.push({ text: `Difference over ${yrs}: ${diff(M.saving)}. ${M.payback ? `Pays off in year ${M.payback}.` : M.gapYears?.length ? 'Not enough data to estimate payback.' : `Does not pay off within ${M.lastYear || M.H} years.`}`, bold: true, margin: [0, 6, 0, 0] });
     const eb = M.e?.value_after_band, cb = M.c?.value_after_band;

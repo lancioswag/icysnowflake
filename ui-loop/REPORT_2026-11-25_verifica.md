@@ -242,3 +242,51 @@ Copia test `T – API` B7: esecuzione 17612, ok.
 | 6 strumenti | Archiviati (si possono ripristinare dall'archivio di n8n) i 3 usati una volta sola: "clone Prototype 2", "clone C into T", "copy Assist v2". Restano: deploy del codice dal repo (rinominato "Tools – set node code in a Claude workflow (T – or C –) from the repo"), copia tabelle team → Claude DB, ricostruzione schema `bevtest` |
 
 Gli ID dei workflow non cambiano: la prova B3 sulla copia C – dopo lo spostamento (esecuzione 17618) è ok. La cartella "Test Claude", con due workflow ZZ del 13 e 19.11, è separata e non è stata toccata.
+
+## 8. Stress test live completato (25.11, 14:15–14:40)
+
+La rete del computer di prova ora raggiunge `*.n8n.cloud`. La suite live è stata eseguita sulla preview collegata alla copia di test n8n (`/navigator-test`, `/assist-claude`), sulle build `6021bea` e poi `6a2bfb9`, quella finale.
+
+### 8.1 Risultati sulla build finale `6a2bfb9`
+
+| Scenario | 390 × 844 | 1366 × 900 |
+|---|---|---|
+| S1 Christian, input del Word: payload, Costs, Summary e PDF con 41'090 / 29'950 / 11'140 / 5'000 | 18/18 | 18/18 |
+| S2 dati dell'app | 5/5 | – |
+| S3 cinque temi, auto a benzina | 8/8 | 8/8 |
+| S4 budget incompatibile | 5/5 | – |
+| S5 dati mancanti | 3/3 | – |
+| S6 cambio di scenario in Costs | 5/5 | – |
+| S7 viaggio all'estero aggiunto, modificato, cancellato | 8/8 | 8/8 |
+| S8 indietro | 3/3 | – |
+| S9 refresh / S10 reset | 3/3 · 3/3 | – |
+| S11 AI non disponibile | 4/4 | – |
+| S12 errore con retry | 4/4 | – |
+| S13 PDF senza account | 4/4 | 4/4 |
+| S14 chat + parità con assist-v2 | 7/7 | – |
+| **S15 (nuovo)** chat → risultato → vendita modificata in Your answers | 8/8 (eseguito 2 volte di fila) | 8/8 |
+
+Nessun overflow orizzontale in Summary e Home a 1366 px.
+
+**S15 nel dettaglio** (chat vera su `/assist-claude`, calcolo vero sulla copia B3 di test):
+- la chat conferma "selling price CHF 15'000 · Mid-size car, used, about CHF 20'000";
+- i campi sono salvati nel browser;
+- Costs mostra cash 5'000 e nessuna installazione;
+- dopo la modifica in Your answers (15'000 → 12'000): Costs vendita −12'000 e cash 8'000, Summary "CHF 8'000 upfront", PDF completo e one-pager con 12'000 e 8'000.
+
+### 8.2 Problemi trovati e corretti durante il test live
+
+| Problema | Causa | Correzione | Riprova |
+|---|---|---|---|
+| Dopo un reset, la chat ignorava quello che scrivevi. Rispondeva "Understood…" ma non salvava nulla | `resetAll` non chiudeva un controllo in chat ancora attivo: il messaggio finiva nel ramo "risposta a una domanda", senza domanda aperta, e il patch veniva scartato | Il reset chiude il controllo in chat; se non c'è una domanda aperta i dati vengono salvati comunque (`6a2bfb9`) | S15 due volte di fila, S14 |
+| S1: "formula energia" falliva | Il test cercava "10'000 km"; l'app ora mostra 9'999.6 km (la precisione usata davvero) | Solo test | S1 18/18 |
+| S8: "Next" sembrava non avanzare | Il pannello del browser a volte gira a ~4 fotogrammi al secondo e l'animazione d'uscita dura ~1 s. Nell'app non c'è un ritardo (nessun task lungo: verificato con PerformanceObserver) | Il test aspetta il cambio di domanda | S8 3/3 |
+
+### 8.3 Stato finale
+
+Il §4.2 ("da ripetere") è superato: lo stress test live è stato eseguito, con tutti gli scenari verdi a 390 px e 1366 px. Restano aperti:
+- pubblicazione sulla demo (serve l'ok);
+- decisioni del §2.5;
+- AutoScout24 (accesso partner);
+- job di refresh dei dati;
+- conferma con Christian su HSG/Zurich.

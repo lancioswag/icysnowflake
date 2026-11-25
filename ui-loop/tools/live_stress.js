@@ -4,7 +4,7 @@
    No secrets, no personal data. */
 // App objects (store, ui, CONFIG, …) are global lexical names of the page script: modules see them by name.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const txt = () => document.querySelector('main')?.innerText || '';
+const txt = () => (document.querySelector('main')?.innerText || '').replace(/[\u00a0\u202f]/g, ' ');   // the app puts no-break spaces before units
 const until = async (f, ms = 90000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { if (f()) return true; } catch { } await sleep(400); } return false; };
 const resp = (c) => store.results[c]?.response || null;
 const lineOf = (r, pred) => (r?.result?.lines || []).find(pred) || null;
@@ -21,7 +21,7 @@ const log = (name, checks, info = {}) => {
 const fresh = () => { resetAll(); try { localStorage.removeItem(CONFIG.storageKey); localStorage.removeItem(CONFIG.storageKey + '.results'); } catch { } go('home'); };
 const runAllQ = async (codes) => { const b = await runAll(codes, { quiet: true }); return b; };
 const show = async (c) => { showResult(c); await sleep(700); document.querySelectorAll('main details').forEach((d) => { d.open = true; }); await sleep(250); return txt(); };
-const pdfText = () => JSON.stringify(Report.doc(Summary.codes()));
+const pdfText = () => JSON.stringify(Report.doc(Summary.codes())).replace(/\\u00a0|\u00a0|\u202f/g, ' ');
 const carId = (keyRe, yearWanted) => {   // a version from cars.json, closest approval to the year
   const k = Object.keys(CARS.data).find((x) => keyRe.test(x)); if (!k) return null;
   const vs = CARS.data[k]; const y = (l) => Number((String(l).match(/approved (\d{4})/) || [])[1] || 0);

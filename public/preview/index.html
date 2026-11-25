@@ -2202,6 +2202,8 @@ function startB6(entry) {
   const nb = Questions.nextBlock(); nb == null ? calculate('B6') : gotoBlock(nb);
 }
 /** Battery (under Range) and value (under Costs): two short lines from the precalculated B6 forecast, chart in the full analysis. */
+/** 25 Nov (handoff brief): battery and value use the same horizon as Costs (years you keep it), else the B6 start year. */
+const b6Horizon = (r) => Math.max(1, Math.min(store.yearsKept || r?.start_year || 6, (r?.years || []).length || 16));
 function b6Forecast() { const rec = store.results.B6; return rec?.session?.battery_entry === 'forecast' ? rec.response.result : null; }
 function b6Card(part) {
   const r = b6Forecast(); const years = r?.years || [];
@@ -2209,7 +2211,7 @@ function b6Card(part) {
   if (!years.length) return h('section', { class: 'factcard' }, h('h2', null, icon(part === 'soh' ? 'battery' : 'wallet'), title), h('p', { class: 'small muted' }, b6Busy ? 'Calculating…' : 'Not calculated yet.'));
   const at = (Y) => years.find((q) => q.year === Y) || years[years.length - 1];
   const last = years[years.length - 1].year;
-  const pick = [5, last].filter((y, i, a) => a.indexOf(y) === i && years.some((q) => q.year === y));
+  const pick = [b6Horizon(r), last].filter((y, i, a) => a.indexOf(y) === i && years.some((q) => q.year === y));
   const row = (l, v) => h('div', { class: 'frow' }, h('span', null, l), h('b', null, v));
   const w = r.checks?.warranty || { min_pct: 70, years: 8, km: 160000 };
   if (part === 'soh') return h('section', { class: 'factcard' }, h('h2', null, icon('battery'), 'Battery health'),
@@ -2217,7 +2219,7 @@ function b6Card(part) {
     h('button', { class: 'infolink', type: 'button', onclick: () => infoPop('Warranty', `Most makers guarantee at least ${w.min_pct} % battery health for ${w.years || 8} years or ${fmt.n(w.km || 160000)} km, whichever comes first. If the battery drops below that, it is repaired or replaced for free. Check the exact terms of the car you buy.`) }, icon('info'), 'Warranty'));
   const val = (p) => (p < 5 ? 'under 5 %' : `${fmt.n(p)} %`);
   return h('section', { class: 'factcard' }, h('h2', null, icon('wallet'), 'Value of your car over the years'),
-    ...[3, 5].filter((Y) => years.some((q) => q.year === Y)).map((Y) => row(`After ${Y} years`, val(at(Y).resale_pct))),
+    ...[3, b6Horizon(r)].filter((Y, i, a) => a.indexOf(Y) === i && years.some((q) => q.year === Y)).sort((a, b) => a - b).map((Y) => row(`After ${Y} years`, val(at(Y).resale_pct))),
     h('button', { class: 'infolink', type: 'button', onclick: () => infoPop('Value', `Share of the new price the car is still worth. Based on resale prices of electric cars in Switzerland and your ${fmt.n(at(5).km / 5)} km a year.`) }, icon('info'), 'What this means'));
 }
 function b6Chart(part) {
@@ -2842,7 +2844,7 @@ function topicLines(c) {
       if ((r.ranking || []).some((x) => String(x.option).startsWith('public') && x.available_now)) L.push('Public charging nearby');
       return L.filter(Boolean);
     }
-    if (c === 'B6') { const y = r.years || []; const a = y.find((q) => q.year === 8) || y[y.length - 1], b = y.find((q) => q.year === 5); return [a ? `Battery after ${a.year} years: ${fmt.n(a.soh_pct)} %` : null, b ? `Value after 5 years: ${b.resale_pct < 5 ? 'under 5' : fmt.n(b.resale_pct)} % of new price` : null].filter(Boolean); }
+    if (c === 'B6') { const y = r.years || []; const a = y.find((q) => q.year === b6Horizon(r)) || y[y.length - 1], b = y.find((q) => q.year === b6Horizon(r)); return [a ? `Battery after ${a.year} years: ${fmt.n(a.soh_pct)} %` : null, b ? `Value after ${b.year} years: ${b.resale_pct < 5 ? 'under 5' : fmt.n(b.resale_pct)} % of new price` : null].filter(Boolean); }
   } catch { }
   return [];
 }
@@ -4792,7 +4794,7 @@ function renderB6(r) {
     };
   }
   const years = r.years || [];
-  const ctrl = { year: ui.b6Y || r.start_year || 6, subs: [], heads: [],
+  const ctrl = { year: ui.b6Y || b6Horizon(r), subs: [], heads: [],
     set(Y) { if (Y === ctrl.year && ctrl._init) return; ctrl._init = true; ctrl.year = Y; ui.b6Y = Y; ctrl.subs.forEach((f) => f(Y)); ctrl.heads.forEach((f) => f(Y)); chipsEl.querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-pressed', String(i + 1 === Y))); },
     tip(key, yy) { return key === 'soh_pct' ? [h('b', null, `Year ${yy.year} · ${fmt.n(yy.km)} km`), h('br'), `Battery health ${fmt.n(yy.soh_pct)} %`, h('br'), `≈ ${fmt.n(yy.soh_pct)} % of today's range`, h('br'), WARR[yy.warranty] || ''] : [h('b', null, `Year ${yy.year} · ${fmt.n(yy.km)} km`), h('br'), `Value ${fmt.n(yy.resale_pct)} % of the new price`]; } };
   const chipsEl = h('div', { class: 'yearchips' }, h('span', { class: 'small muted' }, 'Year:'), [1, 2, 3, 4, 5, 6, 7, 8].map((n) => chip(String(n), n === ctrl.year, () => ctrl.set(n), true)));
@@ -5012,7 +5014,7 @@ const Results = {
     if (code === 'B1') { top = [b6Card('soh')]; deep = [...all, b6Chart('soh')]; }
     else if (code === 'B3') { top = all.slice(0, 2); deep = [...all.slice(2), b6Card('resale'), b6Chart('resale')]; }
     else if (code === 'B6' && rec.response.result?.mode !== 'assessment') {   // same cards as under Range and Costs, charts in the full analysis
-      const ys = rec.response.result?.years || []; const y8 = ys[ys.length - 1];
+      const ys = rec.response.result?.years || []; const y8 = ys.find((q) => q.year === b6Horizon(rec.response.result)) || ys[ys.length - 1];
       if (y8) { b.statement = `After ${y8.year} years the battery keeps about ${fmt.n(y8.soh_pct)} % of its capacity.`; b.detail = null; }
       top = [b6Card('soh'), b6Card('resale')]; deep = [b6Chart('soh'), b6Chart('resale'), ...all.filter((x) => x.tagName === 'DETAILS')];
     }

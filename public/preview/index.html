@@ -1984,7 +1984,7 @@ function loadStore() {
     store.profile = sanitizeProfile(d.profile);
     store.queue = Array.isArray(d.queue) ? d.queue.filter((c) => BARRIERS[c]) : [];
     store.visited = Array.isArray(d.visited) ? d.visited.filter((c) => BARRIERS[c]) : [];
-    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {}; store.carAuto = d.carAuto || {}; store.carAutoNote = d.carAutoNote || {};
+    store.carLabels = d.carLabels && typeof d.carLabels === 'object' ? d.carLabels : {}; store.carAuto = d.carAuto || {}; store.carAutoNote = d.carAutoNote || {}; store.yearsKept = Number(d.yearsKept) || null; store.example = d.example || null;
     store.compass = d.compass && typeof d.compass === 'object' ? d.compass : null;
     if (d.settings) store.settings = { ...store.settings, ...d.settings };
     store.settings.demo = !!window.BEV_PREVIEW;
@@ -1995,7 +1995,7 @@ function loadStore() {
 }
 function saveStore() {
   if (typeof Account !== 'undefined') Account.queueSave();
-  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, carAuto: store.carAuto || {}, carAutoNote: store.carAutoNote || {}, settings: store.settings, compass: store.compass || null })); } catch { /* ignore */ }
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify({ profile: store.profile, queue: store.queue, visited: store.visited, carLabels: store.carLabels, carAuto: store.carAuto || {}, carAutoNote: store.carAutoNote || {}, settings: store.settings, compass: store.compass || null, yearsKept: store.yearsKept || null, example: store.example || null })); } catch { /* ignore */ }
 }
 function resetAll() {
   store.rev++;                       // answers of requests still running are ignored
@@ -2003,7 +2003,7 @@ function resetAll() {
   store.profile = emptyProfile(); store.queue = []; store.visited = []; store.results = {}; store.session = {}; store.carLabels = {};
   store.settings.demo = false;
   ui.topicSel = null; ui.draft = null; ui.flow = null; ui.editOpen = null; ui.assistantOpen = false;
-  store.compass = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
+  store.compass = null; store.yearsKept = null; store.example = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
   Nav.stack = []; Nav.last = null;
   Summary.cache = {}; Assistant.msgs = []; Assistant.prefill = ''; Account.form = null;
   try { localStorage.removeItem(CONFIG.storageKey); localStorage.removeItem(RESULTS_KEY()); } catch { }
@@ -2492,8 +2492,8 @@ const Example = {
     const q = new URLSearchParams(location.search).get('example'); if (!['bmw-megane', 'bmw-megane-app'].includes(q)) return;
     history.replaceState(null, '', location.pathname);
     store.profile = sanitizeProfile(Example.profile(q === 'bmw-megane')); store.carLabels['1BB439'] = 'BMW 530xd'; store.results = {};
-    store.queue = ['B4', 'B3']; store.example = q; ui.b3N = 5; saveStore();
-    await runAll(['B4', 'B3'], { quiet: true }); ui.b3N = 5; showResult('B3');
+    store.queue = ['B4', 'B3']; store.example = q; store.yearsKept = 5; saveStore();
+    await runAll(['B4', 'B3'], { quiet: true }); showResult('B3');
   },
   note() {
     if (!store.example) return null;
@@ -2891,11 +2891,11 @@ function overallVerdict() {
   if (b4?.no_option) return { kind: 'keep', title: 'Keep your current car for now', why: 'None of the electric car classes we know covers your trips.', lines, based: ['B4'] };
   if (!b3) return { kind: 'missing', title: 'A decisive figure is missing', why: 'The cost comparison is not done yet.', lines, todo: 'B3', based: [] };
   const M = b3Model(b3), V = b3Verdict(M);
-  const cost = M.saving != null && !M.noRef ? `Over ${yrsTxt(M.N)}, a ${evPhrase(M.ev)} costs about ${fmt.chf100(Math.abs(M.saving))} ${M.saving >= 0 ? 'less' : 'more'} than keeping your ${M.refName}; you pay ${fmt.chf100(M.net)} upfront after selling it.` : null;
+  const cost = M.saving != null && !M.noRef ? `Over ${yrsTxt(M.N)}, a ${evPhrase(M.ev)} costs about ${fmt.chf10(Math.abs(M.saving))} ${M.saving >= 0 ? 'less' : 'more'} than keeping your ${M.refName}; you pay ${fmt.chf100(M.net)} upfront after selling it.` : null;
   if (cost) lines.unshift(cost);
   if (V.kind === 'missing') return { kind: 'missing', title: 'A decisive figure is missing', why: `To decide, we would need to know more: ${V.why}.`, lines, todo: M.noRef || M.missing.length ? 'B3' : null, based: ['B3'] };
   if (V.kind === 'keep') return { kind: 'keep', title: 'Keeping your current car is cheaper', why: M.payback ? `The electric car pays off only after about ${yrsTxt(M.payback)}.` : `With your answers it does not pay off within ${M.lastYear || M.H} years.`, lines, based: ['B3'] };
-  return { kind: 'ev', title: 'An electric car fits you', why: M.payback ? `It pays off after about ${yrsTxt(M.payback)}.` : null, lines, based: ['B3'] };
+  return { kind: 'ev', title: 'An electric car fits you', why: M.payback ? `Pays off in year ${M.payback}.` : null, lines, based: ['B3'] };
 }
 function verdictCard(v) {
   const ic = 'bolt';
@@ -4197,7 +4197,7 @@ function savingChart(lines, N, payback) {
     const nAt = (e) => { const rr = svg.getBoundingClientRect(); const px = (e.clientX - rr.left) * (W / rr.width); return Math.max(1, Math.min(NY, Math.round(((px - m.l) / (W - m.l - m.r)) * (NY - 1) + 1))); };
     hit.addEventListener('pointermove', (e) => { const n = nAt(e); tip.hidden = false; tip.replaceChildren(h('b', null, `Kept for ${n} year${n > 1 ? 's' : ''}`), ...lines.flatMap((l) => { const yy = l.years.find((q) => q.n === n); const v = yy && val(yy) ? mid(val(yy)) : null; if (v == null) return [h('br'), 'No data']; return [h('br'), noRef ? fmt.chf100(v) : v >= 0 ? `${fmt.chf100(v)} saved` : `${fmt.chf100(-v)} more`]; })); tip.style.left = Math.min(Math.max(x(n), 90), W - 90) + 'px'; tip.style.top = (m.t + 52) + 'px'; });
     hit.addEventListener('pointerleave', () => { tip.hidden = true; });
-    hit.addEventListener('click', (e) => { ui.b3N = nAt(e); render(); });
+    hit.addEventListener('click', (e) => { store.yearsKept = nAt(e); saveStore(); render(); });
     svg.append(hit); el.append(svg, tip);
   }, 280);
 }
@@ -4267,7 +4267,7 @@ function b3Model(r) {
   const P = b3Pick(r); const { ev, ref, noRef } = P;
   const ns = ((ev || ref)?.years || []).map((y) => y.n).filter((n) => Number.isFinite(n));
   const H = ns.length ? Math.max(...ns) : 8;
-  const N = Math.max(1, Math.min(ui.b3N || r.start_years || 6, H));
+  const N = Math.max(1, Math.min(store.yearsKept || r.start_years || 6, H));   // 25 Nov: one saved horizon for Costs, Summary and PDF
   const yOf = (l, n) => (l?.years || []).find((y) => y.n === n) || null;
   const svAt = (n) => { const y = yOf(ev, n); return y?.saving_vs_current && y.saving_vs_current.min != null ? mid(y.saving_vs_current) : null; };
   const gapYears = [], known = [];
@@ -4435,7 +4435,7 @@ function renderB3(r) {
     h('button', { class: 'btn small', type: 'button', onclick: () => { ui.b3Cls = null; store.session.ev_purchase = null; render(); } }, 'Back to my choice'),
     h('button', { class: 'btn small primary', type: 'button', onclick: () => { const had = setEvChoice(P.cls, P.buy); Promise.resolve(calculate('B3')).finally(() => refreshStale(had, 'B3')); } }, 'Make this my choice')) : null;
   const fuelWhatIf = (ui.b3Fuel || 1) !== 1 ? h('p', { class: 'small whatif' }, h('b', null, 'What-if fuel price, only on this page. '), 'Summary and PDF use today\u2019s price.') : null;
-  const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), Array.from({ length: H }, (_, i) => i + 1).map((n) => chip(String(n), n === N, () => { ui.b3N = n; render(); }, true)));
+  const yearChips = h('div', { class: 'yearchips' }, h('span', { class: 'ylab' }, 'Years you keep it'), Array.from({ length: H }, (_, i) => i + 1).map((n) => chip(String(n), n === N, () => { store.yearsKept = n; saveStore(); render(); }, true)));
   const fuelRow = ref && ev && !noRef ? h('div', { class: 'b3pr' }, h('span', { class: 'ylab' }, `${ref.energy_detail?.kind === 'diesel' ? 'Diesel' : 'Petrol'} price`),
     seg([['0.7', '30 % cheaper'], ['1', 'Today'], ['1.3', '30 % dearer']], String(P.fuel), (v) => { ui.b3Fuel = Number(v); render(); }, true)) : null;
   const sizeHint = (() => {
@@ -4537,7 +4537,7 @@ function renderB3(r) {
       ev && !noRef ? h('p', { class: 'pbanswer ' + (payback ? 'good' : gapYears.length ? 'open' : 'bad') }, payback ? `Pays off in year ${payback}` : gapYears.length ? 'Not enough data to estimate payback' : `Does not pay off within ${horizon} years`,
         payback > 8 ? h('small', null, ' Values after year 8 are extrapolated, so this is uncertain.') : M.scen?.flips ? h('small', null, ' What the cars are worth at the end can change this.') : null) : null,
       ev ? savingChart([ev], N, payback) : null,
-      h('p', { class: 'note keep' }, noRef ? 'Total cost by how long you keep the car.' : payback ? `Above zero the electric car has paid off: with your answers after about ${yrsTxt(payback)}.` : `Above zero the electric car would have paid off. With your answers it does not within ${horizon} years.`)),
+      h('p', { class: 'note keep' }, noRef ? 'Total cost by how long you keep the car.' : payback ? `Above zero the electric car has paid off: with your answers in year ${payback}.` : `Above zero the electric car would have paid off. With your answers it does not within ${horizon} years.`)),
     h('section', { class: 'rsec' }, h('h2', null, 'Costs per year'), gapNote(),
       noRef ? h('p', { class: 'infoline' }, r.no_reference === 'out_of_scope' ? 'Your car is not petrol or diesel, so there is no comparison with it.' : 'Without a current car there is no comparison.') : null,
       table, kmNote),
@@ -5593,7 +5593,7 @@ const Report = {
         return [{ text: `Costs, kept ${yrsTxt(M.N)}`, style: 'h3' }, R.table(['CHF', 'Keep your car', 'Switch to an EV'], [
           ['Net outlay today', '0', n100(M.net)], ['Running costs per year', n1(M.refRun), n1(M.evRun)],
           [`Value after ${yrsTxt(M.N)}`, n100(M.refEnd), n100(M.evEnd)], [{ text: `Total cost over ${yrsTxt(M.N)}`, bold: true }, { text: n100(M.refTot), bold: true }, { text: n100(M.evTot), bold: true }]], ['*', 100, 100]),
-          { text: `Difference: ${M.saving >= 0 ? `${fmt.chf100(M.saving)} less` : `${fmt.chf100(-M.saving)} more`} with the electric car.${M.scen?.flips ? ' What the cars are worth at the end can turn this around.' : ''}`, bold: true, margin: [0, 4, 0, 6] }]; })() : []),
+          { text: `Difference: ${M.saving >= 0 ? `${fmt.chf10(M.saving)} less` : `${fmt.chf10(-M.saving)} more`} with the electric car.${M.scen?.flips ? ' What the cars are worth at the end can turn this around.' : ''}`, bold: true, margin: [0, 4, 0, 6] }]; })() : []),
       ok && sm.headline ? { text: 'In words, by AI', style: 'h3' } : null,
       ok && sm.headline ? { text: sm.headline, fontSize: 10, color: C.ink2, lineHeight: 1.3, margin: [0, 0, 0, 8] } : null,
       { text: 'Your topics', style: 'h3' },

@@ -318,8 +318,9 @@ for (const purchase of ['new', 'used']) {
         net: { min: r0(pMin + (installs ? C.INSTALL.min : 0) - v0), max: r0(pMax + (installs ? C.INSTALL.max : 0) - v0) } },
       battery: { gross_kwh: kwh, replacement_chf: kwh ? r100(kwh * C.BATTERY_CHF_KWH) : null, warranty_years: C.WARRANTY_YEARS, warranty_km: C.WARRANTY_KM, age_today: age },
       cash_need_today_chf: { min: r0(pMin + (installs ? C.INSTALL.min : 0) - v0), max: r0(pMax + (installs ? C.INSTALL.max : 0) - v0) },
-      energy_detail: { kind: 'electricity', km_per_year: o.ev_annual_km, kwh_per_100km: o.ev_annual_km ? Math.round((en.kwh / o.ev_annual_km) * 1000) / 10 : null,
-        chf_per_kwh: en.kwh ? Math.round((en.chf / en.kwh) * 100) / 100 : pEvery, everyday: everyday.value,
+      energy_detail: { kind: 'electricity', km_per_year: o.ev_annual_km, // 25 Nov (Amos): precise enough that km × consumption × price gives back the CHF shown (21.84 kWh × CHF 0.2463, not 21.8 × 0.25)
+        kwh_per_100km: o.ev_annual_km ? Math.round((en.kwh / o.ev_annual_km) * 10000) / 100 : null, kwh_per_year: Math.round(en.kwh),
+        chf_per_kwh: en.kwh ? Math.round((en.chf / en.kwh) * 10000) / 10000 : pEvery, everyday: everyday.value,
         consumption_source: en.cons_user ? 'user' : 'class', losses_included: en.cons_user, price_source: en.price_user ? 'user' : 'tariff' },
       years: NS.map(yearOf),
       _payback: NS_PAYBACK.map(yearOf),
@@ -376,7 +377,7 @@ if (ref) {
   lines.push({ line_id: 'current_car', kind: 'current_car', label: ref.name, class_id: null, size_label: SIZE_WORD[ref.size], min_wltp_km: null, selected: false,
     value_today_chf: r0(ref.V0), value_today_source: ref.V0_user ? 'user' : 'estimate', age_years: Math.round(ref.age0 * 10) / 10,
     cash_need_today_chf: null,
-    energy_detail: { kind: ref.fuel, km_per_year: ref.annual, l_per_100km: ref.annual ? Math.round((ref.energy / ref.fuelPrice / ref.annual) * 1000) / 10 : null, chf_per_l: ref.fuelPrice,
+    energy_detail: { kind: ref.fuel, km_per_year: ref.annual, l_per_100km: ref.annual ? Math.round((ref.energy / ref.fuelPrice / ref.annual) * 10000) / 100 : null, l_per_year: ref.fuelPrice ? Math.round(ref.energy / ref.fuelPrice) : null, chf_per_l: ref.fuelPrice,
       l_per_100km_rated: ref.cons_user ? null : ref.cons_rated, cycle: ref.cycle, real_factor: ref.cons_user ? null : ref.realF, consumption_source: ref.cons_user ? 'user' : 'tas', price_source: ref.fuel_user ? 'your value' : (ref.fuelRow?.source ?? 'BFS'), price_url: ref.fuel_user ? null : (ref.fuelRow?.url ?? null) },
     years, bridging: [] });
 }

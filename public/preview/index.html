@@ -4225,11 +4225,13 @@ function stackBar(items, scale) {
 /** Energy in three short parts: km a year, consumption, price (the app writes no × or → signs). */
 function energyParts(l) {
   const e = l?.energy_detail; if (!e || !e.km_per_year) return null;
-  if (e.kind === 'electricity') return e.kwh_per_100km != null && e.chf_per_kwh != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km`, `CHF ${e.chf_per_kwh.toFixed(2)} per kWh`] : null;
-  return e.l_per_100km != null && e.chf_per_l != null ? [`${fmt.n(e.km_per_year)} km a year`, `${fmt.n(e.l_per_100km, 1)} l per 100 km`, `CHF ${e.chf_per_l.toFixed(2)} per litre`] : null;
+  if (e.kind === 'electricity') return e.kwh_per_100km != null && e.chf_per_kwh != null ? [`${dec(e.km_per_year, 1)} km a year`, `${dec(e.kwh_per_100km, 2)} kWh per 100 km`, `CHF ${dec(e.chf_per_kwh, 4, 2)} per kWh`] : null;
+  return e.l_per_100km != null && e.chf_per_l != null ? [`${dec(e.km_per_year, 1)} km a year`, `${dec(e.l_per_100km, 2)} l per 100 km`, `CHF ${dec(e.chf_per_l, 3, 2)} per litre`] : null;
 }
 const energyText = (l) => energyParts(l)?.join(', ') || null;
 /** 24 Nov (Martin M01, Amos): energy as distance × consumption × price, with units, source and date for each car. */
+/** 25 Nov (Amos): the shown numbers must give back the CHF: as many decimals as the calculation used (trailing zeros dropped). */
+const dec = (x, max, min = 0) => { if (x == null || isNaN(x)) return '–'; let d = min; while (d < max && Math.abs(Math.round(x * 10 ** d) / 10 ** d - x) > 1e-9) d++; return fmt.n(x, d); };
 function energyFormula(l, asm = []) {
   const e = l?.energy_detail; if (!e || !e.km_per_year) return null;
   const A = (k) => asm.find((a) => a.key === k);
@@ -4237,13 +4239,13 @@ function energyFormula(l, asm = []) {
     if (e.kwh_per_100km == null || e.chf_per_kwh == null) return null;
     const tot = e.km_per_year * e.kwh_per_100km / 100 * e.chf_per_kwh;
     const pk = { private_ac: 'p_home', public_ac: 'p_public_ac', public_dc: 'p_dc' }[e.everyday] || 'p_home';
-    return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.kwh_per_100km, 1)} kWh per 100 km and CHF ${e.chf_per_kwh.toFixed(2)} per kWh: ${fmt.chf(Math.round(tot))} a year`,
+    return { calc: `${dec(e.km_per_year, 1)} km a year at ${dec(e.kwh_per_100km, 2)} kWh per 100 km and CHF ${dec(e.chf_per_kwh, 4, 2)} per kWh: ${fmt.chf(Math.round(tot))} a year`,
       basis: `Consumption: ${e.consumption_source === 'user' ? 'your value at the plug, charging losses included' : 'WLTP value of the class, adjusted for your speed and winter heating; the energy lost while charging is not included (enter your own consumption at the plug to include it)'}. Electricity: ${e.price_source === 'user' ? 'your average price' : A(pk)?.source || 'tariff where you charge'}.` };
   }
   if (e.l_per_100km == null || e.chf_per_l == null) return null;
   const tot = e.km_per_year * e.l_per_100km / 100 * e.chf_per_l;
   const cons = e.consumption_source === 'user' ? 'your value' : e.l_per_100km_rated != null ? `type approval ${fmt.n(e.l_per_100km_rated, 1)} l per 100 km (${e.cycle || 'WLTP'} test), plus ${Math.round((e.real_factor - 1) * 100)} % for real driving (ICCT)` : 'type approval (ASTRA TAS), real-world estimate';
-  return { calc: `${fmt.n(e.km_per_year)} km a year at ${fmt.n(e.l_per_100km, 1)} l per 100 km and CHF ${e.chf_per_l.toFixed(2)} per litre: ${fmt.chf(Math.round(tot))} a year`,
+  return { calc: `${dec(e.km_per_year, 1)} km a year at ${dec(e.l_per_100km, 2)} l per 100 km and CHF ${dec(e.chf_per_l, 3, 2)} per litre: ${fmt.chf(Math.round(tot))} a year`,
     basis: `Consumption: ${cons}. ${e.kind === 'diesel' ? 'Diesel' : 'Petrol'} price: ${e.price_source || A('fuel_price')?.source || 'BFS'}.` };
 }
 /** Tages-Anzeiger idea (Martin): how far CHF 50 of energy takes you, electric car against your car, with a map. */
@@ -4295,7 +4297,8 @@ function b3Model(r) {
     else for (let n = lastYear; n >= 1; n--) { const v = svAt(n); if (v == null || v < 0) break; payback = n; }
   }
   const e = yOf(ev, N), c = noRef ? null : yOf(ref, N);
-  const RUN = ['energy', 'tax', 'insurance', 'maintenance', 'bridging'];
+  // 25 Nov: the vignette is a running cost too (it was in the rows but not in the sum: 5'878 instead of 5'918)
+  const RUN = ['energy', 'tax', 'insurance', 'maintenance', 'vignette', 'bridging'];
   const run = (y) => (y ? RUN.reduce((a, k) => a + (y.items?.[k] || 0), 0) : null);
   const price = ev?.price_today_chf ? mid(ev.price_today_chf) : null;
   const install = !ev ? 0 : ev.upfront?.installation ? mid(ev.upfront.installation) : (e?.items?.installation || 0) * N;

@@ -68,7 +68,7 @@ Righe per tabella: `data/supabase_inventory.json`.
 
 **Login (opzionale).** Il frontend usa Supabase Auth del progetto `ccftsgtvyvjtmonfbwyt.supabase.co`, con una chiave publishable pensata per il browser.
 
-**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti, scritta da `LIVE – Feedback`; non esportata). Le altre 12 tabelle interne erano usate solo dai prototipi, ora archiviati; la demo non le legge.
+**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti, scritta da `LIVE – Feedback`; non esportata). È l'unica tabella interna rimasta: le 12 copie delle tabelle Supabase usate dai prototipi sono state cancellate il 25.11 (gli stessi dati sono in Supabase).
 
 ## 4. Account e credenziali (solo nomi; nessun valore nel pacchetto)
 

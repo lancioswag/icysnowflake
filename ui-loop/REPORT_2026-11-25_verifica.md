@@ -183,7 +183,7 @@ PDF sintetico del caso Christian rigenerato sulla build `987d71b` con la rispost
 1. **Stress test live** da ripetere sulla build `987d71b` appena il browser è ricollegato. Script pronto: `/preview/stress.js`, S1–S14 + S9a/S9b.
 2. **Demo pubblica:**
    - il frontend non è promosso (serve l'ok di Simone);
-   - `C – B3` è a `ecb5f8a`: non ha ancora la precisione dell'energia né la vignetta nei costi d'esercizio, che sono correzioni del frontend.
+   - ~~`C – B3` è a `ecb5f8a`~~ → risolto alle 13:25: `C – B3` è a `987d71b`, uguale a `T – B3` (§7).
 3. **Launcher su telefono:** ora non copre più i comandi, ma è nascosto in molte posizioni. In alternativa si può mettere un'icona chat nella barra in alto.
 4. **Chat:** non legge i km annui come campo. L'installazione è assunta finché la ricarica a casa non ha risposta; conviene dirlo nella conferma.
 5. **Decisioni aperte (§2.5):** perdite di ricarica, mix casa/pubblico, tassa inserita dall'utente.
@@ -192,3 +192,53 @@ PDF sintetico del caso Christian rigenerato sulla build `987d71b` con la rispost
    - refresh mensile dei dati: da costruire (§3);
    - HSG/Zurich: da confermare con Christian.
 7. **Assicurazione EV:** la lista ipotesi mostra 1'074 (primi anni, casco completa) mentre la tabella usa la media su 5 anni (727). È corretto ma può confondere: aggiungere "average over the years kept".
+
+## 7. Controllo generale e sistemazione n8n (25.11, 13:25)
+
+### 7.1 Rilettura dei tre report (24.11, 25.11, 25.11 verifica)
+
+| Punto dei report | Stato verificato oggi | Esito |
+|---|---|---|
+| Funzioni dichiarate nell'app (payback "Pays off in year N", "What would you like to check…", "Tables last checked", "Extra cash you can add", "Make this my choice", what-if solo locale, passi pratici, "Mid-size car", meno rosso quando l'EV perde, report `full-report`, launcher che si sposta, energia precisa) | Presenti sia in `public/index.html` sia nella preview (controllo nel codice) | ✅ |
+| Report 24.11 §3 (tabella "noi": vignetta esclusa, 38'811 / 26'776) | Superata: oggi la vignetta è inclusa e i numeri dell'app sono 29'978 / 22'444 (§2.2). La tabella del 24.11 resta come storico | ✅ annotato |
+| Report 25.11 §5: `C – B3` a `ecb5f8a` | Allineato a `987d71b` (esecuzione 17580, pubblicato) | ✅ corretto |
+| Hosting su n8n come "prossimo passo" (24.11) | Intestazione aggiornata: si resta su Cloudflare | ✅ |
+| Stress test live | Ancora da ripetere: dal computer di Simone `*.n8n.cloud` dà errore di certificato (§4.2) | ⛔ |
+| Demo pubblica | Frontend nuovo non ancora pubblicato (serve l'ok di Simone) | 📝 |
+
+### 7.2 n8n: copia C – allineata alla copia T – e alla nuova app
+
+**Confronto nodo per nodo:**
+- `C – API Navigator` e `T – API Navigator` sono identici, a parte gli ID dei sotto-workflow e il nodo di debug "Test summary".
+- `Module – Alternatives` e `Module – Charging` sono identici, a parte lo schema `bevtest`.
+- B2, Vehicle choice, B3 e B7 sono aggiornati in entrambe le copie con gli stessi file del repo.
+- Pagine B1, B4, B6, Trips e Train non sono state toccate dopo la clonazione del 23.11, quindi sono identiche.
+
+**Corretto: B7 Ecology usava ancora ×1.39 per tutte le auto NEDC.** La BMW 530xd risultava 9.73 l in Climate e 8.26 l in Costs.
+- Ora "Ecology calc" (`n8n/test/b7_ecology_calc.js`, `5e9a8ef`) usa il fattore per anno di omologazione, come B3.
+- Il nuovo nodo "Real-world note" scrive nella lista delle ipotesi il fattore usato davvero.
+- Applicato in T – e C –, entrambi pubblicati.
+
+**Prova sulla copia demo `C – API Navigator` (`/navigator-claude`), profilo BMW–Mégane:**
+
+| Pagina | Esecuzione | Esito |
+|---|---|---|
+| B1 | 17581 | ok (r90 = 64 km) |
+| B2 | 17582 | ok (casa H0, 0.2463 CHF/kWh) |
+| B3 | 17584 / 17618 | ok |
+| B4 | 17590 | ok (M1) |
+| B6 | 17608 | ok (forecast, SoH 91 % al 6° anno) |
+| B7 | 17605 | ok (BMW 8.26 l, fonte TAS) |
+
+Copia test `T – API` B7: esecuzione 17612, ok.
+
+**Ancora 1.39 solo nel "Rare days" di `Module – Alternatives`.** Serve solo per una seconda auto, che l'app non chiede più (sempre `none`). Non è stato toccato.
+
+### 7.3 Pulizia della cartella "BEV Navigator – Claude (versione isolata)"
+
+| Prima | Dopo |
+|---|---|
+| 31 workflow sciolti nella cartella | 3 sottocartelle: **C – Demo (navigator-claude, assist-claude)** con 13 workflow; **T – Test (navigator-test, preview)** con 12; **Tools (deploy and table copies)** con 3 |
+| 6 strumenti | Archiviati (si possono ripristinare dall'archivio di n8n) i 3 usati una volta sola: "clone Prototype 2", "clone C into T", "copy Assist v2". Restano: deploy del codice dal repo (rinominato "Tools – set node code in a Claude workflow (T – or C –) from the repo"), copia tabelle team → Claude DB, ricostruzione schema `bevtest` |
+
+Gli ID dei workflow non cambiano: la prova B3 sulla copia C – dopo lo spostamento (esecuzione 17618) è ok. La cartella "Test Claude", con due workflow ZZ del 13 e 19.11, è separata e non è stata toccata.

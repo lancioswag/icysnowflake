@@ -12,7 +12,7 @@ const { open, FX } = require('./harness.js');
   // Lifestyle match: the chosen type is the headline even if the trips would need a smaller one
   await ev(() => showResult('B4')); await page.waitForTimeout(600);
   const b4 = await ev(() => document.querySelector('.bigfig')?.innerText || '');
-  check('Lifestyle match headline is the chosen type', /Sedan or estate/.test(b4), b4);
+  check('Lifestyle match headline is the chosen type', /Mid-size car/.test(b4), b4);
   // Costs: used line, price and cash need
   await ev(() => { ui.b3N = 5; showResult('B3'); }); await page.waitForTimeout(700);
   const b3 = await ev(() => document.querySelector('main').innerText);
@@ -23,10 +23,10 @@ const { open, FX } = require('./harness.js');
   // Summary
   await ev(() => go('summary')); await page.waitForTimeout(800);
   const sm = await ev(() => document.querySelector('main').innerText);
-  check('Summary: chosen car line', /Sedan or estate, used, about CHF.20[’',]000/.test(sm), (sm.match(/Electric car you are looking at[\s\S]{0,80}/) || [])[0]);
+  check('Summary: chosen car line', /Mid-size car, used, about CHF.20[’',]000/.test(sm), (sm.match(/Electric car you are looking at[\s\S]{0,80}/) || [])[0]);
   // PDF (full report) and one-pager: the document definitions as text
   const pdf = await ev(() => JSON.stringify(Report.doc(['B3', 'B4'])));
-  check('PDF: used electric sedan or estate', /used/.test(pdf) && /sedan or estate/i.test(pdf), null);
+  check('PDF: used electric mid-size car', /used/.test(pdf) && /mid-size car/i.test(pdf), null);
   check('PDF: cash 5,000', /5[’',]000/.test(pdf), null);
   check('PDF: payback wording', /Pays off in year|Does not pay off within|Not enough data to estimate payback/.test(pdf), null);
   const one = await ev(() => { try { return JSON.stringify(Report.onePager(Summary.model ? Summary.model() : {})); } catch (e) { return 'ERR ' + e.message; } });

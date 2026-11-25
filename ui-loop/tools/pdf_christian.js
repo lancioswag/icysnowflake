@@ -20,14 +20,17 @@ const { open, FX } = require('./harness.js');
     const doc = JSON.stringify(Report.doc(Summary.codes()));
     const b = await Report.blob(Summary.codes());
     const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (const c of u) s += String.fromCharCode(c);
-    return { b64: btoa(s), costs, sum, doc };
+    const pm = await loadPdfLib(); const ob = await new Promise((ok) => pm.createPdf(Report.onePager(Summary.get('simple') || null)).getBlob(ok));
+    const u2 = new Uint8Array(await ob.arrayBuffer()); let s2 = ''; for (const c of u2) s2 += String.fromCharCode(c);
+    return { b64: btoa(s), one: btoa(s2), costs, sum, doc };
   }, fx);
   fs.writeFileSync(process.argv[2] || '/tmp/christian.pdf', Buffer.from(out.b64, 'base64'));
+  fs.writeFileSync((process.argv[2] || '/tmp/christian.pdf').replace(/\.pdf$/, '_one-page.pdf'), Buffer.from(out.one, 'base64'));
   const pick = (t, re) => (t.match(re) || [])[0];
   console.log(JSON.stringify({
     errors: page.errors,
     costs_cash: pick(out.costs, /Cash you need today[\s\S]{0,60}/), costs_5y: pick(out.costs, /41[’',]090|29[’',]950|11[’',]140[^\n]*/g),
-    sum_line: pick(out.sum, /[^\n]*11[’',]140[^\n]*/), pdf_has: ['41’090', '29’950', '11’140', '5’000', '8’218', '5’990'].filter((x) => out.doc.includes(x)),
+    sum_line: pick(out.sum, /[^\n]*11[’',]140[^\n]*/), pdf_has: ['41’090', '29’950', '11’140', '5’000'].filter((x) => out.doc.includes(x)),
   }, null, 1));
   await browser.close();
 })();

@@ -50,9 +50,9 @@ export const SCEN = {
       ['Costs shows cash 5’000', /Cash you need today[\s\S]{0,80}5’000/.test(costs)],
       ['Costs energy formula with units', /10’000 km a year at 8\.6 l per 100 km and CHF.2\.30 per litre/.test(costs) && /18(\.0)? kWh per 100 km and CHF.0\.35 per kWh/.test(costs)],
       ['Costs payback answer', /Pays off in year 1/.test(costs)],
-      ['Lifestyle match is the chosen type', /Sedan or estate/.test(b4.slice(0, 200))],
+      ['Lifestyle match is the chosen type', /Mid-size car/.test(b4.slice(0, 200))],
       ['Summary same horizon and amount', /Over 5 years[^.]*CHF.11’140 less/.test(sum), sum.slice(0, 600)],
-      ['Summary keeps Medium + used + price', /Sedan or estate, used, about CHF.20’000/.test(sum)],
+      ['Summary keeps Medium + used + price', /Mid-size car, used, about CHF.20’000/.test(sum)],
       ['PDF same figures', pdf.includes('41’090') && pdf.includes('29’950') && pdf.includes('11’140') && pdf.includes('5’000')],
       ['PDF same payback wording', pdf.includes('Pays off in year 1')],
       ['no NaN / null text', noNaN()],
@@ -101,7 +101,7 @@ export const SCEN = {
       ['no horizontal overflow', overflow() <= 1, overflow()],
     ], { golf, payback: resp('B3')?.result?.lines?.filter((l) => l.kind === 'option').map((l) => [l.line_id, l.payback_year]) });
   },
-  // Budget that no used sedan or estate can meet: the limit and the reason must be explained
+  // Budget that no used mid-size car can meet: the limit and the reason must be explained
   async S4() {
     fresh(); const p = Example.profile(false); p.target_ev = { size: 'M', purchase: 'used', price_chf: 25000, extra_cash_chf: 0 }; p.current_car.value_today_chf = 6000;
     store.profile = sanitizeProfile(p); store.carLabels['1BB439'] = 'BMW 530xd'; store.yearsKept = 5; store.queue = ['B4', 'B3']; saveStore();
@@ -139,7 +139,7 @@ export const SCEN = {
     return log('S6 Scenario change in Costs', [
       ['size-up class offered', !!other, b3Model(resp('B3').result).P.classes],
       ['what-if label shown', /What-if, only on this page/.test(t1)],
-      ['Summary unchanged during what-if', before.startsWith('Sedan or estate')],
+      ['Summary unchanged during what-if', before.startsWith('Mid-size car')],
       ['Make this my choice saves it', store.profile.target_ev?.size === 'L', store.profile.target_ev],
       ['Summary shows the new choice', /Minivan/.test(sum)],
     ]);
@@ -206,7 +206,7 @@ export const SCEN = {
       let chat = ''; try { Assistant.open(); await sleep(300); await Assistant.send('What does Lifestyle match mean?'); await sleep(1500); chat = Assistant.msgs.map((m) => m.text || '').join(' | '); } catch (e) { chat = 'ERR ' + e.message; }
       let blobOk = false; try { const bl = await Report.blob(Summary.codes()); blobOk = bl && bl.size > 20000; } catch (e) { blobOk = String(e); }
       ui.assistantOpen = false; render();
-      return log('S11 AI unavailable', [['verdict without AI', /Calculated from your results, without AI/.test(sum)], ['amount still there', /CHF.11’140 less/.test(sum)], ['chat says it cannot answer, no crash', !/^ERR/.test(chat) && chat.length > 0, chat.slice(-300)], ['PDF builds', blobOk === true, blobOk]]);
+      return log('S11 AI unavailable', [['verdict without AI', /Our verdict/i.test(sum) && /An electric car fits you/.test(sum)], ['amount still there', /CHF.11’140 less/.test(sum)], ['chat says it cannot answer, no crash', !/^ERR/.test(chat) && chat.length > 0, chat.slice(-300)], ['PDF builds', blobOk === true, blobOk]]);
     } finally { Object.assign(CONFIG.paths, keep); }
   },
   // Recoverable error: the topic fails, Try again works
@@ -249,7 +249,7 @@ Object.assign(SCEN, {
     const same = shared.filter((k) => a.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
     try { ChatNav.stop && ChatNav.stop(); } catch { } ui.assistantOpen = false; render();
     return log('S14 Chat with the BMW–Mégane profile', [
-      ['notes what it understood', /selling price CHF.15’000/.test(noted.replace(/\u00a0/g, ' ')) && /electric car: Sedan or estate, used, about CHF.20’000/.test(noted), noted],
+      ['notes what it understood', /selling price CHF.15’000/.test(noted.replace(/\u00a0/g, ' ')) && /electric car: Mid-size car, used, about CHF.20’000/.test(noted), noted],
       ['car, mileage and sale taken', /^1BB/.test(p1.current_car.targa_id || '') && p1.current_car.odometer_km === 150000 && p1.current_car.value_today_chf === 15000, p1.current_car],
       ['EV class, used, price taken', p1.target_ev.size === 'M' && p1.target_ev.purchase === 'used' && p1.target_ev.price_chf === 20000, p1.target_ev],
       ['asks for missing data', asked.length > 0, asked],

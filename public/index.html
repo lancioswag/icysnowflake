@@ -1673,10 +1673,10 @@ a.dsname:hover .ul, a.dsname:focus-visible .ul { color: var(--accent); backgroun
 .lp-flag { display: inline-block; flex: none; width: .72em; height: .72em; margin-left: .28em; border-radius: .05em;
   background: linear-gradient(#fff, #fff) 50% 50% / 62.5% 18.75% no-repeat, linear-gradient(#fff, #fff) 50% 50% / 18.75% 62.5% no-repeat, #d52b1e; }
 .lp-body { container-type: inline-size; }
-.lp-q-in { margin: 1em 0 0; font-size: calc(100cqi / 14); line-height: 1.22; font-weight: 800; letter-spacing: -0.025em; color: var(--ink);
+.lp-qm { margin-top: calc(100cqi / 14); }
+.lp-q-in { margin: 0; font-size: calc(100cqi / 14); line-height: 1.22; font-weight: 800; letter-spacing: -0.025em; color: var(--ink);
   hyphens: none; }
-.lp-q-in > .lp-m { display: block; }
-.lp-q-in .lp-in { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
+.lp-q-in > span { display: block; white-space: nowrap; text-align: justify; text-align-last: justify; }
 .lp-m { display: block; overflow: hidden; }
 .lp-in, .lp-word { will-change: transform; }
 .lp-btnm { margin-top: 34px; padding: 2px 0; }        /* room for the outline inside the mask */
@@ -2423,7 +2423,7 @@ const Landing = {
   },
   /** 1st animation (as before): a blue line runs once round the edge, then the button fills in.
       2nd animation, only while the pointer is on it: a darker line, three quarters long, turning slowly. */
-  button(btn, after, still) {
+  button(btn, after, still, done) {
     let P = Landing.frame(btn);
     const draw = btn.querySelector('.lp-line-draw'), spin = btn.querySelector('.lp-line-hover');
     const dash = () => { draw.style.strokeDasharray = `${P} ${P}`; spin.style.strokeDasharray = `${0.75 * P} ${0.25 * P}`; };
@@ -2432,7 +2432,7 @@ const Landing = {
     if (still) { draw.style.strokeDashoffset = '0'; btn.classList.add('ready'); return; }
     draw.style.strokeDashoffset = String(P);
     setTimeout(() => draw.animate([{ strokeDashoffset: P }, { strokeDashoffset: 0 }], { duration: 1400, easing: 'linear', fill: 'forwards' })
-      .finished.then(() => btn.classList.add('ready'), () => btn.classList.add('ready')), Math.max(0, after - performance.now()));
+      .finished.then(() => { btn.classList.add('ready'); setTimeout(() => done?.(), 650); }, () => { btn.classList.add('ready'); done?.(); }), Math.max(0, after - performance.now()));
     let run = null;
     btn.addEventListener('pointerenter', (e) => {
       if (e.pointerType === 'touch' || run) return;
@@ -2450,10 +2450,15 @@ const Landing = {
     const D = 720, E = 'cubic-bezier(.22,1,.36,1)';
     const drop = (el, at) => el && el.animate([{ transform: 'translateY(-106%)' }, { transform: 'none' }], { duration: D, delay: at, easing: E, fill: 'both' });
     drop(root.querySelector('.lp-brand'), 0);
-    const seq = [...root.querySelectorAll('.lp-word'), ...root.querySelectorAll('.lp-q-in .lp-in'), root.querySelector('.lp-aboutm .lp-in'), root.querySelector('.lp-srcm .lp-in'), root.querySelector('.lp-btn-in')];
+    // 25 Nov (Simone): claim line by line, the question as one block, then the button; credits and sources fade in together at the end
+    const seq = [...root.querySelectorAll('.lp-word'), root.querySelector('.lp-qm .lp-in'), root.querySelector('.lp-btn-in')];
     let t = 250;
     for (const el of seq) { drop(el, t); t += D; }
-    Landing.button(btn, performance.now() + t - D);   // the button is still empty while it drops, so its outline starts right then
+    const tail = [root.querySelector('.lp-aboutm .lp-in'), root.querySelector('.lp-srcm .lp-in')];
+    tail.forEach((el) => el && el.animate([{ opacity: 0 }], { duration: 1, fill: 'forwards' }));
+    Landing.button(btn, performance.now() + t - D, false, () => tail.forEach((el) => el && el.animate(
+      [{ opacity: 0, filter: 'blur(6px)', transform: 'translateY(4px)' }, { opacity: 1, filter: 'blur(0)', transform: 'none' }],
+      { duration: 1100, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards', composite: 'replace' })));
   },
 };
 
@@ -2468,7 +2473,7 @@ function viewLanding() {
     h('div', { class: 'lp-body' },
       h('h1', { class: 'lp-claim', 'aria-label': 'Better data. Neutral. Swiss.' },
         line(['Better data']), line(['Neutral']), line([h('span', { class: 'lp-swiss' }, 'Swiss'), h('span', { class: 'lp-flag' })])),
-      h('p', { class: 'lp-q-in' }, ...['Should you keep your car or', 'switch to an electric vehicle?'].map((t) => h('span', { class: 'lp-m' }, h('span', { class: 'lp-in' }, t)))),
+      h('div', { class: 'lp-m lp-qm' }, h('p', { class: 'lp-q-in lp-in' }, h('span', null, 'Should you keep your car or'), h('span', null, 'switch to an electric vehicle?'))),
       // 25 Nov (Simone): the button comes last in the sequence, but stays where it is in the layout
       h('div', { class: 'lp-m lp-btnm' }, h('div', { class: 'lp-in lp-btn-in' },
         h('button', { class: 'lp-go', type: 'button', onclick: () => Landing.start() }, h('span', { class: 'lp-go-fill' }, h('span', null, 'Let\u2019s Find Out')), frame))),

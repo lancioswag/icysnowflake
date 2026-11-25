@@ -2013,6 +2013,7 @@ function resetAll() {
   store.compass = null; store.yearsKept = null; store.example = null; ui.compassStep = 0; ui.topicOrder = null; ui.b3N = null; ui.b3Cls = null; ui.b3Fuel = null; ui.b2tab = null; ui.deep = {}; ui.resultOf = null; Results.ai = {};   // 23 Nov: no choices of the old profile survive a reset
   Nav.stack = []; Nav.last = null;
   Summary.cache = {}; Assistant.msgs = []; Assistant.prefill = ''; Account.form = null;
+  if (typeof ChatNav !== 'undefined') ChatNav.on = false;   // 25 Nov (stress test S15): a chat check left running ignored everything typed after a reset
   try { localStorage.removeItem(CONFIG.storageKey); localStorage.removeItem(RESULTS_KEY()); } catch { }
   saveStore();
 }
@@ -5207,7 +5208,7 @@ const ChatNav = {
         const said = ChatNav.patch(res.patch, ui.draft);
         if (BLOCKS[b].valid(ui.draft, 'ask')) { Assistant.busy = false; ChatNav.next(); return; }
         if (said) { const keep = ui.draft; commitDraft(keep); ui.draft = clone(store.profile); }
-      }
+      } else if (res?.patch) ChatNav.patch(res.patch);   // no question open: keep the facts anyway
     } catch { Assistant.msgs.push({ role: 'bot', text: 'I could not read that right now. Please use the options above.' }); }
     Assistant.busy = false; render();
   },

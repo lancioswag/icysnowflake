@@ -2384,9 +2384,11 @@ function viewTopics() {
     h('section', { class: 'pick', 'aria-label': 'Topics' }, list,
       null),   // 23 Nov: no instruction text; the keys show what to do
     h('div', { class: 'cta' },
-      h('button', { class: 'btn primary block', type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
-        allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Recalculate' : 'Check topics')),
-      anyDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
+      // 25 Nov: back with saved results, the main button opens them; checking again is the second one
+      allDone ? h('button', { class: 'btn primary block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
+      h('button', { class: 'btn block' + (allDone ? '' : ' primary'), type: 'button', onclick: () => (!sel.length ? startQuick() : allDone ? recalcTopics(sel) : startQueue(sel)) },
+        allDone ? icon('refresh') : null, h('span', null, !sel.length ? 'Check all topics' : allDone ? 'Check again' : 'Check topics')),
+      anyDone && !allDone ? h('button', { class: 'btn block', type: 'button', onclick: () => go('summary') }, icon('list'), h('span', null, 'Your results')) : null,
       h('button', { class: 'btn block compassbtn', type: 'button', onclick: () => { ui.compassStep = 0; go('orient'); } }, icon('skip'), h('span', null, 'Keep it short with 5 questions')),
       h('button', { class: 'linkbtn talk', type: 'button', onclick: () => Assistant.open() }, icon('chat'), h('span', null, 'Tell us in your own words')),
       (sel.length || hasProfile() || anyDone) ? h('button', { class: 'linkbtn start-fresh', type: 'button', onclick: () => go('reset') }, 'Delete my answers') : null));
@@ -2894,7 +2896,7 @@ function overallVerdict() {
   const cost = M.saving != null && !M.noRef ? `Over ${yrsTxt(M.N)}, a ${evPhrase(M.ev)} costs about ${fmt.chf10(Math.abs(M.saving))} ${M.saving >= 0 ? 'less' : 'more'} than keeping your ${M.refName}; you pay ${fmt.chf100(M.net)} upfront after selling it.` : null;
   if (cost) lines.unshift(cost);
   if (V.kind === 'missing') return { kind: 'missing', title: 'A decisive figure is missing', why: `To decide, we would need to know more: ${V.why}.`, lines, todo: M.noRef || M.missing.length ? 'B3' : null, based: ['B3'] };
-  if (V.kind === 'keep') return { kind: 'keep', title: 'Keeping your current car is cheaper', why: M.payback ? `The electric car pays off only after about ${yrsTxt(M.payback)}.` : `With your answers it does not pay off within ${M.lastYear || M.H} years.`, lines, based: ['B3'] };
+  if (V.kind === 'keep') return { kind: 'keep', title: 'Keeping your current car is cheaper', why: M.payback ? `The electric car pays off in year ${M.payback}${M.payback > 8 ? ' (uncertain: values after year 8 are extrapolated)' : ''}.` : `Does not pay off within ${M.lastYear || M.H} years.`, lines, based: ['B3'] };
   return { kind: 'ev', title: 'An electric car fits you', why: M.payback ? `Pays off in year ${M.payback}.` : null, lines, based: ['B3'] };
 }
 function verdictCard(v) {
@@ -2919,6 +2921,14 @@ function nextCheck() {
     pick === 'drive' ? h('p', { class: 'small' }, 'Most dealers lend a car for a day. Drive your usual route and charge once at a public charger near you (see Charging).') : null,
     pick === 'later' ? h('p', { class: 'small' }, 'That is a fine outcome. Your answers stay saved in this browser; come back when your car needs replacing or prices change.') : null);
 }
+/** 25 Nov (Christian, 20 Nov meeting): make the practical way out visible on the Summary, not only inside Charging. */
+function practicalSteps() {
+  const r = store.results.B2?.response?.result; if (!r) return null;
+  const out = [];
+  if (r.home?.email) out.push(h('button', { class: 'btn small', type: 'button', onclick: () => openMail(r.home.email) }, icon('mail'), { H3: 'Email your landlord about charging' }[r.home.node] || 'Email your property management about charging'));
+  if (r.work?.email && r.work.relevant !== false) out.push(h('button', { class: 'btn small', type: 'button', onclick: () => openMail(r.work.email) }, icon('mail'), 'Ask your employer for charging'));
+  return out.length ? h('section', { class: 'rsec practical' }, h('h2', null, 'A practical next step'), h('div', { class: 'chips' }, out)) : null;
+}
 function viewSummary() {
   const st = Summary.style, sm = Summary.get(st);
   const codes = Summary.codes();
@@ -2932,6 +2942,7 @@ function viewSummary() {
     h('div', { class: 'shead' }, h('h1', null, 'What we found for you'), h('span', { class: 'frac' }, `${done} of ${QUICK_CODES.length} topics`)),
     codes.length ? evChoiceLine() : null,
     codes.length ? verdictCard(overallVerdict()) : null,
+    codes.length ? practicalSteps() : null,
     codes.length ? nextCheck() : null,
     loading ? h('section', { class: 'aibox', role: 'status', 'aria-label': 'Writing your summary in words' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('div', { class: 'skel', style: { width: '86%' } }), h('div', { class: 'skel', style: { width: '58%' } })) : null,
     ok ? h('section', { class: 'aibox' }, h('span', { class: 'ailabel' }, icon('spark'), 'In words, by AI'), h('p', { class: 'sumk' }, ...highlight(takeaway(sm)))) : null,

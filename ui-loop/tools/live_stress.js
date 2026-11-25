@@ -46,12 +46,12 @@ export const SCEN = {
       ['payload cash 5000', mid(ev?.cash_need_today_chf) === 5000, ev?.cash_need_today_chf],
       ['payload per year 8218 / 5990', mid(yc?.total_per_year) === 8218 && mid(ye?.total_per_year) === 5990, [yc?.total_per_year, ye?.total_per_year]],
       ['Costs shows 41’090 and 29’950', costs.includes('41’090') && costs.includes('29’950')],
-      ['Costs shows CHF 11’140 less', costs.includes('CHF 11’140 less')],
+      ['Costs shows CHF 11’140 less', /CHF.11’140 less/.test(costs)],
       ['Costs shows cash 5’000', /Cash you need today[\s\S]{0,80}5’000/.test(costs)],
-      ['Costs energy formula with units', /10’000 km a year at 8\.6 l per 100 km and CHF 2\.30 per litre/.test(costs) && /18\.0 kWh per 100 km and CHF 0\.35 per kWh/.test(costs)],
+      ['Costs energy formula with units', /10’000 km a year at 8\.6 l per 100 km and CHF.2\.30 per litre/.test(costs) && /18(\.0)? kWh per 100 km and CHF.0\.35 per kWh/.test(costs)],
       ['Costs payback answer', /Pays off in year 1/.test(costs)],
       ['Lifestyle match is the chosen type', /Sedan or estate/.test(b4.slice(0, 200))],
-      ['Summary same horizon and amount', /Over 5 years[^.]*CHF 11’140 less/.test(sum), sum.slice(0, 600)],
+      ['Summary same horizon and amount', /Over 5 years[^.]*CHF.11’140 less/.test(sum), sum.slice(0, 600)],
       ['Summary keeps Medium + used + price', /Sedan or estate, used, about CHF.20’000/.test(sum)],
       ['PDF same figures', pdf.includes('41’090') && pdf.includes('29’950') && pdf.includes('11’140') && pdf.includes('5’000')],
       ['PDF same payback wording', pdf.includes('Pays off in year 1')],
@@ -193,7 +193,7 @@ export const SCEN = {
     const was = JSON.parse(sessionStorage.getItem('stress.s9') || '{}'); await sleep(500);
     const ok1 = JSON.stringify(Object.keys(store.results).sort()) === JSON.stringify((was.res || []).sort());
     go('summary'); await sleep(1200); const sum = txt();
-    const r1 = log('S9 Refresh keeps answers and results', [['results restored', ok1, [Object.keys(store.results), was.res]], ['years kept restored', store.yearsKept === was.y, store.yearsKept], ['Summary same amount', /CHF 11’140 less/.test(sum)]]);
+    const r1 = log('S9 Refresh keeps answers and results', [['results restored', ok1, [Object.keys(store.results), was.res]], ['years kept restored', store.yearsKept === was.y, store.yearsKept], ['Summary same amount', /CHF.11’140 less/.test(sum)]]);
     resetAll(); await sleep(300);
     const r2 = log('S10 Reset clears', [['no results', !Object.keys(store.results).length], ['no answers', !store.profile.postal_code && !store.profile.current_car.targa_id], ['storage empty', !localStorage.getItem(CONFIG.storageKey + '.results') || localStorage.getItem(CONFIG.storageKey + '.results') === '{}']]);
     return [r1, r2];
@@ -206,7 +206,7 @@ export const SCEN = {
       let chat = ''; try { Assistant.open(); await sleep(300); await Assistant.send('What does Lifestyle match mean?'); await sleep(1500); chat = Assistant.msgs.map((m) => m.text || '').join(' | '); } catch (e) { chat = 'ERR ' + e.message; }
       let blobOk = false; try { const bl = await Report.blob(Summary.codes()); blobOk = bl && bl.size > 20000; } catch (e) { blobOk = String(e); }
       ui.assistantOpen = false; render();
-      return log('S11 AI unavailable', [['verdict without AI', /Calculated from your results, without AI/.test(sum)], ['amount still there', /CHF 11’140 less/.test(sum)], ['chat says it cannot answer, no crash', !/^ERR/.test(chat) && chat.length > 0, chat.slice(-300)], ['PDF builds', blobOk === true, blobOk]]);
+      return log('S11 AI unavailable', [['verdict without AI', /Calculated from your results, without AI/.test(sum)], ['amount still there', /CHF.11’140 less/.test(sum)], ['chat says it cannot answer, no crash', !/^ERR/.test(chat) && chat.length > 0, chat.slice(-300)], ['PDF builds', blobOk === true, blobOk]]);
     } finally { Object.assign(CONFIG.paths, keep); }
   },
   // Recoverable error: the topic fails, Try again works
@@ -228,5 +228,35 @@ export const SCEN = {
     return log('S13 PDF without account', [['not logged in', !Account?.user], ['full report > 20 KB', full > 20000, full], ['one page > 10 KB', one > 10000, one], ['no error', !err, err]]);
   },
 };
+
+// Chat: same BMW–Mégane profile in words; the chat must note what it understood, ask what is missing and take a correction.
+// Parity: the same message to the team's /assist-v2 and to our copy /assist-claude gives the same shared fields.
+Object.assign(SCEN, {
+  async S14() {
+    fresh(); Assistant.msgs = []; Assistant.count = 0; Assistant.last = 0; Assistant.open(); await sleep(300);
+    const msg = 'I drive a 2015 BMW 530xd diesel with 150000 km and live in 8001 Zurich. I could sell it for 15000. I am looking at a used medium electric car for about 20000 and drive about 10000 km a year.';
+    await Assistant.send(msg); await until(() => !Assistant.busy, 40000); await sleep(800);
+    const p1 = clone(store.profile); const noted = Assistant.msgs.find((m) => /^Noted:/.test(m.text || ''))?.text || '';
+    const asked = Assistant.msgs.filter((m) => m.block != null).map((m) => m.text);
+    // correction while the check runs
+    Assistant.last = 0; await Assistant.send('Sorry, the selling price is 14000, not 15000.'); await until(() => !Assistant.busy && !ChatNav.busy, 40000); await sleep(800);
+    const p2 = clone(store.profile);
+    // parity of the two chat workflows (shared fields only)
+    const call = (path) => fetch(CONFIG.apiBase + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'chat', request_id: 'p' + Date.now(), message: msg, history: [], context: {} }) }).then((r) => r.json()).catch((e) => ({ error: String(e) }));
+    const [a, b] = await Promise.all([call('/assist-v2'), call('/assist-claude')]);
+    const shared = ['postal_code', 'car_brand', 'car_model', 'car_fuel', 'car_first_registration_year', 'car_mileage_km'];
+    const same = shared.filter((k) => a.patch?.[k] != null || b.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
+    try { ChatNav.stop && ChatNav.stop(); } catch { } ui.assistantOpen = false; render();
+    return log('S14 Chat with the BMW–Mégane profile', [
+      ['notes what it understood', /selling price CHF.15’000/.test(noted) && /electric car: Sedan or estate, used, about CHF.20’000/.test(noted), noted],
+      ['car and year taken', /^1BB/.test(p1.current_car.targa_id || '') && p1.current_car.first_registration?.startsWith('2015'), p1.current_car],
+      ['EV class, used, price taken', p1.target_ev.size === 'M' && p1.target_ev.purchase === 'used' && p1.target_ev.price_chf === 20000, p1.target_ev],
+      ['asks for missing data', asked.length > 0, asked],
+      ['takes a correction (14000)', p2.current_car.value_today_chf === 14000, p2.current_car.value_today_chf],
+      ['copy returns the new fields', b.patch?.car_sale_price_chf === 15000 && b.patch?.ev_size && b.patch?.ev_price_chf === 20000, b.patch],
+      ['same shared fields as /assist-v2', same, { v2: a.patch, claude: b.patch }],
+    ], { noted, asked });
+  },
+});
 export async function run(name) { const f = SCEN[name]; if (!f) return 'unknown ' + name; try { return await f(); } catch (e) { return log(name + ' CRASH', [['no exception', false, e.stack || e.message]]); } }
 export function results() { return JSON.parse(sessionStorage.getItem('stress.log') || '[]'); }

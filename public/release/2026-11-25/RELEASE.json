@@ -1,0 +1,16 @@
+{
+ "name": "2026-11-25",
+ "source_commit": "d2efab0",
+ "built": "2026-11-25T13:56:30Z",
+ "n8n": {
+  "navigator": "/webhook/navigator-claude",
+  "assist": "/webhook/assist-claude",
+  "summary": "/webhook/summary",
+  "feedback": "/webhook/feedback"
+ },
+ "storage_key": "bevnav.release.v1",
+ "sha256": {
+  "index.html": "b0f33329f547982a611bfc4ed86942b4deba2e1c20fc101b1ac36ec2cb2bde31",
+  "cars.json": "91604aff9ed5b965e609de16c5b14418864117a503414214755c5132e654c2c0"
+ }
+}

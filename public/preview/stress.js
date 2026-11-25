@@ -48,7 +48,7 @@ export const SCEN = {
       ['Costs shows 41’090 and 29’950', costs.includes('41’090') && costs.includes('29’950')],
       ['Costs shows CHF 11’140 less', /CHF.11’140 less/.test(costs)],
       ['Costs shows cash 5’000', /Cash you need today[\s\S]{0,80}5’000/.test(costs)],
-      ['Costs energy formula with units', /10’000 km a year at 8\.6 l per 100 km and CHF.2\.30 per litre/.test(costs) && /18(\.0)? kWh per 100 km and CHF.0\.35 per kWh/.test(costs)],
+      ['Costs energy formula with units', /(10’000|9’999\.6) km a year at 8\.6 l per 100 km and CHF.2\.30 per litre/.test(costs) && /18(\.0)? kWh per 100 km and CHF.0\.35 per kWh/.test(costs)],
       ['Costs payback answer', /Pays off in year 1/.test(costs)],
       ['Lifestyle match is the chosen type', /Mid-size car/.test(b4.slice(0, 200))],
       ['Summary same horizon and amount', /Over 5 years[^.]*CHF.11’140 less/.test(sum), sum.slice(0, 600)],
@@ -179,13 +179,45 @@ export const SCEN = {
     fresh(); startBarrier('B2'); await sleep(500); const first = ui.flow?.current;
     ui.draft.postal_code = '8001'; render(); await sleep(200);
     const next = document.querySelector('main .btn.primary.block');
-    next?.click(); await sleep(900); const second = ui.flow?.current;
-    appBack(); await sleep(900);
+    // 25 Nov: wait for the change (the browser pane can run at a few frames per second, the leave animation then takes ~1 s)
+    next?.click(); for (let i = 0; i < 40 && ui.flow?.current === first; i++) await sleep(100); const second = ui.flow?.current;
+    appBack(); for (let i = 0; i < 40 && ui.flow?.current !== first; i++) await sleep(100);
     const kept = (ui.draft || store.profile).postal_code;
     return log('S8 Back keeps answers', [
       ['moved forward', second !== first, [first, second]],
       ['back to first question', ui.flow?.current === first, ui.flow?.current],
       ['answer kept', kept === '8001', kept],
+    ]);
+  },
+  async S15() {
+    fresh(); Assistant.open && Assistant.open();
+    await Assistant.send('I drive a 2015 BMW 530xd diesel with 150000 km and live in 8001 Zurich. I could sell it for 15000. I am looking at a used medium electric car for about 20000 and drive about 10000 km a year.');
+    for (let i = 0; i < 60 && Assistant.busy; i++) await sleep(250);
+    const noted = (Assistant.msgs.find((m) => /^Noted:/.test(m.text || ''))?.text || '').replace(/\u00a0/g, ' ');
+    const p1 = clone(store.profile); const saved = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}').profile || {};
+    const X = Example.profile(false); const p = clone(store.profile); p.trips = X.trips;
+    for (const k of ['home_charging_status', 'fixed_parking', 'housing_type', 'charging_at_work', 'everyday_charging']) p[k] = X[k];
+    store.profile = sanitizeProfile(p); store.carLabels[p.current_car.targa_id] = store.carLabels[p.current_car.targa_id] || 'BMW 530xd'; store.yearsKept = 5; saveStore();
+    ui.assistantOpen = false; await runAll(['B4', 'B3'], { quiet: true }); showResult('B3'); await sleep(900);
+    const c1 = txt();
+    go('answers'); await sleep(500);
+    [...document.querySelectorAll('.ansrow')].find((r) => /Your car/.test(r.innerText))?.click(); await sleep(1500);
+    document.querySelector('.qnav .btn.primary')?.click(); for (let i = 0; i < 30 && !document.getElementById('cc-val'); i++) await sleep(100);
+    const inp = document.getElementById('cc-val'); if (inp) { inp.value = '12000'; inp.dispatchEvent(new Event('input', { bubbles: true })); }
+    await sleep(300); document.querySelector('.qnav .btn.primary')?.click();
+    for (let i = 0; i < 120 && !(store.results.B3 && store.profile.current_car.value_today_chf === 12000 && store.results.B3.sig === inputSig(store.profile, 'B3')); i++) await sleep(250);
+    showResult('B3'); await sleep(900); const c2 = txt();
+    go('summary'); await sleep(900); const s2 = txt();
+    const pdf = JSON.stringify(Report.doc(Summary.codes())) + JSON.stringify(Report.onePager(null));
+    return log('S15 Chat, result, then selling price changed in Your answers', [
+      ['chat confirms sale and EV', /selling price CHF.15’000/.test(noted) && /Mid-size car, used, about CHF.20’000/.test(noted), noted],
+      ['chat fields saved', p1.current_car.value_today_chf === 15000 && p1.target_ev.size === 'M' && p1.target_ev.purchase === 'used' && p1.target_ev.price_chf === 20000 && saved.current_car?.value_today_chf === 15000, { cc: p1.current_car, ev: p1.target_ev }],
+      ['Costs from the chat answers: cash 5’000, no installation', /Cash you need today[\s\S]{0,80}5’000/.test(c1) && /Other upfront costs[\s\S]{0,30}none/.test(c1), (c1.match(/Cash you need today[\s\S]{0,80}/) || [])[0]],
+      ['Your answers: price changed to 12’000', store.profile.current_car.value_today_chf === 12000, store.profile.current_car.value_today_chf],
+      ['Costs after the change: sale 12’000, cash 8’000', /\u221212’000/.test(c2) && /Cash you need today[\s\S]{0,80}8’000/.test(c2), (c2.match(/Cash you need today[\s\S]{0,80}/) || [])[0]],
+      ['Summary after the change: CHF 8’000 upfront', /CHF 8’000 upfront/.test(s2), (s2.match(/Over \d+ years[^\n]*/) || [])[0]],
+      ['new PDFs: 12’000 and 8’000', /12’000/.test(pdf) && /8’000/.test(pdf), null],
+      ['paths: /navigator-test and /assist-claude', CONFIG.paths.navigator === '/navigator-test' && CONFIG.paths.assist === '/assist-claude', CONFIG.paths],
     ]);
   },
   async S9a() { await SCEN.S1(); sessionStorage.setItem('stress.s9', JSON.stringify({ q: store.queue, res: Object.keys(store.results), y: store.yearsKept })); return 'reload now'; },

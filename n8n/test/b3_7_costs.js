@@ -261,7 +261,13 @@ for (const purchase of ['new', 'used']) {
     const bridging = bridgingOf(o).map((it) => {
       const alt = (it.alternatives || []).find((a) => a.key === it.assigned) || {};
       if (it.cost_per_year_chf == null) bridgingPending = true;
-      return { trip_id: Number(String(it.trip_id).replace('trip_', '')) - 1, label: it.label, key: it.assigned, category: alt.category ?? null, days: it.days, cost_per_year_chf: it.cost_per_year_chf ?? null };
+      // 25 Nov (Christian): say why the trip needs other transport, how often, and whether stops or charging there were counted
+      const tr = tripById[it.trip_id] || {};
+      const bad = fit.filter((f) => f.class_id === o.class_id && f.trip_id === it.trip_id && !f.fits);
+      const why = { missing: [...new Set(bad.flatMap((f) => f.missing || []))], need_km: bad.length ? Math.max(...bad.map((f) => f.need_wltp_km)) : null, class_km: o.min_wltp_km ?? null,
+        seasons: [...new Set(bad.map((f) => f.season))], frequency: tr.frequency ?? null, km_one_way: tr.km ?? null,
+        charge_at_dest: tr.charge_at_dest === true, stops_counted: !!tr.legs_calc, need_basis: (input.b1?.calc?.rows || []).find((r) => r.trip_id === tr.idx)?.need_basis ?? (tr.legs_calc ? 'with_stops' : tr.charge_at_dest ? 'one_way_charge_at_dest' : 'round_trip_on_one_charge') };
+      return { trip_id: Number(String(it.trip_id).replace('trip_', '')) - 1, label: it.label, key: it.assigned, category: alt.category ?? null, days: it.days, cost_per_year_chf: it.cost_per_year_chf ?? null, why };
     });
     const bridgingSum = bridging.reduce((s, b) => s + (b.cost_per_year_chf ?? 0), 0);
     const yearOf = (N) => {

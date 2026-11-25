@@ -1,4 +1,4 @@
-// C – Assist (Claude copy, 25 Nov): + car_sale_price_chf, ev_size, ev_purchase, ev_price_chf in FIELDS.
+// C – Assist (Claude copy, 25 Nov): + car_sale_price_chf, ev_size, ev_purchase, ev_price_chf, ev_extra_cash_chf in FIELDS.
 // Contract assist-2.0 (BEV Navigator UI): { mode: 'chat' | 'intake', model?, request_id, message, history[], context, intake? }
 const b = $input.first().json.body || {};
 const clean = (t, n) => String(t ?? '').replace(/[\u0000-\u0008\u000B-\u001F]/g, '').trim().slice(0, n);
@@ -35,7 +35,8 @@ const FIELDS = {
   car_sale_price_chf: 'price the person expects or was offered for selling the current car, CHF (number)',
   ev_size: 'type of electric car wanted: small (city car) | medium (sedan or estate) | large (minivan, 6-7 seats)',
   ev_purchase: 'new | used (electric car wanted)',
-  ev_price_chf: 'price of the electric car the person looks at, CHF (number); not the cash budget', charging_interest: 'array of everyday | trips_ch | abroad', battery_entry: 'forecast | used_car',
+  ev_price_chf: 'price of the electric car the person looks at, CHF (number); not the cash budget',
+  ev_extra_cash_chf: 'cash the person can add on top of the sale of the current car, CHF (number)', charging_interest: 'array of everyday | trips_ch | abroad', battery_entry: 'forecast | used_car',
 };
 const system = [
   'You are the assistant of the BEV Navigator: a free, neutral check built by a student team of the University of St. Gallen (HSG) with partners. It helps private persons in Switzerland find out whether an electric car fits their life.',

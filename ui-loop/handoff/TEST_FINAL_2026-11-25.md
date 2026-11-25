@@ -97,3 +97,5 @@ Ritest dalla release, sessione pulita, 390 × 844, dati sintetici:
 | S16 chat con correzione fino a Costs, Summary e PDF | 5/5 | 5/5 |
 | Riassunto AI (`/summary`) | testo dal modello | testo dal modello |
 | Feedback (`/feedback`) | salvato | salvato |
+
+Stesso giro sul sito principale `https://bev-navigator.zurich-hsg.workers.dev/` dopo la pubblicazione della nuova versione (commit `8216399`): S1 18/18 ("CHF 11'140 less"), S13 4/4, S16 5/5, riassunto AI dal modello, feedback salvato.

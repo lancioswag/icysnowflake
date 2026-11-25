@@ -5,11 +5,11 @@
 | URL | Cosa è | Backend | Stato |
 |---|---|---|---|
 | https://bev-navigator.zurich-hsg.workers.dev/release/2026-11-25/ | **Release congelata** per la presentazione (`d2efab0`) | `C – Demo` | testata il 25.11 (`reports/TEST_FINAL_2026-11-25.md`) |
-| https://bev-navigator.zurich-hsg.workers.dev/ | Demo pubblica principale | `C – Demo` | frontend del 25.11 mattina; il frontend nuovo (uguale alla release) è pronto ma la promozione aspetta l'ok di Simone |
+| https://bev-navigator.zurich-hsg.workers.dev/ | **Sito pubblico principale**, stessa versione della release (commit `8216399`) | `C – Demo` | testato il 25.11 sera |
 | https://bev-navigator.zurich-hsg.workers.dev/preview/ | Preview di lavoro (cambia a ogni push) | `T – Test` (`/navigator-test`) | testata |
 | https://bev-navigator.zurich-hsg.workers.dev/map | Mappa delle schermate | – | statica |
-| https://lancioswag.github.io/icysnowflake/ | Copia su GitHub Pages del 23.11 (branch `gh-pages`, deploy `886a1c4`) | `T – Test` e `/assist-v2` | **dismissione da decidere** (vedi §7) |
-| https://bev-navigator.ricordatilamail18.workers.dev | URL citato nel README del repo (altro account Cloudflare) | – | non raggiungibile il 25.11 (DNS); nessun accesso |
+| https://lancioswag.github.io/icysnowflake/ | Vecchia copia su GitHub Pages | – | **chiusa** il 25.11: ogni pagina rimanda al sito principale |
+| `icy-snowflake-1754.ricordatilamail18.workers.dev` | Vecchia copia su un altro account Cloudflare | – | non raggiungibile il 25.11 e senza accesso da qui; i workflow che chiamava sono archiviati |
 
 **Hosting.** Cloudflare Worker `bev-navigator` (account collegato a Claude). Static assets da `public/` (`wrangler.jsonc`); build automatica da `main`.
 
@@ -39,14 +39,12 @@
 5. **Riassunto AI:** `POST /webhook/summary`, servito da **`LIVE – AI summary v3`** (`t6SOK4APZkBlW1H0`).
 6. **Feedback:** `POST /webhook/feedback`, servito da **`LIVE – Feedback`** (`sDwbPpWFwpI2GmXO`), che scrive nella tabella interna di n8n `ui_feedback`.
 
-### Cartelle visibili fuori da `C – Demo` (la release non le usa)
+### Altre cartelle del progetto
 
-| Cartella | Perché resta |
+| Cartella | Contenuto |
 |---|---|
-| `T – Test (navigator-test, preview)`, accanto a `C – Demo` | Serve la preview (`/navigator-test`) e la copia su GitHub Pages. Stesso codice di `C –`, ma schema Supabase `bevtest` |
-| `Zurich BEV Navigator - Prototyp` e `- Prototyp 2` | Del team fino alla presentazione (`/navigator`, `/navigator-v2`) |
-| `Outside the demo – chat for the GitHub Pages copy (Assist v2) and old Assist v1` | Contiene due workflow: `LIVE – Assist v2` (`/assist-v2`), finché serve alla copia su GitHub Pages, e `OLD – Assist v1` (`/assist`), finché il suo uso esterno resta incerto |
-| `zz Archive – not used by the demo (25.11.2026)` | Contenitore storico: solo materiale archiviato, coperto dal backup locale |
+| `T – Test (navigator-test, preview)`, accanto a `C – Demo` | Copia di sviluppo per la preview (`/preview/`, `/navigator-test`). Stesso codice di `C –`, ma schema Supabase `bevtest`. Non serve alla demo |
+| `zz Archive – not used by the demo (25.11.2026)` | Solo materiale archiviato (prototipi, vecchie chat, copie di sviluppo, tool), coperto dal backup locale |
 
 ## 3. Database
 
@@ -70,7 +68,7 @@ Righe per tabella: `data/supabase_inventory.json`.
 
 **Login (opzionale).** Il frontend usa Supabase Auth del progetto `ccftsgtvyvjtmonfbwyt.supabase.co`, con una chiave publishable pensata per il browser.
 
-**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti, scritta da `LIVE – Feedback`; non esportata). Le altre 12 tabelle interne sono copie usate dal Prototyp del team, non dalla release.
+**Tabelle interne di n8n:** `ui_feedback` (feedback degli utenti, scritta da `LIVE – Feedback`; non esportata). Le altre 12 tabelle interne erano usate solo dai prototipi, ora archiviati; la demo non le legge.
 
 ## 4. Account e credenziali (solo nomi; nessun valore nel pacchetto)
 
@@ -109,11 +107,8 @@ Le chiavi non vanno mai nel repo, nei report o nel frontend.
 - **Modelli AI:** OpenAI (predefinito), con alternative Groq, Gemini e Anthropic.
 
 ## 7. Punti aperti
-1. **Promozione della release su `/`:** pronta, serve l'ok di Simone.
-2. **Decisioni di modello:** perdite di ricarica, mix casa/pubblico, tassa cantonale inserita dall'utente.
-3. **AutoScout24:** serve l'accesso partner per la stima del valore di vendita.
-4. **Refresh mensile dei dati:** da costruire. Piano: workflow n8n mensile → tabelle R12 in Supabase con `as_of` e `checked_at`; nel frattempo "Updated by hand".
-5. **HSG/Zurich sulla Start:** confermare con Christian la decisione di Simone (solo riga HSG).
-6. **Copie da dismettere** (decisione di Simone, accesso necessario):
-   - GitHub Pages `lancioswag.github.io/icysnowflake` (dipende da `T –` e `/assist-v2`);
-   - URL `ricordatilamail18.workers.dev` citato nel README.
+1. **Decisioni di modello:** perdite di ricarica, mix casa/pubblico, tassa cantonale inserita dall'utente.
+2. **AutoScout24:** serve l'accesso partner per la stima del valore di vendita.
+3. **Refresh mensile dei dati:** da costruire. Piano: workflow n8n mensile → tabelle R12 in Supabase con `as_of` e `checked_at`; nel frattempo "Updated by hand".
+4. **HSG/Zurich sulla Start:** confermare con Christian la decisione di Simone (solo riga HSG).
+5. **Vecchia copia su `ricordatilamail18.workers.dev`:** su un altro account Cloudflare, da chiudere da chi ha l'accesso.

@@ -286,7 +286,7 @@ export const SCEN = {
 };
 
 // Chat: same BMW–Mégane profile in words; the chat must note what it understood, ask what is missing and take a correction.
-// Parity: the same message to the team's /assist-v2 and to our copy /assist-claude gives the same shared fields.
+// Direct call: /assist-claude returns the new fields (sale price, EV size and price).
 Object.assign(SCEN, {
   async S14() {
     fresh(); Assistant.msgs = []; Assistant.count = 0; Assistant.last = 0; Assistant.open(); await sleep(300);
@@ -297,12 +297,9 @@ Object.assign(SCEN, {
     // correction while the check runs
     Assistant.last = 0; await Assistant.send('Sorry, the selling price is 14000, not 15000.'); await until(() => !Assistant.busy && !ChatNav.busy, 40000); await sleep(800);
     const p2 = clone(store.profile);
-    // parity of the two chat workflows (shared fields only)
+    // direct call of the chat workflow (/assist-claude); the old /assist-v2 was archived on 25 Nov
     const call = (path) => fetch(CONFIG.apiBase + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'chat', request_id: 'p' + Date.now(), message: msg, history: [], context: {} }) }).then((r) => r.json()).catch((e) => ({ error: String(e) }));
-    const [a, b] = await Promise.all([call('/assist-v2'), call('/assist-claude')]);
-    const shared = ['postal_code', 'car_brand', 'car_model', 'car_fuel', 'car_first_registration_year', 'car_mileage_km'];
-    // the copy may read more (e.g. the year); every field the team workflow returns must match
-    const same = shared.filter((k) => a.patch?.[k] != null).every((k) => String(a.patch?.[k]).toLowerCase() === String(b.patch?.[k]).toLowerCase());
+    const b = await call('/assist-claude');
     try { ChatNav.stop && ChatNav.stop(); } catch { } ui.assistantOpen = false; render();
     return log('S14 Chat with the BMW–Mégane profile', [
       ['notes what it understood', /selling price CHF.15’000/.test(noted.replace(/\u00a0/g, ' ')) && /electric car: Mid-size car, used, about CHF.20’000/.test(noted), noted],
@@ -311,7 +308,6 @@ Object.assign(SCEN, {
       ['asks for missing data', asked.length > 0, asked],
       ['takes a correction (14000)', p2.current_car.value_today_chf === 14000, p2.current_car.value_today_chf],
       ['copy returns the new fields', b.patch?.car_sale_price_chf === 15000 && b.patch?.ev_size && b.patch?.ev_price_chf === 20000, b.patch],
-      ['same fields as /assist-v2 where v2 answers', same, { v2: a.patch, claude: b.patch }],
     ], { noted, asked });
   },
 });
